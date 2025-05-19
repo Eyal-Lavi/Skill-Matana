@@ -38,6 +38,8 @@ if(process.env.NODE_ENV === 'development'){
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/",routes);
+
 app.get('/',(request , response , next) =>{
     response.send('hello ');
     response.end();
