@@ -1,6 +1,6 @@
 const express = require('express');
 const PORT = 3000;
-const app = express;
+const app = express();
 const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
@@ -8,9 +8,10 @@ dotenv.config();
 //const {sequelize} = require('./utils/database'); create a connection to the db
 const cookieParser = require('cookie-parser');
 const session =  require('express-session');
+const routes = require('./routes/index');
 const SequelizeStore = require('express-session-sequelize')(session.Store); 
 
-//app.use(cookieParser());
+app.use(cookieParser());
 
 // var sessionStore = new SequelizeStore({
 //   db: sequelize,
@@ -28,20 +29,17 @@ const SequelizeStore = require('express-session-sequelize')(session.Store);
 //  }
 // }));
 
-// app.use(cors());
+app.use(cors());
 
-// if(process.env.NODE_ENV === 'development'){
-//     app.use(morgan('dev'));
-// }
+if(process.env.NODE_ENV === 'development'){
+    app.use(morgan('dev'));
+}
 
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/',(request , response , next) =>{
-    response.send('hello');
-    response.end();
-});
+app.use("/", routes);
 
 app.listen(PORT ,async() => {
-    console.log('serever started');
+    console.log('server started');
  });
