@@ -2,16 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 
-// const productRoutes = require("./products");
+// const skillRoutes = require("./skills");
 const authRoutes = require("./auth");
 // const adminRoutes = require("./admin");
 
-const { isLoggedIn ,isAdmin} = require('../middlewares/authMiddleware');
+const { isAdmin , isLoggedIn } = require('../middlewares/authMiddleware');
 
 // Mount Routes
-// router.use("/products", productRoutes);
+// router.use("/skills",isLoggedIn , skillRoutes);
 router.use("/", authRoutes);
-// router.use("/admin", isAdmin , adminRoutes);  //need implement mid for permisson navigation
-
+// router.use("/admin", isAdmin , adminRoutes);  
 
 module.exports = router;
