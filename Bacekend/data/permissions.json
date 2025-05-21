@@ -1,5 +1,5 @@
 [
-  {"id": 1, "name": "USER"},
-  {"id": 10, "name": "EDITOR"},
-  {"id": 99, "name": "ADMIN"}
+  {"id": 1, "name": "USER","status":1},
+  {"id": 10, "name": "EDITOR","status":1},
+  {"id": 99, "name": "ADMIN","status":1}
 ]
