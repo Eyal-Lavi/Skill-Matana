@@ -1,17 +1,17 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 
-const statusModel = require('../models/status');
+const StatusModel = require('../models/status');
 const {getModelAttributes} = require('../utils/database');
 
 module.exports = {
   up(queryInterface, Sequelize) {
-    const {tableName , attributes} = getModelAttributes(statusModel);
+    const {tableName , attributes} = getModelAttributes(StatusModel);
 
     return queryInterface.createTable(tableName,attributes);
   },
   async down(queryInterface, Sequelize) {
-    const {tableName} = getModelAttributes(statusModel);
+    const {tableName} = getModelAttributes(StatusModel);
     await queryInterface.dropTable(tableName);
   }
 };
