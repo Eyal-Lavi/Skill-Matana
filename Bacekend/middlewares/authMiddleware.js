@@ -7,7 +7,16 @@ const isLoggedIn = ( req , res , next ) =>{
     }
     next();
 }
+const isAdmin = ( req , res , next ) =>{
+    if(req.session.user.permissions === 99){
+        res.cookie('isAdminIn',true);
+    }else{
+        res.cookie('isAdminIn',false);
+    }
+    next();
+}
 
 module.exports = {
     isLoggedIn,
+    isAdmin
 }

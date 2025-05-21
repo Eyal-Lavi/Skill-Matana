@@ -2,7 +2,7 @@ const User = require('../models/user');
 const sequelize = require('sequelize');
 
 const login = async (request, response, next) => {
-    console.log("Inside register");
+    console.log("Inside login");
     try {
         const user = request.body;
 
@@ -11,7 +11,13 @@ const login = async (request, response, next) => {
                 [sequelize.Op.or]:{
                     username: user.usernameOrEmail,
                     email: user.usernameOrEmail,
-                }
+                },
+                include: [
+                    {
+                        model: Permission, // Join with the Permission table
+                        attributes: ['id'], // Only fetch the permission code
+                    }
+                ]
                 // ,
                 // [sequelize.Op.and]:{
                 //     password: user.password,
@@ -27,15 +33,24 @@ const login = async (request, response, next) => {
             return;
         }
         
+        const permissions = existUser.Permissions.map(permission => permission.code);
+
+        
         request.session.isLoggedIn = true;
+        request.session.user = {
+            id: existUser.id,
+            username: existUser.username,
+            permissions: permissions,
+        };
+
         
         request.session.save(() => {
-            response.redirect(301, '/dashboard');
+            response.redirect(200, '/dashboard');
         });
 
     } catch (e) {
-        console.log(e);
-        
+        console.error(e);
+        response.status(500).json({ message: "Internal server error" });
     }
 }
 const register = async (request, response, next) => {
@@ -62,13 +77,14 @@ const register = async (request, response, next) => {
         // if(!errors){
 
         // }
-
+        
         await User.create({
             username: user.username,
             email: user.email,
             password: user.password,
             firstName: user.firstname,
             lastName: user.lastname,
+            gender: user.gender,
         });
 
         response.json({

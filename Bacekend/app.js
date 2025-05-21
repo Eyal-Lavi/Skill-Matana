@@ -5,7 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 dotenv.config();
-const {sequelize} = require('./utlis/database'); //create a connection to the db
+const {sequelize} = require('./utils/database'); //create a connection to the db
 const cookieParser = require('cookie-parser');
 const session =  require('express-session');
 const routes = require('./routes/index');
