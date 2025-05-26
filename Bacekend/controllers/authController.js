@@ -1,5 +1,8 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt'); 
 const sequelize = require('sequelize');
+const Permission = require('../models/permission');
+require('../models/userPermission');
 
 const login = async (request, response, next) => {
     console.log("Inside login");
@@ -12,17 +15,14 @@ const login = async (request, response, next) => {
                     username: user.usernameOrEmail,
                     email: user.usernameOrEmail,
                 },
-                include: [
-                    {
-                        model: Permission, // Join with the Permission table
-                        attributes: ['id'], // Only fetch the permission code
-                    }
-                ]
-                // ,
-                // [sequelize.Op.and]:{
-                //     password: user.password,
-                // }
-            }
+            },
+            include:[
+                {
+                    model:Permission,
+                    attributes:['id' , 'name'],
+                    through:{attributes:[]}
+                }
+            ]
         });
 
         if (!existUser) {
@@ -32,14 +32,23 @@ const login = async (request, response, next) => {
             });
             return;
         }
+        const isMatchPassword = await bcrypt.compare(user.password , existUser.password);
+        if(!isMatchPassword){
+            return response.status(401).json({message:"invalid username or password"});      
+        }
         
-        const permissions = existUser.Permissions.map(permission => permission.code);
+        
+        const permissions = existUser.Permissions.map(permission => permission.name);
 
+        console.log(existUser);
         
         request.session.isLoggedIn = true;
         request.session.user = {
             id: existUser.id,
             username: existUser.username,
+            firstName:existUser.firstName,
+            lastName:existUser.lastName,
+            gender:existUser.gender,
             permissions: permissions,
         };
 
