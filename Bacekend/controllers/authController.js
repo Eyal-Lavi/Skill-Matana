@@ -5,7 +5,6 @@ const { findUserByUsernameOrEmail,validateUserFields, createUser } = require('..
 const bcrypt = require('bcrypt'); 
 const {Op} = require('sequelize');
 const Permission = require('../models/permission');
-require('../models/userPermission');
 
 const login = async (request, response, next) => {
     console.log("Inside login");

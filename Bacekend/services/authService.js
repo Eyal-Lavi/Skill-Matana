@@ -1,4 +1,4 @@
-const sequelize = require('sequelize');
+const {Op} = require('sequelize');
 const User = require('../models/user');
 
 const validateUserFields = (user) => {
@@ -16,7 +16,7 @@ const findUserByUsernameOrEmail = async (identifier, transaction) => {
 
     const user = await User.findOne({
         where: {
-            [sequelize.Op.or]: [
+            [Op.or]: [
                 { username: identifier },
                 { email: identifier }
             ]
