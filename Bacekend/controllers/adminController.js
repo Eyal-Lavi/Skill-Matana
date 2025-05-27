@@ -1,39 +1,41 @@
-// const User =  require('../models/user');
-// const {addPermissionToDB} = require('../services/permissionService')
+const User =  require('../models/user');
+const {addPermissionToDB , addPermissionToUser} = require('../services/permissionService');
+const { sequelize } = require('../utils/database');
 
-// const addPermission = async (request, response, next) => {
-//     console.log("inside permission");
-//     try{
-//         const permissionName = request.body?.permission;
-//         console.log(permissionName);
+const addPermissionToDB = async (request, response, next) => {
+    console.log("inside permission");
+    try{
+        const permissionName = request.body;
+        console.log(permissionName);
         
         
-//         if(!permissionName){
-//             throw new Error("Premission is required field");
-//         }
+        if(!permissionName || typeof permissionName !== 'string'){
+            throw new Error("Premission is required field please enter proper name!!!!");
+        }
 
-//         const newPermission = await addPermissionToDB(permissionName);
+        const newPermission = await addPermissionToDB(permissionName);
 
-//         response.status(201).json({ message: 'Permission created', permission: newPermission });
-//     }catch(e){
-//         next({status:404,message:e.message});
-//     }
-// }
-// // const assignPermission = (request, response, next) => {
-// //     try{
-// //         const permission = request.body?.newPermission;
-        
-// //         if(!permission){
-// //             throw new Error("Premission is required field");
-// //         }
+        response.status(201).json({ message: 'Permission created', permission: newPermission });
+    }catch(e){
+        next({status:404,message:e.message});
+    }
+}
 
+const addPermissionToUser= async (request , response , next) => {
+    try{
+        const transaction = sequelize.transaction();
+        const {userId, permissionId} = request.body;
+        if (!userId || !permissionId){
+            throw new Error('please enter userId and permissionId');
+        }
+        const newUserPermission = await addPermissionToUser(userId , permissionId , transaction);
+        response.status(201).json(newUserPermission);
+    }catch(e){
+        next({status:404 , message:e.message})
+    }
+}
 
-// //     }catch(e){
-// //         console.log(e);
-        
-// //     }
-// // }
-
-// module.exports = {
-//     addPermission,
-// }
+module.exports = {
+    addPermissionToDB,
+    addPermissionToUser
+}

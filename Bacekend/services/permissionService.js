@@ -1,5 +1,6 @@
 const Permission = require('../models/permission');
 const UserPermission = require('../models/userPermission');
+const User = require('../models/user');
 
 const addPermissionToUser = async (userId, permissionId, transaction) => {
     if (!userId) {
@@ -19,9 +20,19 @@ const addPermissionToUser = async (userId, permissionId, transaction) => {
         transaction
     });
 
+    const existingUser = await User.findOne({
+        where:{id: userId},
+        transaction
+    });
+
     if (!existingPermission) {
         throw new Error("The permission you tried to add does not exist");
     }
+
+    if(!existingUser){
+        throw new Error('The user you tried to add does not exist');
+    }
+
 
     await UserPermission.create({
         userId,
@@ -32,7 +43,7 @@ const addPermissionToUser = async (userId, permissionId, transaction) => {
     
     return {
         message: "Permission added successfully",
-        status: 200,
+        status: 201,
         permission: existingPermission
     };
 };
@@ -50,6 +61,7 @@ const addPermissionToDB = async (permissionName) => {
         permission: newPermission
     };
 };
+
 
 module.exports = {
     addPermissionToUser,
