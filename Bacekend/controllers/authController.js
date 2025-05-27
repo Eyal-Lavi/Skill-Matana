@@ -1,45 +1,26 @@
-const User = require('../models/user');
 const sequelize = require('../utils/database');
 const { addPermissionToUser } = require('../services/permissionService');
-const { findUserByUsernameOrEmail,validateUserFields, createUser } = require('../services/authService');
-const bcrypt = require('bcrypt'); 
-const {Op} = require('sequelize');
-const Permission = require('../models/permission');
-require('../models/userPermission');
+const { findUserByUsernameOrEmail,validateUserFields, createUser, findUserByUsernameOrEmailWithPermissions } = require('../services/authService');
 
 const login = async (request, response, next) => {
     console.log("Inside login");
     try {
         const user = request.body;
 
-        const existUser = await User.findOne({
-            where: {
-                [Op.or]:{
-                    username: user.usernameOrEmail,
-                    email: user.usernameOrEmail,
-                },
-            },
-            include:[
-                {
-                    model:Permission,
-                    attributes:['id' , 'name'],
-                    through:{attributes:[]}
-                }
-            ]
-        });
+        const existUser = await findUserByUsernameOrEmailWithPermissions(user.usernameOrEmail, request.transaction);
 
         if (!existUser) {
             response.status(401).json({
                 message:"Invalid username or email",
-          
             });
             return;
         }
-        const isMatchPassword = await bcrypt.compare(user.password , existUser.password);
+
+        const isMatchPassword = await ComperePasswords(user.password , existUser.password);
+
         if(!isMatchPassword){
             return response.status(401).json({message:"invalid username or password"});      
         }
-        
         
         const permissions = existUser.Permissions.map(permission => permission.name);
 
