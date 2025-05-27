@@ -1,6 +1,7 @@
 const User = require('../models/user');
-const sequelize = require('sequelize');
-
+const sequelize = require('../utils/database');
+const { addPermissionToUser } = require('../services/permissionService');
+const { findUserByUsernameOrEmail,validateUserFields, createUser } = require('../services/authService');
 const login = async (request, response, next) => {
     console.log("Inside login");
     try {
@@ -53,48 +54,55 @@ const login = async (request, response, next) => {
         response.status(500).json({ message: "Internal server error" });
     }
 }
-const register = async (request, response, next) => {
+const register = async (request, response) => {
     console.log("Inside register");
+    const transaction = await sequelize.sequelize.transaction();
+
     try {
         const user = request.body;
 
-        const existUser = await User.findOne({
-            where: {
-                username: user.username
-            }
-        });
+        const missingField = validateUserFields(user);
+
+        if (missingField) {
+            await transaction.rollback();
+            return response.status(400).json({ error: `${missingField} is required` });
+        }
+
+        const userByUsername = await findUserByUsernameOrEmail(user.username, transaction);
+        const userByEmail =  await findUserByUsernameOrEmail(user.email, transaction);
+
+        const existUser = userByUsername || userByEmail;
 
         if (existUser) {
-            response.json({
+            await transaction.rollback();
+            return response.status(400).json({
                 error: {
-                    field: "username",
-                    info: "Already exist"
+                    field: `${userByUsername ? 'Username' : ''} ${ userByUsername && userByEmail ? 'And' : '' } ${userByEmail ? 'Email' : ''}`.trim(),
+                    info: "Already exists"
                 }
             });
-            return;
         }
-        // const errors = validateValues(userReg);
-        // if(!errors){
 
-        // }
-        
-        await User.create({
-            username: user.username,
-            email: user.email,
-            password: user.password,
-            firstName: user.firstname,
-            lastName: user.lastname,
-            gender: user.gender,
-        });
+        await createUser(user, transaction);
 
-        response.json({
-            info:"register confirm"
-        });
-        response.end();
+        const newUser = await findUserByUsernameOrEmail(user.username, transaction);
+
+        if (!newUser) {
+            await transaction.rollback();
+            return response.status(500).json({ error: "User not found after creation" });
+        }
+
+        await addPermissionToUser(newUser.id, 1, transaction);
+
+        await transaction.commit();
+        return response.status(201).json({ info: "Register confirmed" });
+
     } catch (e) {
-
+        console.error("Register error:", e);
+        await transaction.rollback();
+        return response.status(500).json({ error: "Internal Server Error" });
     }
-}
+};
 
 module.exports = {
     register,

@@ -1,0 +1,56 @@
+const sequelize = require('sequelize');
+const User = require('../models/user');
+
+const validateUserFields = (user) => {
+    const required = ['username', 'email', 'password', 'firstname', 'lastname', 'gender'];
+    for (const field of required) {
+        if (!user[field]) return field;
+    }
+    return null;
+};
+
+
+const findUserByUsernameOrEmail = async (identifier, transaction) => {
+    if (!identifier) throw new Error("Username or email is required");
+    if (!transaction) throw new Error("Transaction is required");
+
+    const user = await User.findOne({
+        where: {
+            [sequelize.Op.or]: [
+                { username: identifier },
+                { email: identifier }
+            ]
+        },
+        transaction
+    });
+
+    return user;
+};
+
+
+const createUser = async (user, transaction) => {
+    if (!transaction) throw new Error("Transaction is required");
+
+    const missing = validateUserFields(user);
+    if (missing) throw new Error(`${missing} is required`);
+
+    await User.create({
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        firstName: user.firstname,
+        lastName: user.lastname,
+        gender: user.gender,
+    }, { transaction });
+
+    return {
+        status: 200,
+        message: "User created successfully"
+    };
+};
+
+module.exports = {
+    validateUserFields,
+    findUserByUsernameOrEmail,
+    createUser
+};
