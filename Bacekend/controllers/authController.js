@@ -1,13 +1,18 @@
 const sequelize = require('../utils/database');
 const { addPermissionToUser } = require('../services/permissionService');
-const { findUserByUsernameOrEmail,validateUserFields, createUser, findUserByUsernameOrEmailWithPermissions } = require('../services/authService');
+const { 
+        findUserByUsernameOrEmail,
+        validateUserFields,
+        ComperePasswords,
+        createUser,
+        findUserByUsernameOrEmailWithPermissions
+     } = require('../services/authService');
 
 const login = async (request, response, next) => {
-    console.log("Inside login");
     try {
         const user = request.body;
-
-        const existUser = await findUserByUsernameOrEmailWithPermissions(user.usernameOrEmail, request.transaction);
+        const transaction = await sequelize.sequelize.transaction();
+        const existUser = await findUserByUsernameOrEmailWithPermissions(user.usernameOrEmail, transaction);
 
         if (!existUser) {
             response.status(401).json({
@@ -47,7 +52,6 @@ const login = async (request, response, next) => {
     }
 }
 const register = async (request, response) => {
-    console.log("Inside register");
     const transaction = await sequelize.sequelize.transaction();
 
     try {

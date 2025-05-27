@@ -2,7 +2,6 @@ const {Op} = require('sequelize');
 const User = require('../models/user');
 const Permission = require('../models/permission');
 const bcrypt = require('bcrypt');
-const {Op} = require('sequelize');
 
 const validateUserFields = (user) => {
     const required = ['username', 'email', 'password', 'firstname', 'lastname', 'gender'];
@@ -20,7 +19,7 @@ const ComperePasswords = async (password, hashedPassword) => {
 const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction) => {
     if (!identifier) throw new Error("Username or email is required");
     if (!transaction) throw new Error("Transaction is required");
-
+    
     const user = await User.findOne({
         where: {
             [Op.or]:{
@@ -32,7 +31,7 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
             {
                 model:Permission,
                 attributes:['id' , 'name'],
-                through:{attributes:[]}
+                // through:{attributes:[]}
             }
         ],
         transaction
