@@ -1,7 +1,8 @@
 const Permission = require('../models/permission');
 const UserPermission = require('../models/userPermission');
+const User = require('../models/user');
 
-const addPermissionToUser = async (userId, permissionId, transaction) => {
+const addUserPermission = async (userId, permissionId, transaction) => {
     if (!userId) {
         throw new Error("User ID is required");
     }
@@ -19,9 +20,19 @@ const addPermissionToUser = async (userId, permissionId, transaction) => {
         transaction
     });
 
+    const existingUser = await User.findOne({
+        where:{id: userId},
+        transaction
+    });
+
     if (!existingPermission) {
         throw new Error("The permission you tried to add does not exist");
     }
+
+    if(!existingUser){
+        throw new Error('The user you tried to add does not exist');
+    }
+
 
     await UserPermission.create({
         userId,
@@ -32,17 +43,29 @@ const addPermissionToUser = async (userId, permissionId, transaction) => {
     
     return {
         message: "Permission added successfully",
-        status: 200,
+        status: 201,
         permission: existingPermission
     };
 };
 
-const addPermissionToDB = async (permissionName) => {
+const addPermission = async (permissionName) => {
+    console.log("inside add permission");
     if (!permissionName || typeof permissionName !== 'string') {
         throw new Error("Valid permission name is required");
     }
 
+    const existPermission = await Permission.findOne({
+        where:{
+            name:permissionName
+        }
+    });
+    if(existPermission){
+        throw new Error("This permission already exist!");
+    }
+    console.log(0);
+    
     const newPermission = await Permission.create({ name: permissionName });
+    console.log(1);
 
     return {
         message: "Permission created successfully",
@@ -51,7 +74,8 @@ const addPermissionToDB = async (permissionName) => {
     };
 };
 
+
 module.exports = {
-    addPermissionToUser,
-    addPermissionToDB
+    addUserPermission,
+    addPermission
 };

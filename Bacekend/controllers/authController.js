@@ -46,7 +46,7 @@ const login = async (request, response, next) => {
             return response.status(401).json({message:"invalid username or password"});      
         }
         
-        const permissions = existUser.Permissions.map(permission => permission.name);
+        const permissions = existUser.Permissions.map(permission => ({id: permission.id ,  name: permission.name}) );
 
         console.log(existUser);
         

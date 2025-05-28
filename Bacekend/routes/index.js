@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const adminRoutes = require('../routes/admin');
 
 
 const skillRoutes = require("./skills");
@@ -11,6 +12,6 @@ const { isAdmin , isLoggedIn } = require('../middlewares/authMiddleware');
 // Mount Routes
 router.use("/skills",isLoggedIn , skillRoutes);
 router.use("/", authRoutes);
-// router.use("/admin", isAdmin , adminRoutes);  
+router.use("/admin", isAdmin,  adminRoutes);  
 
 module.exports = router;
