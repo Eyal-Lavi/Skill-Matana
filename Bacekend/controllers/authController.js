@@ -8,6 +8,25 @@ const {
         findUserByUsernameOrEmailWithPermissions
      } = require('../services/authService');
 
+const logout = async (request, response, next) => {
+    try {
+        if(!request.session.isLoggedIn) {
+            return response.status(401).json({ message: "You are not logged in" });
+        }
+        request.session.destroy((err) => {
+            if (err) {
+                console.error("Session destruction error:", err);
+                return response.status(500).json({ message: "Internal server error" });
+            }
+            response.clearCookie('connect.sid'); // Clear the session cookie
+            response.status(200).json({ message: "Logged out successfully" });
+        });
+
+    } catch (e) {
+        console.error(e);
+        response.status(500).json({ message: "Internal server error" });
+    }
+}
 const login = async (request, response, next) => {
     try {
         const user = request.body;
