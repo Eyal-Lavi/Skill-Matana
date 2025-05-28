@@ -40,9 +40,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/",routes);
 
-app.get('/',(request , response , next) =>{
-    response.send('hello ');
-    response.end();
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({
+        error: err.message || 'Internal Server Error'
+    });
 });
 
 app.listen(PORT ,async() => {
