@@ -1,59 +1,65 @@
-// const Category = require('../models/');
-// const Product = require('../models/product');
-// const UserModel = require('../models/user');
+const { getAll, addSkillToUser, getAllForUser } = require('../services/skillsService');
+const sequelize = require('../utils/database');
 
-// const getAllSkills = async (request, response,next) => {
-//     try {
-//         const products = await Product.findAll({
-//             where: {
-//                 status: 0,
-//             },
-//             // raw: true,
-//         });
-//         response.json(products);
-//         response.end();
-//     } catch (error) {
-//         next({status:404,message:'Error ->' + error});
-//     }
-// }
+const getAllSkills = async (request, response,next) => {
+    try {
+        const skills = await getAll();
+        response.json(skills);
+        response.end();
+    } catch (error) {
+        next({status:404,message:'Error ->' + error});
+    }
+}
 
-// //  /product?id=20
-// const getProduct = async (request, response,next) => {
-//     const { id } = request.query;
-//     const productId = parseInt(id);
-//     let error = '';
+const getSkillsForUser = async (request, response,next) => {
+    try {
+        // const { id } = request.params;
+        console.log("request.session.user : " + request.session.user);
 
-//     if (!Number.isNaN(productId)) {
-//         const product = await Product.findOne({
-//             attributes: ['id', 'price', 'name', 'description', 'quantity'],
-//             where: { id },
-//             include: [
-//                 {
-//                     model: UserModel,
-//                     required: false,
-//                     as: 'users',
-//                     attributes: ['id', 'firstName','lastName']
-//                 },
-//             ],
-//         })
+        const userId = request.session.user.id ;
         
-//         // product.setCategories([1,4,5]);
-//         if (product) {
-//             response.json(product); // location of ejs file in th view
-//             response.end();
-//         } else {
-//             error = `Product with id #${id} was not found`;
-//         }
-//     } else {
-//         error = 'Invalid product id passed';
-//     }
-//     if (error) {
-//         next({status:404,message:'Error ->' + error});
-//     }
-// }
+        if(!userId){
+            return next({status:400,message:'User ID is required'});
+        }
+
+        const skills = await getAllForUser(userId);
+
+        if (!skills) {
+            return next({status:404,message:'No skills found for this user'});
+        }
+
+        response.json(skills);
+        response.end();
+    } catch (error) {
+        next({status:404,message:'Error ->' + error});
+    }
+}
+
+const addSkill = async (request, response,next) => {
+    try {
+        const transaction = await sequelize.sequelize.transaction();
+        
+        const userId = request.session.user.id;
+        const skillId = request.body.skillId;
+        console.log("userId :" + userId + " ,skillId :" +skillId);
+        
+        if (!userId || !skillId) {
+            return response.status(400).json({ message: "User ID and Skill ID are required" });
+        }
+
+        await addSkillToUser(userId, skillId, transaction);
+        await transaction.commit();
+        
+        response.json({ message: "Skill added successfully" });
+        response.end();
+    } catch (error) {
+        next({status:404,message:'Error ->' + error});
+    }
+}
 
 
-// module.exports = {
-//     getAllSkills,
-//     getProduct
-// }
+module.exports = {
+    getAllSkills,
+    getSkillsForUser,
+    addSkill
+}

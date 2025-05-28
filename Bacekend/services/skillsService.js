@@ -1,0 +1,92 @@
+const Permission = require('../models/permission');
+const Skill = require('../models/skill');
+const SkillUser = require('../models/skillUser');
+const UserPermission = require('../models/userPermission');
+
+const getAll = async () => {
+    const skills = await Skill.findAll({});
+    return skills;
+}
+
+const getAllForUser = async (userId) => {
+    if(!userId){
+        return new Error("User ID is required");
+    }
+
+    const skills = await SkillUser.findAll({
+        where: { userId: userId },
+        include: [
+            {
+                model: Skill,
+                attributes: ['id', 'name'],
+                where: { status: 1 },
+            },
+        ],
+    });
+
+    return skills;
+}
+
+const addSkillToUser = async (userId, skillId, transaction) => {
+    if (!userId) {
+        throw new Error("User ID is required");
+    }
+
+    if (!skillId) {
+        throw new Error("Skill ID is required");
+    }
+
+    if (!transaction) {
+        throw new Error("Transaction is required");
+    }
+
+    const existingSkill = await Skill.findOne({
+        where: { id: skillId },
+        transaction
+    });
+
+    if (!existingSkill) {
+        throw new Error("The skills you tried to add does not exist");
+    }
+
+    const existingUserSkill = await SkillUser.findOne({
+        where: { skillId: skillId },
+        transaction
+    });
+
+    if (existingUserSkill) {
+        throw new Error("The skills you tried to add exist for this user");
+    }
+    
+    await SkillUser.create({
+        userId: userId,
+        skillId: skillId
+    }, { transaction });
+
+    return {
+        message: "Skills added successfully",
+        status: 200,
+        permission: existingSkill
+    };
+};
+
+const addSkillToDB = async (skillName) => {
+    if (!skillName) {
+        throw new Error("Valid permission name is required");
+    }
+
+    const newSkills = await Skill.create({ name: skillName });
+
+    return {
+        message: "Skills created successfully",
+        status: 201,
+        permission: newSkills
+    };
+};
+
+module.exports = {
+    getAll,
+    getAllForUser,
+    addSkillToUser,
+    addSkillToDB
+};

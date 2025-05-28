@@ -7,33 +7,30 @@ const SkillUser = sequelize.define('SkillUser', {
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        // autoIncrement: true,
         field:'user_id',
-        // references: {
-        //     model: User, 
-        //     key: 'id'
-        // },
         onDelete: 'CASCADE',
         primaryKey: true
     },
     skillId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        // autoIncrement: true,
         field:'skill_id',
-        // references: {
-        //     model: Skill,
-        //     key: 'id'
-        // },
         onDelete: 'CASCADE',
         primaryKey: true
     },
 }
     ,{
-        tableName: 'skill_user',
+        tableName: 'skill_user',    
         timestamps: false,
+        // associate: (models) => {
+        //     SkillUser.belongsTo(models.user)
+        // }
     }
 );
 
+// SkillUser.belongsTo(Skill, {
+//     foreignKey: 'skillId',
+//     as: 'skill'
+// });
 
 module.exports = SkillUser;
