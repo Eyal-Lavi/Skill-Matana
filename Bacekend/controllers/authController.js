@@ -51,6 +51,7 @@ const login = async (request, response, next) => {
         console.log(existUser);
         
         request.session.isLoggedIn = true;
+        request.session.isAdmin = permissions.some(permission => permission.id === 99);
         request.session.user = {
             id: existUser.id,
             username: existUser.username,
@@ -59,7 +60,7 @@ const login = async (request, response, next) => {
             gender:existUser.gender,
             permissions: permissions,
         };
-
+``
         
         request.session.save(() => {
             response.redirect(200, '/dashboard');
@@ -67,7 +68,7 @@ const login = async (request, response, next) => {
 
     } catch (e) {
         console.error(e);
-        response.status(500).json({ message: "Internal server error" });
+        next({ message: e.message });
     }
 }
 const register = async (request, response) => {
@@ -115,11 +116,12 @@ const register = async (request, response) => {
     } catch (e) {
         console.error("Register error:", e);
         await transaction.rollback();
-        return response.status(500).json({ error: "Internal Server Error" });
+        next({ message: e.message });
     }
 };
 
 module.exports = {
     register,
-    login
+    login,
+    logout
 }

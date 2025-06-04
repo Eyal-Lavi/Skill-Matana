@@ -1,9 +1,17 @@
 const express = require('express');
 const router = express.Router();
-
+const {handleValidationErrors} = require('./validations/validation');
 const authController = require('../controllers/authController');
+const { 
+        validateLogin,
+        validateRegister
+      } = require('./validations/authValidation');
 
-router.post('/register', authController.register);
+
+
+router.post('/login', validateLogin, handleValidationErrors, authController.login);
+router.post('/register',validateRegister, handleValidationErrors, authController.register);
 router.post('/login', authController.login);
+// router.post('/logout', authController.logout);
 
 module.exports = router;
