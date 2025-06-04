@@ -5,7 +5,7 @@ const validateAddPermissionToDB = [
     .trim()
     .escape()
     .exists().withMessage('permissionName is required')
-    .isEmpty().withMessage('permissionName cannot be empty')
+    .notEmpty().withMessage('permissionName cannot be empty')
     .isLength({ min: 2 }).withMessage('permissionName must be at least 2 characters'),
 ];
 
