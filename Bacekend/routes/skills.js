@@ -3,8 +3,8 @@ const router = express.Router();
 const skillController = require('../controllers/skillController');
 const { isLoggedIn } = require('../middlewares/authMiddleware');
 
-router.get('/all', skillController.getAllSkills);
-router.get('/', skillController.getSkillsForUser);
-router.post('/new', skillController.addSkill);
+router.get('/all',isLoggedIn, skillController.getAllSkills);
+router.get('/',isLoggedIn, skillController.getSkillsForUser);
+router.post('/new',isLoggedIn, skillController.addSkill);
 
 module.exports = router;
