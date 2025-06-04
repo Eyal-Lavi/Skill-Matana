@@ -10,8 +10,11 @@ const cookieParser = require('cookie-parser');
 const session =  require('express-session');
 const routes = require('./routes/index');
 const SequelizeStore = require('express-session-sequelize')(session.Store); 
-
+const xss = require('xss-clean');
+const helmet = require('helmet');
 app.use(cookieParser());
+app.use(xss());
+app.use(helmet());
 
 var sessionStore = new SequelizeStore({
   db: sequelize,
