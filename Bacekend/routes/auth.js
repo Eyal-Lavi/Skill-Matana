@@ -11,7 +11,6 @@ const {
 
 router.post('/login', validateLogin, handleValidationErrors, authController.login);
 router.post('/register',validateRegister, handleValidationErrors, authController.register);
-router.post('/login', authController.login);
-// router.post('/logout', authController.logout);
+router.post('/logout', authController.logout);
 
 module.exports = router;
