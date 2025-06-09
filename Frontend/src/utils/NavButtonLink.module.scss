@@ -1,0 +1,18 @@
+.navButtonLink {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #45a049;
+  }
+
+  &.active {
+    font-weight: bold;
+  }
+}

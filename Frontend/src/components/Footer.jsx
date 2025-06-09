@@ -1,7 +1,9 @@
 
 function Footer() {
   return (
-    <div>Footer</div>
+    <div style={{
+      backgroundColor:'red',
+    }}>Footer</div>
   )
 }
 

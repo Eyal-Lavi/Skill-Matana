@@ -5,7 +5,7 @@ import Home from "../pages/Home";
 
 const router = createBrowserRouter([
   {
-    element: <MainLayout />, // עטיפה קבועה
+    element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/dashboard", element: <Dashboard /> },

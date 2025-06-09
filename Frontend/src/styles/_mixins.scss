@@ -1,0 +1,16 @@
+@import './variables'; // בלי הסיומת .scss
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin main-content-style {
+  flex: 1;
+  padding: 20px;
+  background-color: #d60f0f;
+}
+
+@mixin button-link-style() {
+
+}
