@@ -3,7 +3,7 @@
 .container {
   padding-top: 20px;
   box-sizing: border-box;
-  @include mixins.flex-column; // כאן השינוי!
+  @include mixins.flex-column;
   min-height: 100vh;
 }
 
