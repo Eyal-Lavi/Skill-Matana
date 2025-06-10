@@ -1,4 +1,4 @@
-@import './variables'; // בלי הסיומת .scss
+@use './variables' as var;
 
 @mixin flex-column {
   display: flex;
@@ -8,9 +8,6 @@
 @mixin main-content-style {
   flex: 1;
   padding: 20px;
-  background-color: #d60f0f;
+  background-color: var.$primary-color;
 }
 
-@mixin button-link-style() {
-
-}

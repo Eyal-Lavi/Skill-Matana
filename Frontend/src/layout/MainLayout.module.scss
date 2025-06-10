@@ -1,9 +1,9 @@
-@import '../styles/mixins';
+@use '../styles/mixins' as mixins;
 
 .container {
   padding-top: 20px;
   box-sizing: border-box;
-  @include flex-column;
+  @include mixins.flex-column; // כאן השינוי!
   min-height: 100vh;
 }
 
