@@ -1,0 +1,11 @@
+.div{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    img{
+        max-width: 50px;
+        max-height: 50px;
+        image-resolution: inherit;
+        border-radius: 50%;
+    }    
+}

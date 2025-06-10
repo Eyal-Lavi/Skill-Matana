@@ -1,0 +1,9 @@
+@use '../styles/variables' as var;
+
+.link{
+    text-decoration: none;
+    &:hover{
+        text-decoration: underline;
+        color: var.$default-color;
+    }
+}
