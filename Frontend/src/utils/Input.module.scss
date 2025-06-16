@@ -1,0 +1,29 @@
+.inputWrapper {
+  width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #374151; // Tailwind's gray-700
+  margin-bottom: 0.25rem;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db; // Tailwind's gray-300
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6; // Tailwind's blue-500
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  }
+}

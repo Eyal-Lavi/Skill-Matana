@@ -24,7 +24,7 @@ export default function Navbar() {
         <div className={style.buttonsContainer}>
           <StyledNavLink to="/">Home</StyledNavLink>
           <StyledNavLink to="/dashboard">Dashboard</StyledNavLink>
-          <NavButtonLink to="/login">Login</NavButtonLink>
+          <NavButtonLink to="/auth/login">Login</NavButtonLink>
         </div>
 
         <FontAwesomeIcon

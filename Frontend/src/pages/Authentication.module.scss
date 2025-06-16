@@ -1,0 +1,13 @@
+.loginContainer {
+  display: flex;
+  flex-direction: row;
+  height: 800px;
+  width: 100%;
+}
+
+.registerContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  height: 800px;
+  width: 100%;
+}

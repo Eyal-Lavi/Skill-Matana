@@ -1,10 +1,7 @@
-const Home = () => {
+function Home() {
   return (
-    <div>
-      <h1>ברוך הבא!</h1>
-      <p>זה העמוד הראשי.</p>
-    </div>
-  );
-};
+    <div>Home</div>
+  )
+}
 
-export default Home;
+export default Home

@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  height: 800px;
+  width: 100%;
+}
+
+.rightSide {
+  background-color: #d2ce4a;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  text-align: center;
+  color: #ffffff;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.text {
+  text-align: center;
+  color: #ffffff;
+  font-size: 1rem;
+}
