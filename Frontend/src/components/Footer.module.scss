@@ -2,7 +2,7 @@
 .footer{
     box-sizing: border-box;
     height: 200px;
-    background-color: var.$default-color;
+    background-color: var.$color-surface;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -10,7 +10,7 @@
 .div{
     box-sizing: border-box;
     height: 200px;
-    background-color: var.$default-color;
+    background-color: transparent;
     display: flex;
     flex-direction: row;
     gap: 50px;

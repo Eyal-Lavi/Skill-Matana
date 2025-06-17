@@ -2,19 +2,19 @@
 
 .navLink {
   text-decoration: none;
-  color: var.$default-color;
+  color: var.$color-primary;
   font-size: 1.2rem;
   padding: 10px 15px;
   border-radius: 5px;
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
-    background-color: #f0f0f0;
-    color: var.$hover-color;
+    background-color: var.$color-hover-overlay;
+    color: var.$color-primary;
   }
 
   &.active {
     font-weight: bold;
-    color: var.$hover-color;
+    color: var.$color-primary;
   }
 }
