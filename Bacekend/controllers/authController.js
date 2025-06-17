@@ -63,7 +63,10 @@ const login = async (request, response, next) => {
 ``
         
         request.session.save(() => {
-            response.redirect(200, '/dashboard');
+           response.status(200).json({
+                message: "Login successful",
+                user: { profilePicture: null , ...request.session.user}
+            });
         });
 
     } catch (e) {

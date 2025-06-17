@@ -2,10 +2,13 @@ import { useState } from "react";
 import Input from "../../utils/Input";
 import styles from "./LoginForm.module.scss";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {authActions} from './AuthSlices';
+import authAPI from "./AuthAPI";
 export default function LoginForm() {
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
-        username: "",
-        email: "",
+        usernameOrMail: "",
         password: "",
     });
 
@@ -16,20 +19,33 @@ export default function LoginForm() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Submit logic
+        try{
+            const data = await authAPI.login({
+                usernameOrEmail: formData.usernameOrMail,
+                password: formData.password,
+            });
+            console.log("Login successful:", data);
+            dispatch(authActions.loginSuccess(data.user));
+            
+        }catch(error){
+            console.error("Login failed:", error);
+            // Handle error (e.g., show a notification)
+        }
+
+        
     };
     return (
         <form onSubmit={handleSubmit} className={styles.formContainer}>
             <h2 className={styles.title}>Login Form</h2>
             <div className={styles.inputContainer}>
                 <Input
-                    label="Username"
-                    name="username"
-                    value={formData.username}
+                    label="Username Or Mail"
+                    name="usernameOrMail"
+                    value={formData.usernameOrMail}
                     onChange={handleChange}
-                    placeholder="Enter your username"
+                    placeholder="Enter your username or mail"
                     required
                 />
                 <Input

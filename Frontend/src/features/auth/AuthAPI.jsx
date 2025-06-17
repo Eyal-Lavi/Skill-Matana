@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api'; 
+const API_BASE_URL = 'http://localhost:3000'; 
 
 const authAPI = {
   login: async (credentials) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials, {
+        withCredentials: true
+      });
+      
       return response.data; 
     } catch (error) {
       console.error('Login error:', error.response?.data || error.message);

@@ -11,7 +11,7 @@ const { isAdmin , isLoggedIn } = require('../middlewares/authMiddleware');
 
 // Mount Routes
 router.use("/skills",isLoggedIn , skillRoutes);
-router.use("/", authRoutes);
+router.use("/auth", authRoutes);
 router.use("/admin", isAdmin,  adminRoutes);  
 
 module.exports = router;

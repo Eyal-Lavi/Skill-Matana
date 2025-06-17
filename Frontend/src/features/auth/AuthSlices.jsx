@@ -5,10 +5,11 @@ const initialState = {
   user: {
     id: null,
     username: null,
-    firstname: null,
-    lastname: null,
+    firstName: null,
+    lastName: null,
     email: null,
-    role: null,
+    permissions: null,
+    gender: null,
     profilePicture: null,
   }
 };
@@ -22,10 +23,11 @@ const authSlice = createSlice({
         state.user = {
             id: action.payload.id,
             username: action.payload.username,
-            firstname: action.payload.firstname,
-            lastname: action.payload.lastname,
+            firstName: action.payload.firstName,
+            lastName: action.payload.lastName,
             email: action.payload.email,
-            role: action.payload.role,
+            permissions: action.payload.permissions,
+            gender: action.payload.gender,
             profilePicture: action.payload.profilePicture,
         };
 
@@ -35,10 +37,11 @@ const authSlice = createSlice({
         state.user = {
             id: null,
             username: null,
-            firstname: null,
-            lastname: null,
+            firstName: null,
+            lastName: null,
             email: null,
-            role: null,
+            permissions: null,
+            gender: null,
             profilePicture: null,
         };
     },
