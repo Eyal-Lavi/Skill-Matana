@@ -1,6 +1,7 @@
+@use '../styles/variables' as var;
 nav.mainNav {
   display: flex;
-  background-color: white;
+  background-color: var.$color-surface;
   height: 102px;
   width: 98%;
   margin: 0 1%;
@@ -8,7 +9,7 @@ nav.mainNav {
   align-items: center;
   max-width: 2160px;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 5px var.$color-box-shadow;
 
   #welcomeSection {
     text-decoration: none;

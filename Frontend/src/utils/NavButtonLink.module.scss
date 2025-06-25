@@ -1,6 +1,7 @@
+@use '../styles/variables' as var;
 .navButtonLink {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var.$color-background-btn;
+  color: var.$color-text-inverse;
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 1rem;
@@ -9,7 +10,7 @@
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #45a049;
+    background-color: var.$color-background-btn-hover;
   }
 
   &.active {
