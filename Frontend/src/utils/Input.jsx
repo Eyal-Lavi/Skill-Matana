@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import styles from "./Input.module.scss";
 
-const Input = forwardRef(({ label, type = "text", name, placeholder, required, minLength, ...rest }, ref) => {
+const Input = forwardRef(({ label, type = "text", name, placeholder, required=false, minLength, error=null, ...rest}, ref) => {
   return (
     <div className={styles.inputWrapper}>
       {label && (
@@ -16,8 +16,9 @@ const Input = forwardRef(({ label, type = "text", name, placeholder, required, m
         minLength={minLength}
         ref={ref}
         {...rest}
-        className={styles.input}
+        className={`${styles.input} ${error ? styles.inputError : ''}`}
       />
+      {error && <p className={styles.error}>{error.message}</p>}
     </div>
   );
 });

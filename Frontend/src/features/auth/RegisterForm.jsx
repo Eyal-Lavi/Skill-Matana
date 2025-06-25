@@ -11,52 +11,77 @@ export default function RegisterForm() {
 
   const onSubmit = async (formData) => {
     try {
-      
       const data = await authAPI.register(formData);
-      console.log("Register successfuly", data);
-      navigate('/auth/login');
+      navigate("/auth/login");
     } catch (error) {
-      console.error("register failed:", error);
-      setError()
+      const res = error?.response?.data;
+  
+      if (res?.errors) {
+        res.errors.forEach((err) => {
+          if (err.type === "field") {
+            setError(err.field, {
+              type: "server",
+              message: err.message,
+            });
+          } else if (err.type === "global") {
+            setError("root.serverError", {
+              type: "server",
+              message: err.message,
+            });
+          }
+        });
+      }else{
+        setError("root.serverError",{
+          type:"server",
+          message:"Something went wrong. Please try again later."
+        });
+      }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
+    <form noValidate onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
       <h2 className={styles.title}>Register Form</h2>
 
       <div className={styles.inputContainer}>
         <Input
           label="Username"
           placeholder="Enter your username"
-          {...register("username")}
-          required
+          {...register("username" , {required : true , minLength:2})}
+          error={errors.username}
         />
         <Input
           label="Email"
           placeholder="Enter your email"
-          {...register("email")}
-          required
+          {...register("email" , {required : true ,
+            pattern: {
+              value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+            }
+          })}
+          error={errors.email}
         />
         <Input
           label="Password"
           type="password"
           placeholder="Enter your password"
-          {...register("password")}
-          required
-          minLength={8}
+          {...register("password" , {minLength: 8 , required : true,
+            pattern: {
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).+$/
+            }
+          })}
+          error={errors.password}
         />
         <Input
           label="First Name"
           placeholder="Enter your first name"
-          {...register("firstname")}
-          required
+          {...register("firstname" , {required : true , minLength:2})}
+          error={errors.firstname}
         />
         <Input
           label="Last Name"
           placeholder="Enter your last name"
-          {...register("lastname")}
-          required
+          {...register("lastname" , {required : true , minLength:2})}
+          error={errors.lastname}
         />
         <Select
           label="Gender"
@@ -64,10 +89,12 @@ export default function RegisterForm() {
             { value: "male", label: "Male" },
             { value: "female", label: "Female" }
           ]}
-          {...register("gender")}
-          required
+          {...register("gender" , {required : true})}
+          error={errors.gender}
         />
       </div>
+
+       {errors.root?.serverError && <p className={styles.error}>{errors.root.serverError.message}</p>}
 
       <button
         type="submit"
