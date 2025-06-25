@@ -23,7 +23,7 @@ var sessionStore = new SequelizeStore({
 });
 
 app.use(session({
-  secret: process.env.SEESION_SECRET_KEY,
+  secret: process.env.SESSION_SECRET_KEY,
   resave: false,
   saveUninitialized: false,
   store: sessionStore,

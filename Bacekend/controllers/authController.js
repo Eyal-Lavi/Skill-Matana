@@ -8,8 +8,22 @@ const {
         findUserByUsernameOrEmailWithPermissions
      } = require('../services/authService');
 
+const getSession = (req, res) => {
+  if (req.session.isLoggedIn && req.session.user) {
+    return res.status(200).json({
+      isAuthenticated: true,
+      user: req.session.user
+    });
+  } else {
+    return res.status(200).json({ isAuthenticated: false });
+  }
+};
+
 const logout = async (request, response, next) => {
     try {
+        console.log('request.session');
+        console.log(request.session);
+        
         if(!request.session.isLoggedIn) {
             return response.status(401).json({ message: "You are not logged in" });
         }
@@ -21,6 +35,8 @@ const logout = async (request, response, next) => {
             response.clearCookie('connect.sid'); // Clear the session cookie
             response.status(200).json({ message: "Logged out successfully" });
         });
+
+        // return response.status(200).json({ message: "Logged out successfully" });
 
     } catch (e) {
         console.error(e);
@@ -43,7 +59,7 @@ const login = async (request, response, next) => {
         const isMatchPassword = await ComperePasswords(user.password , existUser.password);
 
         if(!isMatchPassword){
-            return response.status(401).json({message:"invalid username or password"});      
+            return response.status(401).json({message:"Invalid username or password"});      
         }
         
         const permissions = existUser.Permissions.map(permission => ({id: permission.id ,  name: permission.name}) );
@@ -57,6 +73,7 @@ const login = async (request, response, next) => {
             username: existUser.username,
             firstName:existUser.firstName,
             lastName:existUser.lastName,
+            email: existUser.email,
             gender:existUser.gender,
             permissions: permissions,
         };
@@ -126,5 +143,6 @@ const register = async (request, response) => {
 module.exports = {
     register,
     login,
-    logout
+    logout,
+    getSession
 }
