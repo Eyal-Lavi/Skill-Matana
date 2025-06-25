@@ -8,10 +8,11 @@ const authAPI = {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials, {
         withCredentials: true
       });
-      
+  
       return response.data; 
     } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
+      console.error('Login error:', error.response?.data?.message || error.message);
+      console.log(error.response.data.message);
       throw error;
     }
   },
@@ -27,10 +28,27 @@ const authAPI = {
   },
 
   logout: async () => {
-    await axios.post(`${API_BASE_URL}/auth/logout`);
-
-    return true; // או תגובה מהשרת
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/logout`, null, {withCredentials: true});
+      console.log('response');
+      console.log(response);
+      
+      return response?.data?.message || response; 
+    } catch (error) {
+      console.error('Logout error:', error.response?.data?.message || error.message);
+      throw error;
+    }
   },
+
+  checkSession: async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/auth/session`, { withCredentials: true });
+      return response.data; 
+    } catch (error) {
+      console.error('Session check error:', error.response?.data?.message || error.message);
+      throw error;
+    }
+  }
 
 };
 

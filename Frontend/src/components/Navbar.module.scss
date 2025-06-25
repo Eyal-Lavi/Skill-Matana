@@ -54,6 +54,20 @@ nav.mainNav {
     align-items: center;
     font-size: 1.2rem;
   }
+  .logoutButton {
+    background-color: #f44336; // צבע אדום
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #d32f2f;
+    }
+  }
 
   @media (max-width: 991px) {
     .buttonsContainer {

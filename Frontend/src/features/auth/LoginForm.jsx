@@ -1,12 +1,16 @@
 import { useState } from "react";
 import Input from "../../utils/Input";
 import styles from "./LoginForm.module.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {authActions} from './AuthSlices';
 import authAPI from "./AuthAPI";
+
 export default function LoginForm() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [error, setError] = useState([]);
     const [formData, setFormData] = useState({
         usernameOrMail: "",
         password: "",
@@ -26,12 +30,12 @@ export default function LoginForm() {
                 usernameOrEmail: formData.usernameOrMail,
                 password: formData.password,
             });
-            console.log("Login successful:", data);
-            dispatch(authActions.loginSuccess(data.user));
-            
+            console.log("Login successful:");
+            dispatch(authActions.login(data.user));
+            navigate("/dashboard");
         }catch(error){
-            console.error("Login failed:", error);
-            // Handle error (e.g., show a notification)
+            const errorMessage = error.response?.data?.message;
+            setError(errorMessage || "Login failed");
         }
 
         
@@ -58,7 +62,7 @@ export default function LoginForm() {
                     required
                 />
             </div>
-
+            {error.length > 0 && <p className={styles.errorText}>{error}</p>}
             <button type="submit" className={styles.submitButton}>
                 Login
             </button>
