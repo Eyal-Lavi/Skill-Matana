@@ -50,9 +50,13 @@ export default function Navbar() {
 
         <div className={style.buttonsContainer}>
           <StyledNavLink to="/">Home</StyledNavLink>
-          {isAuthenticated && (
-            <StyledNavLink to="/dashboard">Dashboard</StyledNavLink>
-          )}
+          {
+            isAuthenticated && 
+            <>
+              <StyledNavLink to="/dashboard">Dashboard</StyledNavLink>
+              <StyledNavLink to="/profile">Profile</StyledNavLink>
+            </>
+          }
           {isAdmin && <StyledNavLink to="/admin">Admin Panel</StyledNavLink>}
           {isAuthenticated ? (
             <button onClick={handleLogout} className={style.logoutButton}>
