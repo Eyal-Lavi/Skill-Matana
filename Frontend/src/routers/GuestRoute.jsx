@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import {selectIsAuthenticated} from '../features/auth/AuthSelectors'
+import {selectIsAuthenticated} from "../features/auth/AuthSelectors";
+
 const GuestRoute = ({ children }) => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
 

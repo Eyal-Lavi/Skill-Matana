@@ -5,11 +5,13 @@ import Home from "../pages/Home";
 import Authentication from "../pages/Authentication";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
-import ProtectedRoute from "./ProtectedRoute";
 import GuestRoute from "./GuestRoute";
 import AdminRoute from "./AdminRoute";
 import AdminPanel from "../pages/AdminPanel";
 import Error from "../pages/Error";
+import ProtectedRoute from "./ProtectedRoute";
+import AuthenticatedRoute from "./AuthenticatedRoute";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +34,7 @@ const router = createBrowserRouter([
           {
             path: "register",
             element: (
-              <GuestRoute>
+              <GuestRoute >
                 <Register />
               </GuestRoute>
             ),
@@ -42,9 +44,17 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-          <ProtectedRoute>
+          <AuthenticatedRoute>
             <Dashboard />
-          </ProtectedRoute>
+          </AuthenticatedRoute>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <AuthenticatedRoute>
+            <Profile />
+          </AuthenticatedRoute>
         ),
       },
       {

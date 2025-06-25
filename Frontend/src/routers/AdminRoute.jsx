@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { selectIsAuthenticated,selectIsAdmin } from '../features/auth/authSelectors';
+import { selectIsAuthenticated, selectIsAdmin } from '../features/auth/AuthSelectors';
 
 const AdminRoute = ({ children }) => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
