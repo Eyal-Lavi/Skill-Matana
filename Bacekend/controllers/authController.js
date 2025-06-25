@@ -1,5 +1,5 @@
 const sequelize = require('../utils/database');
-const { addPermissionToUser } = require('../services/permissionService');
+const { addUserPermission } = require('../services/permissionService');
 const { 
         findUserByUsernameOrEmail,
         validateUserFields,
@@ -77,7 +77,7 @@ const login = async (request, response, next) => {
             gender:existUser.gender,
             permissions: permissions,
         };
-``
+        
         
         request.session.save(() => {
            response.status(200).json({
@@ -91,7 +91,7 @@ const login = async (request, response, next) => {
         next({ message: e.message });
     }
 }
-const register = async (request, response) => {
+const register = async (request, response , next) => {
     const transaction = await sequelize.sequelize.transaction();
 
     try {
@@ -128,7 +128,7 @@ const register = async (request, response) => {
             return response.status(500).json({ error: "User not found after creation" });
         }
 
-        await addPermissionToUser(newUser.id, 1, transaction);
+        await addUserPermission(newUser.id, 1, transaction);
 
         await transaction.commit();
         return response.status(201).json({ info: "Register confirmed" });

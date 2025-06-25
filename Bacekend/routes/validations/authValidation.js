@@ -11,10 +11,10 @@ const validateRegister = [
     .trim()
     .escape()
     .exists().withMessage('Gender is required')
-    .isEmpty().withMessage('Gender cannot be empty')
+    .notEmpty().withMessage('Gender cannot be empty')
     .custom((value, { req }) => {
       value = value.toLowerCase();
-      if(value !== 'male' || value !== 'female') {
+      if(value !== 'male' && value !== 'female') {
         return false;
       }
       return true;
@@ -24,21 +24,21 @@ const validateRegister = [
     .trim()
     .escape()
     .exists().withMessage('Username is required')
-    .isEmpty().withMessage('Username cannot be empty')
+    .notEmpty().withMessage('Username cannot be empty')
     .isLength({ min: 2 }).withMessage('Password must be at least 2 characters'),
 
   body('firstname')
     .trim()
     .escape()
     .exists().withMessage('Firstname is required')
-    .isEmpty().withMessage('Firstname cannot be empty')
+    .notEmpty().withMessage('Firstname cannot be empty')
     .isLength({ min: 2 }).withMessage('Firstname must be at least 2 characters'),
 
   body('lastname')
     .trim()
     .escape()
     .exists().withMessage('Lastname is required')
-    .isEmpty().withMessage('Lastname cannot be empty')
+    .notEmpty().withMessage('Lastname cannot be empty')
     .isLength({ min: 2 }).withMessage('Lastname must be at least 2 characters'),
 
   body('password')

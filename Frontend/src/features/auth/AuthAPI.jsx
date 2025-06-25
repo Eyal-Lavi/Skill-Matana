@@ -19,7 +19,9 @@ const authAPI = {
 
   register: async (userData) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/register`, userData);
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, userData , {
+        withCredentials: true
+      });
       return response.data;
     } catch (error) {
       console.error('Register error:', error.response?.data || error.message);

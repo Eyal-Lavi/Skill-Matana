@@ -46,3 +46,10 @@
         background-color: var.$color-background-btn-hover;
     }
 }
+.isSubmited{
+    background-color: var.$color-primary-light;
+    &:hover{
+        background-color: var.$color-primary-light;
+    }
+}
+  

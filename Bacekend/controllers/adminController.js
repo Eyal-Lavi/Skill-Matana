@@ -16,16 +16,18 @@ const addPermissionToDB = async (request, response, next) => {
 
 const addPermissionToUser= async (request , response , next) => {
     console.log("inside addPermissionToUser");
-    
+    const transaction = await sequelize.transaction();
     try{
-        const transaction = await sequelize.transaction();
+        
         const {userId, permissionId} = request.body;
         if (!userId || !permissionId){
             throw new Error('please enter userId and permissionId');
         }
         const newUserPermission = await addUserPermission(userId , permissionId , transaction);
+        await transaction.commit();
         response.status(201).json(newUserPermission);
     }catch(e){
+        await transaction.rollback();
         response.status(409).json({message:e.message});
     }
 }

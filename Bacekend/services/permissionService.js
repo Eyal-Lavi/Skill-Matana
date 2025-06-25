@@ -39,7 +39,6 @@ const addUserPermission = async (userId, permissionId, transaction) => {
         permissionId
     }, { transaction });
 
-    await transaction.commit();
     
     return {
         message: "Permission added successfully",
