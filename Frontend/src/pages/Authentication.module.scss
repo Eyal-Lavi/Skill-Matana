@@ -1,13 +1,40 @@
-.loginContainer {
+// @use '../styles/mixins' as mixins;
+@use '../styles/variables' as var;
+
+.loginContainer,
+.registerContainer {
   display: flex;
-  flex-direction: row;
-  height: 800px;
+  height: auto;
   width: 100%;
+  min-height: 800px;
+
+  @media (max-width: var.$breakpoint-mobile) {
+    flex-direction: column;
+    min-height: auto;
+  }
+}
+
+.infoPanelWrapper {
+  flex: 1;
+
+  @media (max-width: var.$breakpoint-mobile) {
+    display: none;
+  }
+}
+
+.loginContainer {
+  flex-direction: row;
+
+  @media (max-width: var.$breakpoint-mobile) {
+    flex-direction: column;
+  }
 }
 
 .registerContainer {
-  display: flex;
   flex-direction: row-reverse;
-  height: 800px;
-  width: 100%;
+
+  @media (max-width: var.$breakpoint-mobile) {
+    flex-direction: column;
+  }
 }
+

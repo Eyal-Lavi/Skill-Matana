@@ -1,0 +1,157 @@
+@use '../styles/variables' as var;
+@use "sass:color";
+
+.home {
+  padding: 2rem;
+  background-color: var.$color-background;
+  color: var.$color-text-primary;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+
+  @media (min-width: var.$breakpoint-mobile) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    gap: 2rem;
+  }
+
+  &Content {
+    max-width: 100%;
+
+    @media (min-width: var.$breakpoint-mobile) {
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var.$color-primary-dark;
+
+      @media (min-width: var.$breakpoint-mobile) {
+        font-size: 2.5rem;
+      }
+    }
+
+    p {
+      font-size: 1rem;
+      color: var.$color-text-secondary;
+      margin-bottom: 1.5rem;
+
+      @media (min-width: var.$breakpoint-mobile) {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  &Buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    @media (min-width: var.$breakpoint-mobile) {
+      justify-content: flex-start;
+      gap: 1rem;
+    }
+  }
+
+  &Image {
+    max-width: 100%;
+    height: auto;
+
+    @media (min-width: var.$breakpoint-mobile) {
+      max-width: 400px;
+    }
+  }
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+  display: inline-block;
+  text-align: center;
+}
+
+.primaryButton {
+  background-color: var.$color-primary;
+
+  &:hover {
+    background-color: var.$color-background-btn-hover;
+  }
+}
+
+.secondaryButton {
+  background-color: var.$color-accent;
+
+  &:hover {
+    background-color: color.adjust(var.$color-accent, $lightness: -10%);
+  }
+}
+
+.steps {
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var.$color-primary;
+
+    @media (min-width: var.$breakpoint-mobile) {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+  }
+
+  .stepList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+
+    @media (min-width: var.$breakpoint-mobile) {
+      flex-direction: row;
+      justify-content: space-around;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+  }
+
+  .step {
+    background-color: var.$color-surface;
+    box-shadow: 0 2px 5px var.$color-box-shadow;
+    border-radius: 10px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+
+    h3 {
+      font-size: 1.2rem;
+      color: var.$color-primary-dark;
+      margin-bottom: 0.5rem;
+
+      @media (min-width: var.$breakpoint-mobile) {
+        font-size: 1.4rem;
+      }
+    }
+
+    p {
+      color: var.$color-text-secondary;
+      font-size: 0.95rem;
+
+      @media (min-width: var.$breakpoint-mobile) {
+        font-size: 1rem;
+      }
+    }
+  }
+}
