@@ -13,6 +13,7 @@ import {
 } from "../features/auth/authSelectors";
 import authAPI from "../features/auth/AuthAPI";
 import { authActions } from "../features/auth/AuthSlices";
+import Logo from "../utils/Logo";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -23,10 +24,12 @@ export default function Navbar() {
   const isAdmin = useSelector(selectIsAdmin);
   const user = useSelector(selectUser);
 
-  const toggleDropDown = () => {
+  const toggleDropDown = (value) => {
     setDropDownStatus((prevStatus) => !prevStatus);
   };
-
+  const handleNavClick = () => {
+    setDropDownStatus(false);
+  };
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
@@ -43,21 +46,19 @@ export default function Navbar() {
     <nav className={style.mainNav}>
       <div className={style.wrapper}>
         <div className={style.logoContainer}>
-          <NavLink className={style.logoLink} to="/">
-            Skill Matana
-          </NavLink>
+          <Logo size="large" />
         </div>
 
         <div className={style.buttonsContainer}>
-          <StyledNavLink to="/">Home</StyledNavLink>
+          <StyledNavLink onClick={handleNavClick} to="/">Home</StyledNavLink>
           {
             isAuthenticated && 
             <>
-              <StyledNavLink to="/dashboard">Dashboard</StyledNavLink>
-              <StyledNavLink to="/profile">Profile</StyledNavLink>
+              <StyledNavLink onClick={handleNavClick} to="/dashboard">Dashboard</StyledNavLink>
+              <StyledNavLink onClick={handleNavClick} to="/profile">Profile</StyledNavLink>
             </>
           }
-          {isAdmin && <StyledNavLink to="/admin">Admin Panel</StyledNavLink>}
+          {isAdmin && <StyledNavLink onClick={handleNavClick} to="/admin">Admin Panel</StyledNavLink>}
           {isAuthenticated ? (
             <button onClick={handleLogout} className={style.logoutButton}>
               Logout
@@ -73,6 +74,27 @@ export default function Navbar() {
           icon={!dropDownStatus ? faBars : faXmark}
           size="2x"
         />
+
+        {dropDownStatus && (
+  <div className={style.mobileMenu}>
+    <StyledNavLink onClick={handleNavClick} to="/">Home</StyledNavLink>
+    {isAuthenticated && (
+      <>
+        <StyledNavLink onClick={handleNavClick} to="/dashboard">Dashboard</StyledNavLink>
+        <StyledNavLink onClick={handleNavClick} to="/profile">Profile</StyledNavLink>
+      </>
+    )}
+    {isAdmin && <StyledNavLink onClick={handleNavClick} to="/admin">Admin Panel</StyledNavLink>}
+    {isAuthenticated ? (
+      <button onClick={handleLogout} className={style.logoutButton}>
+        Logout
+      </button>
+    ) : (
+      <NavButtonLink onClick={handleNavClick} to="/auth/login">Login</NavButtonLink>
+    )}
+  </div>
+)}
+
       </div>
     </nav>
   );

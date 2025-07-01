@@ -80,3 +80,38 @@ nav.mainNav {
     }
   }
 }
+
+.mobileMenu {
+  display: none;
+
+  @media (max-width: 991px) {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100px;
+    right: 1rem;
+    background-color: white;
+    padding: 1rem;
+    border: 1px solid var.$color-border;
+    border-radius: 10px;
+    gap: 1rem;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    // width: 200px;
+    width: 200px;
+
+    a,
+    button {
+      font-size: 1.1rem;
+      text-align: left;
+      padding: 0.5rem;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: var.$color-error;
+      cursor: pointer;
+    }
+  }
+}
