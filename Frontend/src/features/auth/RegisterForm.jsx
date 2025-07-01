@@ -4,6 +4,7 @@ import Select from "../../utils/Select";
 import styles from "./RegisterForm.module.scss";
 import { Link, useNavigate } from "react-router-dom";
 import authAPI from "./AuthAPI";
+import Logo from "../../utils/Logo";
 
 export default function RegisterForm() {
   const { register, handleSubmit , setError , formState: {errors, isSubmitting } } = useForm();
@@ -86,8 +87,7 @@ export default function RegisterForm() {
         Forgot your password?{" "}
         <a href="/reset-password" className={styles.link}>Reset it</a>
       </p>
-
-      <img src="https://shorturl.at/AO2SW" alt="logo" style={{ height: "120", width: "120px" }} />
+      <Logo size="xl-large" link={false}/>
     </form>
   );
 }

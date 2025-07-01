@@ -1,10 +1,7 @@
 @use '../../styles/variables' as var;
 .formContainer {
-    min-width: 500px;
+    max-width: 500px;
     min-height: 500px;
-    // max-width: 700px;
-    // background-color: transparent;
-    margin: auto;
     background: var.$color-surface;
     border-radius: 1.5rem;
     box-shadow: 0 4px 10px var.$color-box-shadow;
@@ -14,6 +11,10 @@
     align-items: center;
     padding: 1rem;
 
+    @media (min-width: var.$breakpoint-mobile) {
+      width: 100%;
+      margin: auto;
+    }
 }
 
 .title {
