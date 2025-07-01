@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { authActions } from './AuthSlices';
 import authAPI from "./AuthAPI";
 import { useForm } from "react-hook-form";
+import Logo from "../../utils/Logo";
 
 export default function LoginForm() {
     const { register, handleSubmit, formState: { isSubmitting } } = useForm();
@@ -59,8 +60,7 @@ export default function LoginForm() {
                     Reset it
                 </a>
             </p>
-
-            <img src="https://shorturl.at/AO2SW" alt="logo" style={{ height: "120", width: "120px" }} />
+          <Logo size="xl-large" link={false}/>
         </form>
     )
 }
