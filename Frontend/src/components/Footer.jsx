@@ -1,6 +1,8 @@
 import style from './Footer.module.scss'
 import FooterLogo from './FooterLogo'
 import FooterSection from './FooterSection'
+import Logo from '../utils/Logo';
+
 function Footer() {
   return (
     <footer className={style.footer}>
@@ -11,10 +13,7 @@ function Footer() {
            <FooterSection/>
       </div>
       <div className={style.div}>
-          <FooterLogo src={'https://shorturl.at/AO2SW'} alt={'logo'}/>
-          <FooterLogo src={'https://shorturl.at/AO2SW'} alt={'logo'}/>
-          <FooterLogo src={'https://shorturl.at/AO2SW'} alt={'logo'}/>
-          <FooterLogo src={'https://shorturl.at/AO2SW'} alt={'logo'}/>
+          <Logo size={'large'} link={false}/> 
       </div>
     </footer>
   )
