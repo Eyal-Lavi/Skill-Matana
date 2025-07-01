@@ -3,8 +3,18 @@ import styles from "./Error.module.scss";
 
 function Error() {
   const error = useRouteError();
-  const status = error?.status || 404;
-  const message = error?.statusText || "Sorry, the page you're looking for doesn't exist.";
+  console.error("Caught error from router:", error);
+
+  let status = 500;
+  let message = "An unexpected error occurred.";
+
+  if (error?.status === 404) {
+    status = 404;
+    message = error.statusText || "Page not found.";
+  } else if (error?.message) {
+    message = error.message;
+  }
+
 
   return (
     <div className={styles.errorPage}>
