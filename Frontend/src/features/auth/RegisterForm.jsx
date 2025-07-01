@@ -7,7 +7,7 @@ import authAPI from "./AuthAPI";
 import Logo from "../../utils/Logo";
 
 export default function RegisterForm() {
-  const { register, handleSubmit , setError , formState: {errors, isSubmitting } } = useForm();
+  const { register, handleSubmit , setError , formState: {errors, isSubmitting } } = useForm({mode:'onTouched'});
   const navigate = useNavigate();
 
   const onSubmit = async (formData) => {
@@ -16,7 +16,7 @@ export default function RegisterForm() {
       navigate("/auth/login");
     } catch (error) {
       const res = error?.response?.data;
-  
+
       if (res?.errors) {
         res.errors.forEach((err) => {
           if (err.type === "field") {
@@ -48,15 +48,19 @@ export default function RegisterForm() {
         <Input
           label="Username"
           placeholder="Enter your username"
-          {...register("username" , {required : true , minLength:2})}
+          {...register("username" , {required : "Username is required" , minLength:{
+            value:2,
+            message:"Username must be at least 2 characters"
+          }})}
           error={errors.username}
         />
         <Input
           label="Email"
           placeholder="Enter your email"
-          {...register("email" , {required : true ,
+          {...register("email" , {required : "Email is required" ,
             pattern: {
               value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+              message:"Invalid email format"
             }
           })}
           error={errors.email}
@@ -65,9 +69,13 @@ export default function RegisterForm() {
           label="Password"
           type="password"
           placeholder="Enter your password"
-          {...register("password" , {minLength: 8 , required : true,
+          {...register("password" , {minLength: {
+            value:8,
+            message:"Password must be at least 8 characters long"
+          } , required : "Password is required",
             pattern: {
-              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).+$/
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).+$/,
+              message:"Password must contain at least one uppercase letter, one lowercase letter, and one special character",
             }
           })}
           error={errors.password}
@@ -75,13 +83,19 @@ export default function RegisterForm() {
         <Input
           label="First Name"
           placeholder="Enter your first name"
-          {...register("firstname" , {required : true , minLength:2})}
+          {...register("firstname" , {required : "First name is required" , minLength:{
+            value:2,
+            message:"First name must be at least 2 characters"
+          }})}
           error={errors.firstname}
         />
         <Input
           label="Last Name"
           placeholder="Enter your last name"
-          {...register("lastname" , {required : true , minLength:2})}
+          {...register("lastname" , {required : "last name is required" , minLength:{
+            value:2,
+            message:"Last name must be at least 2 characters"
+          }})}
           error={errors.lastname}
         />
         <Select
@@ -90,7 +104,7 @@ export default function RegisterForm() {
             { value: "male", label: "Male" },
             { value: "female", label: "Female" }
           ]}
-          {...register("gender" , {required : true})}
+          {...register("gender" , {required : "Gender is required"})}
           error={errors.gender}
         />
       </div>
