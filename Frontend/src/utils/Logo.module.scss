@@ -1,0 +1,28 @@
+.logoImage {
+  object-fit: contain;
+}
+
+.small {
+  height: 40px;
+}
+
+.medium {
+  height: 60px;
+}
+
+.large {
+  height: 80px;
+}
+
+.xl-large {
+  height: 100px;
+}
+
+.logoLink {
+  display: inline-block;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+}
