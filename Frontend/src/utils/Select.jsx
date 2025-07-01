@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import style from "./Input.module.scss";
 
-const Select = forwardRef(({ label, name, options = [], required = false, ...rest }, ref) => {
+const Select = forwardRef(({ label, name, options = [], required = false,error = null, ...rest }, ref) => {
   return (
     <div className={style.inputWrapper}>
       {label && <label htmlFor={name} className={style.label}>{label}</label>}
@@ -10,7 +10,7 @@ const Select = forwardRef(({ label, name, options = [], required = false, ...res
         name={name}
         ref={ref}
         required={required}
-        className={style.input}
+        className={`${style.input} ${error ? style.inputError : ''}`}
         {...rest}
       >
         <option value='' disabled>Select</option>
@@ -20,6 +20,7 @@ const Select = forwardRef(({ label, name, options = [], required = false, ...res
           </option>
         ))}
       </select>
+      {error && <p>{error.message}</p>}
     </div>
   );
 });

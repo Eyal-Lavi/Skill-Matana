@@ -91,54 +91,89 @@ const login = async (request, response, next) => {
         next({ message: e.message });
     }
 }
-const register = async (request, response , next) => {
+const register = async (request, response, next) => {
     const transaction = await sequelize.sequelize.transaction();
-
+  
     try {
-        const user = request.body;
-
-        const missingField = validateUserFields(user);
-
-        if (missingField) {
-            await transaction.rollback();
-            return response.status(400).json({ error: `${missingField} is required` });
-        }
-
-        const userByUsername = await findUserByUsernameOrEmail(user.username, transaction);
-        const userByEmail =  await findUserByUsernameOrEmail(user.email, transaction);
-
-        const existUser = userByUsername || userByEmail;
-
-        if (existUser) {
-            await transaction.rollback();
-            return response.status(400).json({
-                error: {
-                    field: `${userByUsername ? 'Username' : ''} ${ userByUsername && userByEmail ? 'And' : '' } ${userByEmail ? 'Email' : ''}`.trim(),
-                    info: "Already exists"
-                }
-            });
-        }
-
-        await createUser(user, transaction);
-
-        const newUser = await findUserByUsernameOrEmail(user.username, transaction);
-
-        if (!newUser) {
-            await transaction.rollback();
-            return response.status(500).json({ error: "User not found after creation" });
-        }
-
-        await addUserPermission(newUser.id, 1, transaction);
-
-        await transaction.commit();
-        return response.status(201).json({ info: "Register confirmed" });
-
-    } catch (e) {
-        console.error("Register error:", e);
+      const user = request.body;
+  
+      const missingField = validateUserFields(user);
+      if (missingField) {
         await transaction.rollback();
-        next({ message: e.message });
+        return response.status(400).json({
+          errors: [
+            {
+              type: "field",
+              field: missingField.toLowerCase(),
+              message: `${missingField} is required`
+            }
+          ]
+        });
+      }
+  
+      const userByUsername = await findUserByUsernameOrEmail(user.username, transaction);
+      const userByEmail = await findUserByUsernameOrEmail(user.email, transaction);
+  
+      const errors = [];
+  
+      if (userByUsername) {
+        errors.push({
+          type: "field",
+          field: "username",
+          message: "Username already exists"
+        });
+      }
+  
+      if (userByEmail) {
+        errors.push({
+          type: "field",
+          field: "email",
+          message: "Email already exists"
+        });
+      }
+  
+      if (errors.length > 0) {
+        await transaction.rollback();
+        return response.status(400).json({ errors });
+      }
+  
+      await createUser(user, transaction);
+  
+      const newUser = await findUserByUsernameOrEmail(user.username, transaction);
+      if (!newUser) {
+        await transaction.rollback();
+        return response.status(500).json({
+          errors: [
+            {
+              type: "global",
+              field: "general",
+              message: "User not found after creation"
+            }
+          ]
+        });
+      }
+
+      await addUserPermission(newUser.id, 1, transaction);
+  
+      await transaction.commit();
+      return response.status(201).json({ info: "Register confirmed" });
+  
+    } catch (e) {
+      console.error("Register error:", e);
+      await transaction.rollback();
+  
+      return response.status(500).json({
+        errors: [
+          {
+            type: "global",
+            field: "general",
+            message: "Internal server error"
+          }
+        ]
+      });
     }
-};
+  };
+  
 
 module.exports = {
     register,
