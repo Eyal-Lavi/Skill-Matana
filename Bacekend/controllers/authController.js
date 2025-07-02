@@ -5,8 +5,45 @@ const {
         validateUserFields,
         ComperePasswords,
         createUser,
-        findUserByUsernameOrEmailWithPermissions
+        findUserByUsernameOrEmailWithPermissions,
+        updateUserById
      } = require('../services/authService');
+
+const updateUserProfile = async (req, res) => {
+  const { id, firstname, lastname, email, gender } = req.body;
+
+  if (!id || !firstname || !lastname || !email) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const transaction = await sequelize.sequelize.transaction();
+  try {
+    const updatedUser = await updateUserById(id, {
+      firstName: firstname,
+      lastName: lastname,
+      email,
+      gender
+    }, transaction);
+
+    await transaction.commit();
+
+    if (req.session.user?.id === updatedUser.id) {
+      req.session.user = {
+        ...req.session.user,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        gender: updatedUser.gender
+      };
+    }
+
+    return res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    await transaction.rollback();
+    console.error("Profile update error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 const getSession = (req, res) => {
   if (req.session.isLoggedIn && req.session.user) {
@@ -179,5 +216,6 @@ module.exports = {
     register,
     login,
     logout,
+    updateUserProfile,
     getSession
 }

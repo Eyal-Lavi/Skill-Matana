@@ -40,6 +40,28 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
     return user;
 }
 
+const updateUserById = async (userId, updates, transaction) => {
+    if (!transaction) throw new Error("Transaction is required");
+
+    const user = await User.findByPk(userId, { transaction });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    // רק העדכון הרלוונטי לשדות המותרים
+    const allowedFields = ['firstName', 'lastName', 'email', 'gender'];
+    
+    for (const field of allowedFields) {
+        if (updates[field] !== undefined) {
+            user[field] = updates[field];
+        }
+    }
+
+    await user.save({ transaction });
+    return user;
+};
+
 const findUserByUsernameOrEmail = async (identifier, transaction) => {
     if (!identifier) throw new Error("Username or email is required");
     if (!transaction) throw new Error("Transaction is required");
@@ -84,5 +106,6 @@ module.exports = {
     ComperePasswords,
     findUserByUsernameOrEmailWithPermissions,
     findUserByUsernameOrEmail,
-    createUser
+    createUser,
+    updateUserById
 };

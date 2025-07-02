@@ -1,4 +1,7 @@
 @use '../styles/variables' as var;
+.inputWrapperHidden {
+  display: none;
+}
 .inputWrapper {
   width: 100%;
   margin-bottom: 1rem;

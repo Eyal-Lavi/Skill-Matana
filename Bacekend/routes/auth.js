@@ -4,13 +4,15 @@ const {handleValidationErrors} = require('./validations/validation');
 const authController = require('../controllers/authController');
 const { 
         validateLogin,
-        validateRegister
+        validateRegister,
+        validateUpdateProfile
       } = require('./validations/authValidation');
 
 
 
 router.post('/login', validateLogin, handleValidationErrors, authController.login);
 router.post('/register',validateRegister, handleValidationErrors, authController.register);
+router.post('/update-profile',validateUpdateProfile, handleValidationErrors, authController.updateUserProfile);
 router.post('/logout', authController.logout);
 router.get('/session', authController.getSession);
 
