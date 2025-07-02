@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { selectUser } from "../features/auth/AuthSelectors";
 import { authActions } from '../features/auth/AuthSlices'
 import styles from "./Profile.module.scss";
-import Input from "../utils/Input";
-import Select from "../utils/Select";
+import Input from "../utils/components/Input";
+import Select from "../utils/components/Select";
 import authAPI from "../features/auth/AuthAPI";
 
 function Profile() {

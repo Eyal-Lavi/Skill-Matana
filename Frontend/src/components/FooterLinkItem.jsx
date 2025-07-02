@@ -1,4 +1,4 @@
-import StyledLink from '../utils/StyledLink'
+import StyledLink from '../utils/components/StyledLink';
 
 function FooterLinkItem({to , children}) {
   return (

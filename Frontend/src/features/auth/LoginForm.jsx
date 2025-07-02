@@ -1,12 +1,13 @@
 import { useState } from "react";
-import Input from "../../utils/Input";
+import Input from "../../utils/components/Input";
 import styles from "./LoginForm.module.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authActions } from './AuthSlices';
 import authAPI from "./AuthAPI";
 import { useForm } from "react-hook-form";
-import Logo from "../../utils/Logo";
+import Logo from "../../utils/components/Logo";
+import { trimFormData } from "../../utils/helpers/trimFromData";
 
 export default function LoginForm() {
     const { register, handleSubmit, formState: { isSubmitting } } = useForm();
@@ -16,7 +17,8 @@ export default function LoginForm() {
 
     const onSubmit = async (formData) => {
           try {
-            const data = await authAPI.login(formData);
+            const trimedData = trimFormData(formData);
+            const data = await authAPI.login(trimedData);
             console.log("Login successful:");
             dispatch(authActions.login(data.user));
             navigate("/dashboard");

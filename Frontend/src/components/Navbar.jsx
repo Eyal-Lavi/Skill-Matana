@@ -2,8 +2,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import NavButtonLink from "../utils/NavButtonLink";
-import StyledNavLink from "../utils/StyledNavLink";
+import NavButtonLink from "../utils/components/NavButtonLink";
+import StyledNavLink from "../utils/components/StyledNavLink";
 import style from "./Navbar.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../features/auth/authSelectors";
 import authAPI from "../features/auth/AuthAPI";
 import { authActions } from "../features/auth/AuthSlices";
-import Logo from "../utils/Logo";
+import Logo from "../utils/components/Logo";
 
 export default function Navbar() {
   const dispatch = useDispatch();

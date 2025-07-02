@@ -26,6 +26,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET_KEY,
   resave: false,
   saveUninitialized: false,
+  rolling:true,
   store: sessionStore,
   cookie:{secure:false,
     expires: new Date(Date.now() + 360000)

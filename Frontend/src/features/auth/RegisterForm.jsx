@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
-import Input from "../../utils/Input";
-import Select from "../../utils/Select";
+import Input from "../../utils/components/Input";
+import Select from "../../utils/components/Select";
 import styles from "./RegisterForm.module.scss";
 import { Link, useNavigate } from "react-router-dom";
 import authAPI from "./AuthAPI";
-import Logo from "../../utils/Logo";
+import Logo from "../../utils/components/Logo";
+import { trimFormData } from "../../utils/helpers/trimFromData"; 
 
 export default function RegisterForm() {
   const { register, handleSubmit , setError , formState: {errors, isSubmitting } } = useForm({mode:'onTouched'});
@@ -12,7 +13,8 @@ export default function RegisterForm() {
 
   const onSubmit = async (formData) => {
     try {
-      const data = await authAPI.register(formData);
+      const trimedData = trimFormData(formData);
+      const data = await authAPI.register(trimedData);
       navigate("/auth/login");
     } catch (error) {
       const res = error?.response?.data;

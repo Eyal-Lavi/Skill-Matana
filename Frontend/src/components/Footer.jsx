@@ -1,7 +1,6 @@
-import style from './Footer.module.scss'
-import FooterLogo from './FooterLogo'
-import FooterSection from './FooterSection'
-import Logo from '../utils/Logo';
+import style from './Footer.module.scss';
+import FooterSection from './FooterSection';
+import Logo from '../utils/components/Logo';
 
 function Footer() {
   return (
