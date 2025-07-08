@@ -1,18 +1,17 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../utils/database');
 const User = require('./user');
-// const User = require('./user');
+const ImageType = require('./imageType');
 
 const UserImage = sequelize.define('UserImage', {
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        // autoIncrement: true,
         field: 'user_id',
-        // references: {
-        //     model: User, 
-        //     key: 'id'
-        // },
+        references: {
+            model: User, 
+            key: 'id'
+        },
         onDelete: 'CASCADE',
         primaryKey: true
     },
@@ -22,30 +21,21 @@ const UserImage = sequelize.define('UserImage', {
         field: 'url',
         primaryKey: true
     },
+    typeId:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        field:'type_id',
+        references:{
+            model:ImageType,
+            key:'id'
+        }
+    }
 }
     , {
         tableName: 'user_image',
         timestamps: false,
-        // associate: (models) => {
-        //     UserImage.belongsTo(models.User, {
-        //         foreignKey: 'userId',
-        //         as: 'user'
-        //     });
-        // }
     }
 );
 
-// UserImage.belongsTo(User, {
-//     foreignKey: 'userId',
-//     as: 'user'
-// });
-
-
-// User.belongsToMany(UserImage, {  
-//     foreignKey: 'userId', 
-// });
-// UserImage.hasOne(User, {  
-//     foreignKey: 'id', 
-// });
 
 module.exports = UserImage;
