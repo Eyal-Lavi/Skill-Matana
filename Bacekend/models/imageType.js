@@ -6,7 +6,7 @@ const ImageType = sequelize.define('ImageType',{
         allowNull:false,
         type: DataTypes.INTEGER,
         primaryKey:true,
-        autoIncrement:true,
+        autoIncrement:false,
     },
     name:{
         type: DataTypes.STRING,

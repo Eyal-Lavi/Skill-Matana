@@ -40,7 +40,7 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
                 attributes:['url'],
                 as: 'Images',
                 // through:{attributes:[]}
-            }
+            },
         ],
         transaction
     });
