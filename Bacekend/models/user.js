@@ -1,8 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../utils/database.js');
 const bcrypt = require('bcrypt');
-const Skill = require('./skill.js');
-const UserImage = require('./userImage.js');
 
 const User = sequelize.define('User', {
     id: {

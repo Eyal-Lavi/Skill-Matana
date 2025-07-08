@@ -37,7 +37,7 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
             },
             {
                 model:UserImage,
-                attributes:['url'],
+                attributes:['url','typeId'],
                 as: 'Images',
                 // through:{attributes:[]}
             },

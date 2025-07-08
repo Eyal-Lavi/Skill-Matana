@@ -43,7 +43,6 @@ module.exports = (models) => {
         foreignKey: 'permissionId'// in UserPermission the foreignKey that belongs to Permission is 'permissionId'
     });
 
-    // 4. User -> Status (סטטוס של המשתמש)
     User.belongsTo(Status, {
         foreignKey: 'status',
         // as: 'statusInfo',

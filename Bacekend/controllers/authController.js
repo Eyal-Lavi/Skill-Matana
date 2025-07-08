@@ -1,5 +1,6 @@
 const sequelize = require('../utils/database');
 const { addUserPermission } = require('../services/permissionService');
+const {uploadBase64Image} = require('../services/uploadService')
 const { 
         findUserByUsernameOrEmail,
         validateUserFields,
@@ -9,10 +10,8 @@ const {
         updateUserById
      } = require('../services/authService');
 const UserImage = require('../models/userImage');
-
 const updateUserProfile = async (req, res) => {
-  const { id, firstname, lastname, email, gender } = req.body;
-  const profilePicture = req.file?.filename;
+  const { id, firstname, lastname, email, gender, profileImage } = req.body;
 
   if (!id || !firstname || !lastname || !email) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -24,27 +23,31 @@ const updateUserProfile = async (req, res) => {
       firstName: firstname,
       lastName: lastname,
       email,
-      gender
+      gender,
     }, transaction);
 
-    if (profilePicture) {
-      const imagePath = `/uploads/${profilePicture}`;
+    // העלאת תמונת פרופיל אם קיימת
+    if (profileImage) {
+      const result = await uploadBase64Image(profileImage, `${id}_profile`);
       await UserImage.upsert({
         userId: id,
-        url: imagePath
+        url: result.url,
+        typeId: 1, // 1 = profile
       }, { transaction });
     }
 
     await transaction.commit();
-
+    console.log("Good");
 
     const userWithImage = await updatedUser.reload({
-      include: { model: UserImage, as: 'images' }
+      include: { model: UserImage, as: 'Images' }
     });
-    
-    await updatedUser.save({ transaction });
+    console.log("Good2");
 
-    
+    const profileImg = userWithImage.Images.find(img => img.typeId === 1);
+    console.log("Good3");
+
+    // עדכון session אם מדובר במשתמש המחובר
     if (req.session.user?.id === userWithImage.id) {
       req.session.user = {
         ...req.session.user,
@@ -52,15 +55,16 @@ const updateUserProfile = async (req, res) => {
         lastName: userWithImage.lastName,
         email: userWithImage.email,
         gender: userWithImage.gender,
-        profilePicture: userWithImage.images?.[0]?.url || null
+        profilePicture: profileImg?.url || null
       };
     }
+    console.log("Good4");
 
     return res.status(200).json({
       message: "Profile updated successfully",
       user: {
         ...userWithImage.toJSON(),
-        profilePicture: userWithImage.image?.url || null
+        profilePicture: profileImg?.url || null
       }
     });
   } catch (error) {
@@ -71,6 +75,7 @@ const updateUserProfile = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const getSession = (req, res) => {
   if (req.session.isLoggedIn && req.session.user) {
     return res.status(200).json({
@@ -128,11 +133,18 @@ const login = async (request, response, next) => {
     }));
     console.log(existUser);
     
-    const images = existUser.Images.map(image => ({
-      // id: image.id,
-      url: image.url
-    }));
-    console.log(images);
+    // const images = existUser.Images.map(image => ({
+    //   // id: image.id,
+    //   url: image.url
+    // }));
+    // console.log(images);
+    // const userWithImage = await updatedUser.reload({
+    //   include: { model: UserImage, as: 'Images' }
+    // });
+    console.log("Good2");
+
+    const profileImg = existUser.Images.find(img => img.typeId === 1);
+
 
     request.session.isLoggedIn = true;
     request.session.isAdmin = permissions.some(p => p.id === 99);
@@ -144,7 +156,7 @@ const login = async (request, response, next) => {
       email: existUser.email,
       gender: existUser.gender,
       permissions,
-      profilePicture: images || null // ✅ כאן התמונה
+      profilePicture: profileImg || null // ✅ כאן התמונה
     };
 
     await new Promise((resolve, reject) => {

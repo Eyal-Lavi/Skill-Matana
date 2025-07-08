@@ -33,7 +33,18 @@ const authSlice = createSlice({
 
     },
     updateFromSession(state, action) {
-      this.login(state, action);
+      // this.login(state, action);
+        state.isAuthenticated = true;
+        state.user = {
+            id: action.payload.id,
+            username: action.payload.username,
+            firstName: action.payload.firstName,
+            lastName: action.payload.lastName,
+            email: action.payload.email,
+            permissions: action.payload.permissions,
+            gender: action.payload.gender,
+            profilePicture: action.payload.profilePicture,
+        };
     },
     logout(state) {
         state.isAuthenticated = false;

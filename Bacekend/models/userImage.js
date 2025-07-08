@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../utils/database');
-const User = require('./user');
-const ImageType = require('./imageType');
 
 const UserImage = sequelize.define('UserImage', {
     userId: {
@@ -9,7 +7,7 @@ const UserImage = sequelize.define('UserImage', {
         allowNull: false,
         field: 'user_id',
         references: {
-            model: User, 
+            model: 'users',
             key: 'id'
         },
         onDelete: 'CASCADE',
@@ -26,7 +24,7 @@ const UserImage = sequelize.define('UserImage', {
         allowNull:false,
         field:'type_id',
         references:{
-            model:ImageType,
+            model:'image_type',
             key:'id'
         }
     }

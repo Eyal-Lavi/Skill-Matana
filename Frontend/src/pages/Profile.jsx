@@ -7,7 +7,6 @@ import styles from "./Profile.module.scss";
 import Input from "../utils/components/Input";
 import Select from "../utils/components/Select";
 import authAPI from "../features/auth/AuthAPI";
-const apiUrl = import.meta.env.VITE_API_URL;
 
 function Profile() {
   const dispatch = useDispatch();
@@ -27,27 +26,39 @@ function Profile() {
     },
   });
 
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
   const onSubmit = async (formValues) => {
     try {
-      const formData = new FormData();
-      formData.append("id", formValues.id);
-      formData.append("username", formValues.username);
-      formData.append("firstname", formValues.firstname);
-      formData.append("lastname", formValues.lastname);
-      formData.append("email", formValues.email);
-      formData.append("gender", formValues.gender);
+      const payload = {
+        id: formValues.id,
+        username: formValues.username,
+        firstname: formValues.firstname,
+        lastname: formValues.lastname,
+        email: formValues.email,
+        gender: formValues.gender,
+      };
 
-      // תומך בקובץ רק אם קיים
-      if (formValues.profilePicture?.[0]?.url) {
-        formData.append("profilePicture", formValues.profilePicture[0]);
+      const file = formValues.profilePicture?.[0];
+      if (file) {
+        const base64Image = await toBase64(file);
+        payload.profileImage = base64Image;
       }
 
-      const data = await authAPI.updateProfile(formData);
+      const data = await authAPI.updateProfile(payload); // שליחת JSON
       dispatch(authActions.updateFromSession(data.user));
-      reset(formValues); // אם צריך
+      reset(payload);
       setIsEditing(false);
       setError([]);
     } catch (error) {
+      console.log("Update profile error:", error);
+      
       const errorMessage = error.response?.data?.message;
       setError(errorMessage || "Update failed");
     }
@@ -71,7 +82,7 @@ function Profile() {
 
       <div className={styles.card}>
         {user.profilePicture ? (
-          <img src={apiUrl + user.profilePicture[0]?.url} alt="Profile" className={styles.profileImage} />
+          <img src={user.profilePicture.url} alt="Profile" className={styles.profileImage} />
         ) : (
           <p>No profile picture uploaded.</p>
         )}
