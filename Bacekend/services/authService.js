@@ -1,7 +1,9 @@
 const {Op} = require('sequelize');
-const User = require('../models/user');
-const Permission = require('../models/permission');
+const {User} = require('../models');
+const {Permission} = require('../models');
+
 const bcrypt = require('bcrypt');
+const {UserImage} = require('../models');
 
 const validateUserFields = (user) => {
     const required = ['username', 'email', 'password', 'firstname', 'lastname', 'gender'];
@@ -31,6 +33,12 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
             {
                 model:Permission,
                 attributes:['id' , 'name'],
+                // through:{attributes:[]}
+            },
+            {
+                model:UserImage,
+                attributes:['url'],
+                as: 'Images',
                 // through:{attributes:[]}
             }
         ],

@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
-const {sequelize} = require('../utils/database');
+const { sequelize } = require('../utils/database');
+const User = require('./user');
 // const User = require('./user');
 
 const UserImage = sequelize.define('UserImage', {
@@ -7,7 +8,7 @@ const UserImage = sequelize.define('UserImage', {
         type: DataTypes.INTEGER,
         allowNull: false,
         // autoIncrement: true,
-        field:'user_id',
+        field: 'user_id',
         // references: {
         //     model: User, 
         //     key: 'id'
@@ -18,15 +19,33 @@ const UserImage = sequelize.define('UserImage', {
     url: {
         type: DataTypes.STRING,
         allowNull: false,
-        field:'url',
+        field: 'url',
         primaryKey: true
     },
 }
-    ,{
+    , {
         tableName: 'user_image',
         timestamps: false,
+        // associate: (models) => {
+        //     UserImage.belongsTo(models.User, {
+        //         foreignKey: 'userId',
+        //         as: 'user'
+        //     });
+        // }
     }
 );
 
+// UserImage.belongsTo(User, {
+//     foreignKey: 'userId',
+//     as: 'user'
+// });
+
+
+// User.belongsToMany(UserImage, {  
+//     foreignKey: 'userId', 
+// });
+// UserImage.hasOne(User, {  
+//     foreignKey: 'id', 
+// });
 
 module.exports = UserImage;

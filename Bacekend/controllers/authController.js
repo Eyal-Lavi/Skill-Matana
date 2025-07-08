@@ -8,9 +8,56 @@ const {
         findUserByUsernameOrEmailWithPermissions,
         updateUserById
      } = require('../services/authService');
+const UserImage = require('../models/userImage');
 
+// const updateUserProfile = async (req, res) => {
+//   const { id, firstname, lastname, email, gender } = req.body;
+//   const profilePicture = req.file?.filename;
+
+//   if (!id || !firstname || !lastname || !email) {
+//     return res.status(400).json({ message: "Missing required fields" });
+//   }
+
+//   const transaction = await sequelize.sequelize.transaction();
+//   try {
+//     const updatedUser = await updateUserById(id, {
+//       firstName: firstname,
+//       lastName: lastname,
+//       email,
+//       gender
+//     }, transaction);
+
+//     if (profilePicture) {
+//       const imagePath = `/uploads/${profilePicture}`;
+//       await UserImage.upsert({
+//         userId: id,
+//         url: imagePath
+//       }, { transaction });
+//     }
+
+
+//     await transaction.commit();
+
+//     if (req.session.user?.id === updatedUser.id) {
+//       req.session.user = {
+//         ...req.session.user,
+//         firstName: updatedUser.firstName,
+//         lastName: updatedUser.lastName,
+//         email: updatedUser.email,
+//         gender: updatedUser.gender
+//       };
+//     }
+
+//     return res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+//   } catch (error) {
+//     await transaction.rollback();
+//     console.error("Profile update error:", error);
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 const updateUserProfile = async (req, res) => {
   const { id, firstname, lastname, email, gender } = req.body;
+  const profilePicture = req.file?.filename;
 
   if (!id || !firstname || !lastname || !email) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -25,26 +72,50 @@ const updateUserProfile = async (req, res) => {
       gender
     }, transaction);
 
+    if (profilePicture) {
+      const imagePath = `/uploads/${profilePicture}`;
+      await UserImage.upsert({
+        userId: id,
+        url: imagePath
+      }, { transaction });
+    }
+
     await transaction.commit();
 
-    if (req.session.user?.id === updatedUser.id) {
+
+    const userWithImage = await updatedUser.reload({
+      include: { model: UserImage, as: 'images' }
+    });
+    
+    await updatedUser.save({ transaction });
+
+    
+    if (req.session.user?.id === userWithImage.id) {
       req.session.user = {
         ...req.session.user,
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
-        email: updatedUser.email,
-        gender: updatedUser.gender
+        firstName: userWithImage.firstName,
+        lastName: userWithImage.lastName,
+        email: userWithImage.email,
+        gender: userWithImage.gender,
+        profilePicture: userWithImage.images?.[0]?.url || null
       };
     }
 
-    return res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        ...userWithImage.toJSON(),
+        profilePicture: userWithImage.image?.url || null
+      }
+    });
   } catch (error) {
-    await transaction.rollback();
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
     console.error("Profile update error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 const getSession = (req, res) => {
   if (req.session.isLoggedIn && req.session.user) {
     return res.status(200).json({
@@ -81,53 +152,61 @@ const logout = async (request, response, next) => {
     }
 }
 const login = async (request, response, next) => {
-    try {
-        const user = request.body;
-        const transaction = await sequelize.sequelize.transaction();
-        const existUser = await findUserByUsernameOrEmailWithPermissions(user.usernameOrEmail, transaction);
+  try {
+    const user = request.body;
+    const transaction = await sequelize.sequelize.transaction();
 
-        if (!existUser) {
-            response.status(401).json({
-                message:"Invalid username or email",
-            });
-            return;
-        }
+    const existUser = await findUserByUsernameOrEmailWithPermissions(user.usernameOrEmail, transaction);
 
-        const isMatchPassword = await ComperePasswords(user.password , existUser.password);
-
-        if(!isMatchPassword){
-            return response.status(401).json({message:"Invalid username or password"});      
-        }
-        
-        const permissions = existUser.Permissions.map(permission => ({id: permission.id ,  name: permission.name}) );
-
-        console.log(existUser);
-        
-        request.session.isLoggedIn = true;
-        request.session.isAdmin = permissions.some(permission => permission.id === 99);
-        request.session.user = {
-            id: existUser.id,
-            username: existUser.username,
-            firstName:existUser.firstName,
-            lastName:existUser.lastName,
-            email: existUser.email,
-            gender:existUser.gender,
-            permissions: permissions,
-        };
-        
-        
-        request.session.save(() => {
-           response.status(200).json({
-                message: "Login successful",
-                user: { profilePicture: null , ...request.session.user}
-            });
-        });
-
-    } catch (e) {
-        console.error(e);
-        next({ message: e.message });
+    if (!existUser) {
+      return response.status(401).json({ message: "Invalid username or email" });
     }
-}
+
+    const isMatchPassword = await ComperePasswords(user.password, existUser.password);
+    if (!isMatchPassword) {
+      return response.status(401).json({ message: "Invalid username or password" });
+    }
+
+    const permissions = existUser.Permissions.map(permission => ({
+      id: permission.id,
+      name: permission.name
+    }));
+    console.log(existUser);
+    
+    const images = existUser.Images.map(image => ({
+      // id: image.id,
+      url: image.url
+    }));
+    console.log(images);
+
+    request.session.isLoggedIn = true;
+    request.session.isAdmin = permissions.some(p => p.id === 99);
+    request.session.user = {
+      id: existUser.id,
+      username: existUser.username,
+      firstName: existUser.firstName,
+      lastName: existUser.lastName,
+      email: existUser.email,
+      gender: existUser.gender,
+      permissions,
+      profilePicture: images || null // ✅ כאן התמונה
+    };
+
+    await new Promise((resolve, reject) => {
+      request.session.save(err => (err ? reject(err) : resolve()));
+    });
+
+    response.status(200).json({
+      message: "Login successful",
+      user: request.session.user
+    });
+
+  } catch (e) {
+    console.error("Login error:", e);
+    next({ message: e.message });
+  }
+};
+
 const register = async (request, response, next) => {
     const transaction = await sequelize.sequelize.transaction();
   

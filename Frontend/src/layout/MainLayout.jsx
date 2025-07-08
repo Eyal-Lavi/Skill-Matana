@@ -16,7 +16,7 @@ const MainLayout = () => {
       try {
         const response = await authAPI.checkSession();
         if (response.isAuthenticated) {
-          dispatch(authActions.login(response.user));
+          dispatch(authActions.updateFromSession(response.user));
         } else {
           dispatch(authActions.logout());
         }

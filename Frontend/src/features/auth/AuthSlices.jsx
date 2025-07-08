@@ -10,7 +10,7 @@ const initialState = {
     email: null,
     permissions: null,
     gender: null,
-    profilePicture: null,
+    profilePicture: 'asdasd',
   }
 };
 
@@ -31,6 +31,9 @@ const authSlice = createSlice({
             profilePicture: action.payload.profilePicture,
         };
 
+    },
+    updateFromSession(state, action) {
+      this.login(state, action);
     },
     logout(state) {
         state.isAuthenticated = false;

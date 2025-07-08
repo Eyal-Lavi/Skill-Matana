@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../utils/database.js');
 const bcrypt = require('bcrypt');
 const Skill = require('./skill.js');
+const UserImage = require('./userImage.js');
 
 const User = sequelize.define('User', {
     id: {
@@ -15,7 +16,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         field: 'username',
         unique: true,
-        allowNull:false
+        allowNull: false
     },
     email: {
         type: DataTypes.STRING,
@@ -42,10 +43,10 @@ const User = sequelize.define('User', {
         allowNull: false,
         field: 'gender',
     },
-    status:{
+    status: {
         type: DataTypes.INTEGER,
-        allowNull:false,
-        defaultValue:1,
+        allowNull: false,
+        defaultValue: 1,
     },
 
 },
@@ -53,12 +54,16 @@ const User = sequelize.define('User', {
         timestamps: false,
         tableName: 'users',
         associate: (models) => {
-            User.belongsToMany(models.Skill, {
-                through: models.SkillUser,
-                foreignKey: 'userId',
-                otherKey: 'skillId',
-                as: 'skills'
-            });
+            // User.belongsToMany(models.Skill, {
+            //     through: models.SkillUser,
+            //     foreignKey: 'userId',
+            //     otherKey: 'skillId',
+            //     as: 'skills'
+            // });
+            // User.hasOne(models.UserImage, {
+            //     foreignKey: 'userId',
+            //     as: 'image'
+            // });
         },
         hooks: {
             beforeCreate: async (user) => {
@@ -79,6 +84,10 @@ const User = sequelize.define('User', {
 
 );
 
+// User.hasMany(UserImage, {
+//     foreignKey: 'userId',
+//     as: 'images'
+// });
 // User.belongsToMany(Skill,{
 //     through: SkillUser,
 //     foreignKey: 'userId',

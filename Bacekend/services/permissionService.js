@@ -1,6 +1,7 @@
-const Permission = require('../models/permission');
-const UserPermission = require('../models/userPermission');
-const User = require('../models/user');
+// const Permission = require('../models/permission');
+// const UserPermission = require('../models/userPermission');
+// const User = require('../models/user');
+const {Permission,UserPermission,User} = require('../models');
 
 const addUserPermission = async (userId, permissionId, transaction) => {
     if (!userId) {

@@ -1,7 +1,8 @@
-const Permission = require('../models/permission');
-const Skill = require('../models/skill');
-const SkillUser = require('../models/skillUser');
-const UserPermission = require('../models/userPermission');
+// const Permission = require('../models/permission');
+// const Skill = require('../models/skill');
+// const SkillUser = require('../models/skillUser');
+// const UserPermission = require('../models/userPermission');
+const {Skill,SkillUser,UserPermission,Permission} = require('../models'); // Importing associate to ensure associations are set up
 
 const getAll = async () => {
     const skills = await Skill.findAll({});

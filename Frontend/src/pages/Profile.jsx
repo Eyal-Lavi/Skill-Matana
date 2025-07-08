@@ -7,6 +7,7 @@ import styles from "./Profile.module.scss";
 import Input from "../utils/components/Input";
 import Select from "../utils/components/Select";
 import authAPI from "../features/auth/AuthAPI";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 function Profile() {
   const dispatch = useDispatch();
@@ -26,18 +27,24 @@ function Profile() {
     },
   });
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formValues) => {
     try {
+      const formData = new FormData();
+      formData.append("id", formValues.id);
+      formData.append("username", formValues.username);
+      formData.append("firstname", formValues.firstname);
+      formData.append("lastname", formValues.lastname);
+      formData.append("email", formValues.email);
+      formData.append("gender", formValues.gender);
+
+      // תומך בקובץ רק אם קיים
+      if (formValues.profilePicture?.[0]?.url) {
+        formData.append("profilePicture", formValues.profilePicture[0]);
+      }
+
       const data = await authAPI.updateProfile(formData);
-      dispatch(authActions.login(data.user)); // עדכון ה-store
-      reset({
-        id: data.user.id,
-        username: data.user.username,
-        firstname: data.user.firstName,
-        lastname: data.user.lastName,
-        email: data.user.email,
-        gender: data.user.gender,
-      });
+      dispatch(authActions.updateFromSession(data.user));
+      reset(formValues); // אם צריך
       setIsEditing(false);
       setError([]);
     } catch (error) {
@@ -63,8 +70,10 @@ function Profile() {
       <h2 className={styles.title}>My Profile</h2>
 
       <div className={styles.card}>
-        {user.profilePicture && (
-          <img src={user.profilePicture} alt="Profile" className={styles.profileImage} />
+        {user.profilePicture ? (
+          <img src={apiUrl + user.profilePicture[0]?.url} alt="Profile" className={styles.profileImage} />
+        ) : (
+          <p>No profile picture uploaded.</p>
         )}
 
         <div className={styles.info}>
@@ -72,6 +81,11 @@ function Profile() {
 
           {isEditing ? (
             <form noValidate onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+              <Input
+                label="Profile Picture"
+                type="file"
+                {...register("profilePicture")}
+              />
               <Input label="Username" {...register("username")} hidden />
               <Input label="Id" {...register("id")} hidden />
               <Input label="First Name" {...register("firstname")} />

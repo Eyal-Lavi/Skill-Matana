@@ -31,7 +31,10 @@ const authAPI = {
   updateProfile: async (userData) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/update-profile`, userData , {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
       return response.data;
     } catch (error) {
