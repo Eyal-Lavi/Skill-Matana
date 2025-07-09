@@ -32,6 +32,10 @@ const UserImage = sequelize.define('UserImage', {
     , {
         tableName: 'user_image',
         timestamps: false,
+        indexes:[{
+            unique:true,
+            fields:['user_id' , 'type_id']
+        }]
     }
 );
 
