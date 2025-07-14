@@ -45,7 +45,7 @@ function Profile() {
         gender: formValues.gender,
       };
 
-      const file = formValues.profilePicture?.[0];
+      const file = formValues.profilePicture[0];
       if (file) {
         const base64Image = await toBase64(file);
         payload.profileImage = base64Image;
@@ -82,7 +82,7 @@ function Profile() {
 
       <div className={styles.card}>
         {user.profilePicture ? (
-          <img src={user.profilePicture.url} alt="Profile" className={styles.profileImage} />
+          <img src={user.profilePicture} alt="Profile" className={styles.profileImage} />
         ) : (
           <p>No profile picture uploaded.</p>
         )}

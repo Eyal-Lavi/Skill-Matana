@@ -37,15 +37,15 @@ const updateUserProfile = async (req, res) => {
     }
 
     await transaction.commit();
-    console.log("Good");
 
-    const userWithImage = await updatedUser.reload({
+    let userWithImage = await updatedUser.reload({
       include: { model: UserImage, as: 'Images' }
     });
-    console.log("Good2");
 
     const profileImg = userWithImage.Images.find(img => img.typeId === 1);
-    console.log("Good3");
+    userWithImage = userWithImage.toJSON();
+
+    delete userWithImage.Images;
 
     // עדכון session אם מדובר במשתמש המחובר
     if (req.session.user?.id === userWithImage.id) {
@@ -58,12 +58,11 @@ const updateUserProfile = async (req, res) => {
         profilePicture: profileImg?.url || null
       };
     }
-    console.log("Good4");
 
     return res.status(200).json({
       message: "Profile updated successfully",
       user: {
-        ...userWithImage.toJSON(),
+        ...userWithImage,
         profilePicture: profileImg?.url || null
       }
     });

@@ -12,13 +12,16 @@ import Error from "../pages/Error";
 import ProtectedRoute from "./ProtectedRoute";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import Profile from "../pages/Profile";
+import ChatAI from "../pages/ChatAI";
+import HomeSecond from "../pages/HomeSecond";
 
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
     errorElement: <Error />,
     children: [
-      { path: "/", element: <Home /> },
+      { path: "/", element: <HomeSecond /> },
+      // { path: "/", element: <Home /> },
       {
         path: "auth",
         element: <Authentication />,
@@ -46,6 +49,14 @@ const router = createBrowserRouter([
         element: (
           <AuthenticatedRoute>
             <Dashboard />
+          </AuthenticatedRoute>
+        ),
+      },
+      {
+        path: "chatAI",
+        element: (
+          <AuthenticatedRoute>
+            <ChatAI />
           </AuthenticatedRoute>
         ),
       },

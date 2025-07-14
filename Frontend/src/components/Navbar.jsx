@@ -54,6 +54,7 @@ export default function Navbar() {
           {
             isAuthenticated && 
             <>
+              <StyledNavLink onClick={handleNavClick} to="/ChatAi">Chat AI</StyledNavLink>
               <StyledNavLink onClick={handleNavClick} to="/dashboard">Dashboard</StyledNavLink>
               <StyledNavLink onClick={handleNavClick} to="/profile">Profile</StyledNavLink>
             </>

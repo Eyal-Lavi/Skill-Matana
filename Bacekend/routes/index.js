@@ -14,4 +14,5 @@ router.use("/skills",isLoggedIn , skillRoutes);
 router.use("/auth", authRoutes);
 router.use("/admin", isAdmin,  adminRoutes);  
 
+
 module.exports = router;

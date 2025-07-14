@@ -1,7 +1,7 @@
 @use '../styles/variables' as var;
 nav.mainNav {
   display: flex;
-  background-color: var.$color-surface;
+  // background-color: var.$color-surface;
   height: 102px;
   width: 98%;
   margin: 0 1%;
@@ -10,6 +10,10 @@ nav.mainNav {
   max-width: 2160px;
   z-index: 1000;
   box-shadow: 0 2px 5px var.$color-box-shadow;
+  // background-color: rgba(255, 255, 255, 0.418);
+  backdrop-filter: blur(4px);
+
+  border: 1px solid var.$color-text-inverse;
 
   #welcomeSection {
     text-decoration: none;
