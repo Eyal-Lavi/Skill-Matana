@@ -29,8 +29,8 @@ app.use(session({
   rolling:true,
   store: sessionStore,
   cookie:{secure:false,
-    expires: new Date(Date.now() + 360000)
- }
+    maxAge:60 * 60 * 1000
+   }
 }));
 
 app.use(cors({
