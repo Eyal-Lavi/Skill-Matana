@@ -28,10 +28,9 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
   store: sessionStore,
-  cookie: {
-    secure: false,
-    expires: new Date(Date.now() + 360000)
-  }
+  cookie:{secure:false,
+    maxAge:60 * 60 * 1000
+   }
 }));
 
 app.use(cors({
