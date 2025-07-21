@@ -6,7 +6,6 @@
   box-sizing: border-box;
   @include mixins.flex-column;
   min-height: 100vh;
-  background-color: black;
   
    @media (max-width: var.$breakpoint-mobile) {
     overflow-x: hidden;
