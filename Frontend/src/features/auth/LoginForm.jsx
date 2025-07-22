@@ -8,6 +8,8 @@ import authAPI from "./AuthAPI";
 import { useForm } from "react-hook-form";
 import Logo from "../../utils/components/Logo";
 import { trimFormData } from "../../utils/helpers/trimFromData";
+import MetaDataAPI from "../metaData/metaDataAPI";
+import { metaDataActions } from "../metaData/MetaDataSlices";
 
 export default function LoginForm() {
     const { register, handleSubmit, formState: { isSubmitting } } = useForm();
@@ -16,18 +18,37 @@ export default function LoginForm() {
     const [error, setError] = useState([]);
 
     const onSubmit = async (formData) => {
-          try {
+        try {
             const trimedData = trimFormData(formData);
             const data = await authAPI.login(trimedData);
             console.log("Login successful:");
+
             dispatch(authActions.login(data.user));
+
+            try {
+                const metaDataResponse = await MetaDataAPI.metaData();
+                debugger;
+                dispatch(metaDataActions.set(metaDataResponse));
+            } catch (error) {
+                console.log(error);
+
+                dispatch(metaDataActions.set({
+                    skills: [
+                        { id: 1, name: "JavaScript" },
+                        { id: 2, name: "Python" },
+                        { id: 3, name: "Math" },
+                        { id: 4, name: "SQL" },
+                    ]
+                }));
+            }
+
             navigate("/dashboard");
         } catch (error) {
             const errorMessage = error.response?.data?.message;
             setError(errorMessage || "Login failed");
         }
     };
-  
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
             <h2 className={styles.title}>Login Form</h2>
@@ -48,7 +69,7 @@ export default function LoginForm() {
             </div>
             {error.length > 0 && <p className={styles.errorText}>{error}</p>}
             <button type="submit" disabled={isSubmitting} className={styles.submitButton}>
-                    {isSubmitting ? "Submitting..." : "Login"}
+                {isSubmitting ? "Submitting..." : "Login"}
             </button>
             <p className={styles.linkText}>
                 Not registered yet?{" "}
@@ -62,7 +83,7 @@ export default function LoginForm() {
                     Reset it
                 </a>
             </p>
-          <Logo size="xl-large" link={false}/>
+            <Logo size="xl-large" link={false} />
         </form>
     )
 }

@@ -14,7 +14,7 @@ import AuthenticatedRoute from "./AuthenticatedRoute";
 import Profile from "../pages/Profile";
 import ChatAI from "../pages/ChatAI";
 import HomeSecond from "../pages/HomeSecond";
-
+import Search from "../pages/Search";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -53,13 +53,21 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "chatAI",
+        path: "search",
         element: (
           <AuthenticatedRoute>
-            <ChatAI />
+            <Search />
           </AuthenticatedRoute>
         ),
       },
+      // {
+      //   path: "chatAI",
+      //   element: (
+      //     <AuthenticatedRoute>
+      //       <ChatAI />
+      //     </AuthenticatedRoute>
+      //   ),
+      // },
       {
         path: "profile",
         element: (

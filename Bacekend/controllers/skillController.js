@@ -7,7 +7,7 @@ const getAllSkills = async (request, response,next) => {
         response.json(skills);
         response.end();
     } catch (error) {
-        next({status:404,message:'Error ->' + error});
+        next({status:404,message:'Error -S>' + error});
     }
 }
 
