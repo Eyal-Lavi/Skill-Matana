@@ -1,8 +1,6 @@
 
 const isLoggedIn = (req, res, next) => {
-    const loggedIn = req.session.isLoggedIn;
-
-    if (!loggedIn) {
+    if (!req.session.isLoggedIn) {
         return res.status(401).send("Unauthorized");
     }
 
