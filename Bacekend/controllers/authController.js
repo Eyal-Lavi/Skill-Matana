@@ -140,10 +140,11 @@ const login = async (request, response, next) => {
     // const userWithImage = await updatedUser.reload({
     //   include: { model: UserImage, as: 'Images' }
     // });
-    console.log("Good2");
 
     const profileImg = existUser.Images.find(img => img.typeId === 1);
-
+    const bannerImg = existUser.Images.find(img => img.typeId === 2);
+    
+    
 
     request.session.isLoggedIn = true;
     request.session.isAdmin = permissions.some(p => p.id === 99);
@@ -155,8 +156,10 @@ const login = async (request, response, next) => {
       email: existUser.email,
       gender: existUser.gender,
       permissions,
-      profilePicture: profileImg || null // ✅ כאן התמונה
+      profilePicture: profileImg?.url || null,
+      bannerPicture: bannerImg?.url || null
     };
+    
 
     await new Promise((resolve, reject) => {
       request.session.save(err => (err ? reject(err) : resolve()));

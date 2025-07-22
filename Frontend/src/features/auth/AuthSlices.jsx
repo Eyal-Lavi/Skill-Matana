@@ -29,6 +29,7 @@ const authSlice = createSlice({
             permissions: action.payload.permissions,
             gender: action.payload.gender,
             profilePicture: action.payload.profilePicture,
+            bannerPicture: action.payload.bannerPicture,
         };
 
     },
