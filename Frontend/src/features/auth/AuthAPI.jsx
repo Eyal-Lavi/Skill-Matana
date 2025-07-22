@@ -1,11 +1,11 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:3000'; 
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = VITE_API_URL + '/auth'; 
 
 const authAPI = {
   login: async (credentials) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials, {
+      const response = await axios.post(`${API_BASE_URL}/login`, credentials, {
         withCredentials: true
       });
   
@@ -19,7 +19,7 @@ const authAPI = {
 
   register: async (userData) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/register`, userData , {
+      const response = await axios.post(`${API_BASE_URL}/register`, userData , {
         withCredentials: true
       });
       return response.data;
@@ -30,7 +30,7 @@ const authAPI = {
   },
   updateProfile: async (userData) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/update-profile`, userData , { withCredentials: true });
+      const response = await axios.post(`${API_BASE_URL}/update-profile`, userData , { withCredentials: true });
       return response.data;
     } catch (error) {
       console.error('Update faild', error.response?.data || error.message);
@@ -40,7 +40,7 @@ const authAPI = {
 
   logout: async () => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/logout`, null, {withCredentials: true});
+      const response = await axios.post(`${API_BASE_URL}/logout`, null, {withCredentials: true});
       console.log('response');
       console.log(response);
       
@@ -53,7 +53,7 @@ const authAPI = {
 
   checkSession: async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/auth/session`, { withCredentials: true });
+      const response = await axios.get(`${API_BASE_URL}/session`, { withCredentials: true });
       return response.data; 
     } catch (error) {
       console.error('Session check error:', error.response?.data?.message || error.message);
