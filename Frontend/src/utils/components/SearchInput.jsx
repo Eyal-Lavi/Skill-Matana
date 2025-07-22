@@ -1,44 +1,51 @@
-import { Search } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
-import styles from './SearchInput.module.scss'
-import { metaDataActions } from '../../features/metaData/MetaDataSlices';
+import { Search } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import Select from 'react-select';
 import { useSelector } from 'react-redux';
 import { selectSkills } from '../../features/metaData/MetaDataSelectors';
+import SearchAPI from '../../features/search/SearchAPI';
+import './SearchInput.scss';
 
 export default function SearchInput() {
   const skills = useSelector(selectSkills);
   const inputRef = useRef(null);
-  const selectRef = useRef(null);
-
-  useEffect(() => {
-    
-  }, []);
+  const [selectedSkill, setSelectedSkill] = useState(null);
 
   const handleClick = () => {
     const searchValue = inputRef.current?.value || '';
-    const filter = selectRef.current?.value || '';
-    console.log('Search:', searchValue);
-    console.log('Filter:', filter);
+    const skillValue = selectedSkill?.value || '';
+    if (!searchValue && !skillValue) return;
+
+    SearchAPI.search(searchValue, skillValue);
   };
 
+  const skillOptions = skills.map(skill => ({
+    value: skill.id,
+    label: skill.name,
+  }));
+
   return (
-    <div className={styles.container}>
-      <button className={styles.button} onClick={handleClick}>
-        <Search />
-      </button>
+    <div className="search-bar">
+      <div className="select-wrapper">
+        <Select
+          options={skillOptions}
+          isClearable
+          placeholder="Skill"
+          value={selectedSkill}
+           isSearchable={!!selectedSkill} 
+          onChange={setSelectedSkill}
+          classNamePrefix="react-select"
+        />
+      </div>
       <input
         ref={inputRef}
         type="text"
-        className={styles.input}
+        className="search-input"
         placeholder="Search..."
       />
-      <select ref={selectRef} className={styles.select}>
-        {skills.map(skill => (
-          <option key={skill.id} value={skill.id}>
-            {skill.name}
-          </option>
-        ))}
-      </select>
+      <button className="search-btn" onClick={handleClick}>
+        <Search />
+      </button>
     </div>
   );
 }
