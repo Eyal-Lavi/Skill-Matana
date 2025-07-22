@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const {User , Skill , UserImage , SkillUser} = require('../models');
+const {User , Skill , UserImage } = require('../models');
 const searchUsersByNameAndSkillIds  = async(name , skillId) => {
     console.log(1);
     

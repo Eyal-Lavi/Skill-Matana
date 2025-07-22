@@ -17,7 +17,6 @@ const MainLayout = () => {
     const checkSession = async () => {
       try {
         const response = await authAPI.checkSession();
-        debugger;
         if (response.isAuthenticated) {
           dispatch(authActions.updateFromSession(response.user));
 
