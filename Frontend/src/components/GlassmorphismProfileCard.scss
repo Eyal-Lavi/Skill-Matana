@@ -1,0 +1,157 @@
+.app-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  font-family: sans-serif;
+}
+
+.profile-card-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.profile-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.5s ease-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-container {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #222;
+}
+
+.title {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6366f1;
+}
+
+.bio {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #666;
+}
+
+.divider {
+  width: 50%;
+  height: 1px;
+  margin: 1.5rem 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 9999px;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-button-wrapper {
+  position: relative;
+}
+
+.social-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: background-color 0.3s ease-out, transform 0.3s ease-out;
+  overflow: hidden;
+}
+
+.social-button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.icon-wrapper {
+  z-index: 10;
+}
+
+.icon {
+  color: rgba(50, 50, 50, 0.7);
+  transition: color 0.2s ease-out;
+}
+
+.social-button:hover .icon {
+  color: #222;
+}
+
+.action-button {
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  background-color: #6366f1;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  backdrop-filter: blur(4px);
+  transition: transform 0.3s ease-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.action-button:hover {
+  transform: scale(1.03);
+}
+
+.action-button:active {
+  transform: scale(0.95);
+}
+
+.arrow-icon {
+  transition: transform 0.3s ease-out;
+}
+
+.action-button:hover .arrow-icon {
+  transform: rotate(45deg);
+}
+
+.card-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.5rem;
+  background: linear-gradient(to right, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.5));
+  opacity: 0.3;
+  filter: blur(20px);
+  z-index: -1;
+  transition: all 0.5s ease-out;
+}
