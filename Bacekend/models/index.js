@@ -7,7 +7,7 @@ const User = require('./user');
 const UserImage = require('./userImage');
 const UserPermission = require('./userPermission');
 const ImageType = require('./imageType.js');
-
+const SkillStatus = require('./statusSkill.js');
 
 const models = {
     Permission,
@@ -17,7 +17,8 @@ const models = {
     User,
     UserImage,
     UserPermission,
-    ImageType
+    ImageType,
+    SkillStatus
 };
 
 require('./associations.js')(models);
@@ -30,5 +31,6 @@ module.exports ={
     User,
     UserImage,
     UserPermission,
-    ImageType
+    ImageType,
+    SkillStatus
 }
