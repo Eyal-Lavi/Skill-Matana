@@ -155,3 +155,10 @@
   z-index: -1;
   transition: all 0.5s ease-out;
 }
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}

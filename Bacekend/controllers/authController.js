@@ -10,6 +10,7 @@ const {
         updateUserById
      } = require('../services/authService');
 const UserImage = require('../models/userImage');
+
 const updateUserProfile = async (req, res) => {
   const { id, firstname, lastname, email, gender, profileImage } = req.body;
 
@@ -18,6 +19,7 @@ const updateUserProfile = async (req, res) => {
   }
 
   const transaction = await sequelize.sequelize.transaction();
+
   try {
     const updatedUser = await updateUserById(id, {
       firstName: firstname,
@@ -36,16 +38,22 @@ const updateUserProfile = async (req, res) => {
       }, { transaction });
     }
 
+    console.log("Here 1");
+    
     await transaction.commit();
+    console.log("Here 2");
 
     let userWithImage = await updatedUser.reload({
       include: { model: UserImage, as: 'Images' }
     });
+    console.log("Here 3");
 
     const profileImg = userWithImage.Images.find(img => img.typeId === 1);
     userWithImage = userWithImage.toJSON();
+    console.log("Here 3");
 
     delete userWithImage.Images;
+    console.log("Here 4");
 
     // עדכון session אם מדובר במשתמש המחובר
     if (req.session.user?.id === userWithImage.id) {
@@ -58,6 +66,7 @@ const updateUserProfile = async (req, res) => {
         profilePicture: profileImg?.url || null
       };
     }
+    console.log("Here 5");
 
     return res.status(200).json({
       message: "Profile updated successfully",
@@ -66,6 +75,8 @@ const updateUserProfile = async (req, res) => {
         profilePicture: profileImg?.url || null
       }
     });
+    console.log("Here 6");
+
   } catch (error) {
     if (!transaction.finished) {
       await transaction.rollback();
