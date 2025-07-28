@@ -23,6 +23,7 @@ const searchSlice = createSlice({
       .addCase(searchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.hasSearched = false;
       })
       .addCase(searchUsers.fulfilled, (state, action) => {
         state.loading = false;

@@ -6,7 +6,7 @@ import { searchActions } from "./SearchSlice";
 export const searchUsers = createAsyncThunk(
   "search/searchUsers",
   async ({ name, skillId }, thunkAPI) => {
-    const hasSearched = thunkAPI.getState(selectHasSearched);
+    const hasSearched = selectHasSearched(thunkAPI.getState());
 
     if (hasSearched) {
       thunkAPI.dispatch(searchActions.clearSearch());

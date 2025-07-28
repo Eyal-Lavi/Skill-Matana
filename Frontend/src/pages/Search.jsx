@@ -15,8 +15,8 @@ function Search() {
       <div className="search-results">
         {loading && <p>Loading...</p>}
         {error && <p className="error">Error: {error}</p>}
-        {!loading && hasSearched && !error && users.length === 0 && <p>No results found.</p>}
-        {!hasSearched && <p>🔍 Start by entering a name or selecting a skill</p>}
+        {(!loading) && hasSearched && (!error) && users.length === 0 && <p>No results found.</p>}
+        {!hasSearched && (!loading) && <p>🔍 Start by entering a name or selecting a skill</p>}
         {users.map((user) => (
           <ProfileCard
             key={user.id}
