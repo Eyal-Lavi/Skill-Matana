@@ -1,5 +1,6 @@
 const User =  require('../models/user');
 const {addPermission , addUserPermission} = require('../services/permissionService');
+const { updateSkillRequestStatus, getAllPendingRequests } = require('../services/skillRequestsService');
 const { sequelize } = require('../utils/database');
 
 const addPermissionToDB = async (request, response, next) => {
@@ -32,7 +33,33 @@ const addPermissionToUser= async (request , response , next) => {
     }
 }
 
+const handleSkillRequestStatus  = async(request , response , next) => {
+    try{
+        const {requestId , status} = request.body;
+
+        if(!requestId || !status){
+           return response.status(400).json({message:'Missing requestId or status'});
+        }
+
+        const updatedRequest = await updateSkillRequestStatus(requestId , status);
+        response.status(200).json({message: `Skill request ${status}`, request: updatedRequest});
+    }catch(e){
+        response.status(409).json({message: e.message});
+    }
+}
+
+const fetchPendingRequests  = async(request , response , next) => {
+    try{
+        const allRequests = await getAllPendingRequests();
+        response.status(200).json(allRequests);
+    }catch(e){
+        response.status(409).json({message:e.message});
+    }
+}
+
 module.exports = {
     addPermissionToDB,
-    addPermissionToUser
+    addPermissionToUser,
+    handleSkillRequestStatus,
+    fetchPendingRequests
 }

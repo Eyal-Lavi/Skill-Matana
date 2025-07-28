@@ -1,3 +1,4 @@
+const { createSkillRequest } = require('../services/skillRequestsService');
 const { getAll, addSkillToUser, getAllForUser } = require('../services/skillsService');
 const sequelize = require('../utils/database');
 
@@ -57,9 +58,25 @@ const addSkill = async (request, response,next) => {
     }
 }
 
+const requestSkill = async(request, response,next) => {
+    try{
+        const { name } = request.body;
+        const userId = request.session.user.id;
+
+        if(!name){
+            return next({status:401,message: 'Unauthorized. User not logged in.' });
+        }
+
+        const newRequest = await createSkillRequest(name , userId);
+        response.status(201).json({message:'Skill request submitted successfully.' , request:newRequest});
+    }catch(error){
+        response.status(409).json({message:error.message});
+    }
+}
 
 module.exports = {
     getAllSkills,
     getSkillsForUser,
-    addSkill
+    addSkill,
+    requestSkill
 }

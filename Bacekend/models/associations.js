@@ -8,7 +8,7 @@ module.exports = (models) => {
         UserPermission,
         Status,
         ImageType,
-        SkillStatus
+        SkillRequest
     } = models;
 
     User.hasMany(UserImage, {
@@ -59,14 +59,14 @@ module.exports = (models) => {
         as:'Images'
     });
 
-    Skill.belongsTo(models.SkillStatus, {
-      foreignKey: 'status',
-      as: 'statusData',
+    User.hasMany(models.SkillRequest, {
+        foreignKey: 'requestedBy',
+        as: 'skillRequests',
     });
 
-    SkillStatus.hasMany(models.Skill, {
-        foreignKey: 'status',
-        as: 'skills',
+    SkillRequest.belongsTo(User, {
+        foreignKey: 'requestedBy',
+        as: 'requester',
     });
 };
 
