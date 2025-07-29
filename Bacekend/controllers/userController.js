@@ -4,7 +4,7 @@ const searchUsers = async(request , response , next) =>{
     try{
         let { name , skillId} = request.query;
 
-        if(!(name && skillId)){
+        if(!name && !skillId){
             return response.status(400).json({message:'Missing required query parameters: name and skillId.'})
         }
 

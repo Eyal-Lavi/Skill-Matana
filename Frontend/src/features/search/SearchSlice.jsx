@@ -6,6 +6,7 @@ const initialState = {
   error:null,
   loading:false,
   hasSearched: false,
+  hasFullFilled: false
 };
 
 const searchSlice = createSlice({
@@ -16,6 +17,7 @@ const searchSlice = createSlice({
       state.users = [];
       state.error = null;
       state.loading = false;
+      state.hasFullFilled  = false;
     }
   },
   extraReducers: (builder) => {
@@ -23,17 +25,19 @@ const searchSlice = createSlice({
       .addCase(searchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.hasSearched = false;
+        state.hasFullFilled = false;
       })
       .addCase(searchUsers.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload;
         state.hasSearched = true;
+        state.hasFullFilled = true;
       })
       .addCase(searchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Search failed';
         state.hasSearched = true;
+        state.hasFullFilled = false;
       });
   }
 });
