@@ -46,6 +46,21 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 1,
     },
+    instegramUrl: {
+        type: DataTypes.STRING,
+        field: 'instegram_url',
+        allowNull: true
+    },
+    linkedinUrl: {
+        type: DataTypes.STRING,
+        field: 'linkedin_url',
+        allowNull: true
+    },
+    githubUrl: {
+        type: DataTypes.STRING,
+        field: 'github_url',
+        allowNull: true
+    },
 
 },
     {
