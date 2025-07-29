@@ -8,7 +8,8 @@ module.exports = (models) => {
         UserPermission,
         Status,
         ImageType,
-        SkillRequest
+        SkillRequest,
+        ContactRequest
     } = models;
 
     User.hasMany(UserImage, {
@@ -68,5 +69,26 @@ module.exports = (models) => {
         foreignKey: 'requestedBy',
         as: 'requester',
     });
+
+    User.hasMany(models.ContactRequest, {
+        foreignKey: 'requestedBy',
+        as: 'contactRequests',
+    });
+
+    ContactRequest.belongsTo(User, {
+        foreignKey: 'requestedBy',
+        as: 'requester',
+    });
+
+    User.hasMany(models.ContactRequest, {
+        foreignKey: 'requestedTo',
+        as: 'incomingContactRequests',
+    });
+    
+    ContactRequest.belongsTo(User, {
+        foreignKey: 'requestedTo',
+        as: 'recipient',
+    });
+
 };
 

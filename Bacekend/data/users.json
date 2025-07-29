@@ -1,0 +1,4 @@
+[
+  { "username": "Admin","email": "skillmatana@gmail.com" ,"password": "123456","first_name":"Admin","last_name":"Admin","gender":"Male" },
+  { "username": "Guest","email": "skillmatana@gmail.com" ,"password": "123456","first_name":"Admin","last_name":"Admin","gender":"Male" }
+]
