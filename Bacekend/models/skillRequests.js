@@ -11,7 +11,6 @@ const SkillRequest = sequelize.define('SkillRequest',{
     name:{
         type: DataTypes.STRING,
         allowNull:false,
-        unique:true,
     },
     status:{
         type:DataTypes.ENUM('pending', 'approved', 'rejected'),
