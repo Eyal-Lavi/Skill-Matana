@@ -8,5 +8,6 @@ const adminController = require('../controllers/adminController');
 router.post('/add-permission' ,validateAddPermissionToDB,handleValidationErrors, adminController.addPermissionToDB);
 router.post('/add-permission-to-user',validateAddPermissionToUser,handleValidationErrors, adminController.addPermissionToUser);
 router.post('/skill-requests/status' , adminController.handleSkillRequestStatus);
+router.get('/skill-requests/pending' , adminController.fetchPendingRequests);
 
 module.exports = router;
