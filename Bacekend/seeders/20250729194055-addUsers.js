@@ -1,19 +1,27 @@
 'use strict';
-const data = require('../data/skills.json');
-const SkillModel = require('../models/skill');
+const data = require('../data/users.json'); 
+const bcrypt = require('bcrypt');
+const UserModel = require('../models/user'); 
 
 /** @type {import('sequelize-cli').Migration} */
-
 module.exports = {
   async up(queryInterface, Sequelize) {
+    const saltRounds = 10;
 
-    // const createdAt = new Date();
-    // const updatedAt = new Date();
+    const usersWithHashedPasswords = await Promise.all(
+      data.map(async (user) => {
+        const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+        return {
+          ...user,
+          password: hashedPassword,
+        };
+      })
+    );
 
-    await queryInterface.bulkInsert(SkillModel.tableName, data.map(skill => ({ ...skill })), {});
+    await queryInterface.bulkInsert(UserModel.tableName, usersWithHashedPasswords, {});
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete(SkillModel.tableName, null, {});
+    await queryInterface.bulkDelete(UserModel.tableName, null, {});
   }
 };
