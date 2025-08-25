@@ -37,9 +37,16 @@ const handleSkillRequestStatus  = async(request , response , next) => {
     try{
         const {requestId , status} = request.body;
 
+        console.log(requestId + status);
+        
         if(!requestId || !status){
            return response.status(400).json({message:'Missing requestId or status'});
         }
+
+        const validStatuses = ['approved', 'rejected'];
+        if (!validStatuses.includes(status)) {
+          return response.status(400).json({ message: 'Invalid status value' });
+        }  
 
         const updatedRequest = await updateSkillRequestStatus(requestId , status);
         response.status(200).json({message: `Skill request ${status}`, request: updatedRequest});

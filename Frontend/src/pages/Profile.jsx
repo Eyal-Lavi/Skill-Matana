@@ -7,6 +7,7 @@ import styles from "./Profile.module.scss";
 import Input from "../utils/components/Input";
 import Select from "../utils/components/Select";
 import authAPI from "../features/auth/AuthAPI";
+import AddSkillRequest from "../features/auth/AddSkillRequest";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -133,7 +134,9 @@ function Profile() {
           )}
         </div>
       </div>
+      <AddSkillRequest/>
     </div>
+
   );
 }
 

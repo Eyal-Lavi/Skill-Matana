@@ -1,14 +1,23 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch ,useSelector} from 'react-redux';
 import { selectAdminError ,
          selectAdminLoading , 
          selectPendingSkillRequests} from '../features/admin/adminSelectors';
+import { updateSkillRequestStatus } from '../features/admin/adminThunks';
 
 function PendingSkillRequestsList() {
     const requests = useSelector(selectPendingSkillRequests);
     const loading = useSelector(selectAdminLoading);
     const error = useSelector(selectAdminError);
+    const dispatch = useDispatch();
 
+    const handelClick = async(requestId , status) => {
+        if((status !== 'rejected' && status !== 'approved') || !requestId){
+            console.error('invalid request');
+            return;
+        }
+        dispatch(updateSkillRequestStatus({requestId , status}));
+    }
     if(loading){
         return <p>Loading...</p>
     }
@@ -22,8 +31,8 @@ function PendingSkillRequestsList() {
     <ul>
         {requests.map(request => (
             <li key={request.id}><strong>{request.name}</strong>
-            <button>reject</button>
-            <button>aprove</button>
+            <button onClick={() => {handelClick(request.id , 'rejected')}}>reject</button>
+            <button onClick={() => {handelClick(request.id ,'approved')}}>aprove</button>
             </li>
         ))}
     </ul>

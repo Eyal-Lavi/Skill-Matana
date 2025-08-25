@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchPendingSkillRequests } from "./adminThunks";
+import { fetchPendingSkillRequests ,updateSkillRequestStatus} from "./adminThunks";
 const initialState = {
     pendingSkillRequests:[],
     loading:false,
@@ -29,7 +29,16 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload || 'Failed to fetch skill requests';
         state.hasFetched = false;
-      });
+      })
+      
+      .addCase(updateSkillRequestStatus.fulfilled , (state , action) => {
+        const requestId = action.payload.requestId;
+        state.pendingSkillRequests = state.pendingSkillRequests.filter(req => req.id !== requestId);
+      })
+      .addCase(updateSkillRequestStatus.rejected , (state , action) => {
+        state.error = action.payload;
+      })
+      ;
     }
 });
 

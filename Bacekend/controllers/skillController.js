@@ -64,7 +64,7 @@ const requestSkill = async(request, response,next) => {
         const userId = request.session.user.id;
 
         if(!name){
-            return next({status:401,message: 'Unauthorized. User not logged in.' });
+            return next({status:401,message: 'Skill name is required.' });
         }
 
         const newRequest = await createSkillRequest(name , userId);

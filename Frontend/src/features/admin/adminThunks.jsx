@@ -13,3 +13,15 @@ export const fetchPendingSkillRequests = createAsyncThunk(
     }
 
 );
+
+export const updateSkillRequestStatus = createAsyncThunk(
+    'admin/updateSkillRequestStatus',
+    async ({ requestId, status }, thunkAPI) => {
+      try {
+        await AdminAPI.updateSkillRequestStatus(requestId, status);
+        return { requestId };
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      }
+    }
+  );
