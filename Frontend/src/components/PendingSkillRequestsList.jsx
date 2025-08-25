@@ -32,7 +32,7 @@ function PendingSkillRequestsList() {
         {requests.map(request => (
             <li key={request.id}><strong>{request.name}</strong>
             <button onClick={() => {handelClick(request.id , 'rejected')}}>reject</button>
-            <button onClick={() => {handelClick(request.id ,'approved')}}>aprove</button>
+            <button onClick={() => {handelClick(request.id ,'approved')}}>approve</button>
             </li>
         ))}
     </ul>

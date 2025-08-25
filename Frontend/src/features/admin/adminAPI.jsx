@@ -9,7 +9,7 @@ const AdminAPI = {
         
         
     },
-    updateSkillRequestStatus: async(status , requestId )=> {
+    updateSkillRequestStatus: async(requestId ,status)=> {
         const response = await axios.post(`${API_BASE_URL}/skill-requests/status` ,
             {requestId , status} ,
             {withCredentials:true}
