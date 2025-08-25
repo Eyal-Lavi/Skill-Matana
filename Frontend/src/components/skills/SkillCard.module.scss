@@ -1,0 +1,65 @@
+@import "../../styles/variables";
+
+.skillCard {
+  background: $color-surface;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba($color-primary, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-color: $color-primary;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin: 0 0 1rem 0;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: $color-text-secondary;
+    margin: 1rem 0 0 0;
+    line-height: 1.5;
+  }
+}
+
+.skillLevel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .progressBar {
+    flex: 1;
+    height: 8px;
+    background: rgba($color-primary, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress {
+    height: 100%;
+    background: linear-gradient(90deg, $color-primary, $color-accent);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  span {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-primary;
+    min-width: 3rem;
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .skillCard {
+    padding: 1.5rem;
+  }
+}

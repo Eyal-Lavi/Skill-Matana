@@ -1,6 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Dashboard from "../pages/Dashboard";
+import DashboardLayout from "../components/DashboardLayout";
+import DashboardSkills from "../pages/DashboardSkills";
+import DashboardPlaceholder from "../components/DashboardPlaceholder";
 import Home from "../pages/Home";
 import Authentication from "../pages/Authentication";
 import Register from "../pages/Register";
@@ -48,9 +51,39 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: (
           <AuthenticatedRoute>
-            <Dashboard />
+            <DashboardLayout />
           </AuthenticatedRoute>
         ),
+        children: [
+          {
+            index: true,
+            element: <Dashboard />,
+          },
+          {
+            path: "search",
+            element: <Search />,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "skills",
+            element: <DashboardSkills />,
+          },
+          {
+            path: "bookmarks",
+            element: <DashboardPlaceholder title="Bookmarks" description="Save and organize your favorite skills and resources" />,
+          },
+          {
+            path: "notifications",
+            element: <DashboardPlaceholder title="Notifications" description="Stay updated with your skill-related activities and messages" />,
+          },
+          {
+            path: "settings",
+            element: <DashboardPlaceholder title="Settings" description="Customize your dashboard and account preferences" />,
+          },
+        ],
       },
       {
         path: "search",

@@ -1,0 +1,14 @@
+@import "../../styles/variables";
+
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .skillsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

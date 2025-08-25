@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectIsAuthenticated,
   selectIsAdmin,
-  selectUser,
 } from "../features/auth/authSelectors";
 import authAPI from "../features/auth/AuthAPI";
 import { authActions } from "../features/auth/AuthSlices";
@@ -19,12 +18,10 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [dropDownStatus, setDropDownStatus] = useState(false);
-  const [error, setError] = useState([]);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isAdmin = useSelector(selectIsAdmin);
-  const user = useSelector(selectUser);
 
-  const toggleDropDown = (value) => {
+  const toggleDropDown = () => {
     setDropDownStatus((prevStatus) => !prevStatus);
   };
   const handleNavClick = () => {
@@ -38,8 +35,7 @@ export default function Navbar() {
       navigate("/");
     } catch (error) {
       const errorMessage = error.response?.data?.message;
-      setError(errorMessage || "Login failed");
-      console.log(errorMessage || "Login failed");
+      console.log(errorMessage || "Logout failed");
     }
   };
   return (
@@ -57,7 +53,6 @@ export default function Navbar() {
               <StyledNavLink onClick={handleNavClick} to="/search">Search</StyledNavLink>
               {/* <StyledNavLink onClick={handleNavClick} to="/ChatAi">Chat AI</StyledNavLink> */}
               <StyledNavLink onClick={handleNavClick} to="/dashboard">Dashboard</StyledNavLink>
-              <StyledNavLink onClick={handleNavClick} to="/profile">Profile</StyledNavLink>
             </>
           }
           {isAdmin && <StyledNavLink onClick={handleNavClick} to="/admin">Admin Panel</StyledNavLink>}
@@ -84,7 +79,6 @@ export default function Navbar() {
       <>
         <StyledNavLink onClick={handleNavClick} to="/search">Search</StyledNavLink>
         <StyledNavLink onClick={handleNavClick} to="/dashboard">Dashboard</StyledNavLink>
-        <StyledNavLink onClick={handleNavClick} to="/profile">Profile</StyledNavLink>
       </>
     )}
     {isAdmin && <StyledNavLink onClick={handleNavClick} to="/admin">Admin Panel</StyledNavLink>}
