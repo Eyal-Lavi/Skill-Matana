@@ -1,5 +1,3 @@
-import { NavLink } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
   faSearch,
@@ -9,7 +7,7 @@ import {
   faBookmark,
   faBell
 } from "@fortawesome/free-solid-svg-icons";
-import style from "./DashboardSidebar.module.scss";
+import Sidebar from "./Sidebar";
 
 const navItems = [
   { path: "/dashboard", icon: faHome, label: "Overview" },
@@ -22,26 +20,5 @@ const navItems = [
 ];
 
 export default function DashboardSidebar() {
-  return (
-    <div className={style.sidebar}>
-      <div className={style.sidebarContent}>
-        <div className={style.navItems}>
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `${style.navItem} ${isActive ? style.active : ""}`
-              }
-            >
-              <div className={style.iconContainer}>
-                <FontAwesomeIcon icon={item.icon} className={style.icon} />
-              </div>
-              <span className={style.label}>{item.label}</span>
-            </NavLink>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  return <Sidebar items={navItems} variant="dashboard" />;
 }

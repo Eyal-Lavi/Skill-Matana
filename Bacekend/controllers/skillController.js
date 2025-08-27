@@ -4,8 +4,26 @@ const sequelize = require('../utils/database');
 
 const getAllSkills = async (request, response,next) => {
     try {
-        const skills = await getAll();
-        response.json(skills);
+        const {
+            limit = 10,
+            offset = 0,
+            search = '',
+            status,
+            sortBy = 'name',
+            sortOrder = 'ASC'
+        } = request.query;
+
+        const options = {
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            search,
+            status: status !== undefined ? parseInt(status) : null,
+            sortBy,
+            sortOrder
+        };
+
+        const result = await getAll(options);
+        response.json(result);
         response.end();
     } catch (error) {
         next({status:404,message:'Error -S>' + error});

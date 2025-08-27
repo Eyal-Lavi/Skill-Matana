@@ -11,6 +11,7 @@ import Login from "../pages/Login";
 import GuestRoute from "./GuestRoute";
 import AdminRoute from "./AdminRoute";
 import AdminPanel from "../pages/AdminPanel";
+import AdminLayout from "../components/AdminLayout";
 import Error from "../pages/Error";
 import ProtectedRoute from "./ProtectedRoute";
 import AuthenticatedRoute from "./AuthenticatedRoute";
@@ -18,6 +19,7 @@ import Profile from "../pages/Profile";
 import ChatAI from "../pages/ChatAI";
 import HomeSecond from "../pages/HomeSecond";
 import Search from "../pages/Search";
+import SkillManagement from "../components/SkillManagement";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -93,14 +95,6 @@ const router = createBrowserRouter([
           </AuthenticatedRoute>
         ),
       },
-      // {
-      //   path: "chatAI",
-      //   element: (
-      //     <AuthenticatedRoute>
-      //       <ChatAI />
-      //     </AuthenticatedRoute>
-      //   ),
-      // },
       {
         path: "profile",
         element: (
@@ -113,9 +107,15 @@ const router = createBrowserRouter([
         path: "admin",
         element: (
           <AdminRoute>
-            <AdminPanel />
+            <AdminLayout />
           </AdminRoute>
         ),
+        children: [
+          { index: true, element: <AdminPanel /> },
+          { path: "users", element: <div>Users Management</div> },
+          { path: "skills", element: <SkillManagement /> },
+          { path: "settings", element: <div>Settings</div> },
+        ]
       },
     ],
   },

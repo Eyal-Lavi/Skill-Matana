@@ -1,6 +1,7 @@
 const User =  require('../models/user');
 const {addPermission , addUserPermission} = require('../services/permissionService');
 const { updateSkillRequestStatus, getAllPendingRequests } = require('../services/skillRequestsService');
+const { updateSkillStatus } = require('../services/skillsService');
 const { sequelize } = require('../utils/database');
 
 const addPermissionToDB = async (request, response, next) => {
@@ -64,9 +65,33 @@ const fetchPendingRequests  = async(request , response , next) => {
     }
 }
 
+const handleSkillStatusUpdate = async (request, response, next) => {
+    try {
+        const { skillId, status } = request.body;
+        
+        if (!skillId || status === undefined) {
+            return response.status(400).json({ message: 'Missing skillId or status' });
+        }
+
+        const validStatuses = [0, 1];
+        if (!validStatuses.includes(status)) {
+            return response.status(400).json({ message: 'Invalid status value. Must be 0 or 1' });
+        }
+
+        const updatedSkill = await updateSkillStatus(skillId, status);
+        response.status(200).json({ 
+            message: `Skill ${status === 1 ? 'activated' : 'deactivated'} successfully`, 
+            skill: updatedSkill 
+        });
+    } catch (e) {
+        response.status(409).json({ message: e.message });
+    }
+}
+
 module.exports = {
     addPermissionToDB,
     addPermissionToUser,
     handleSkillRequestStatus,
-    fetchPendingRequests
+    fetchPendingRequests,
+    handleSkillStatusUpdate
 }

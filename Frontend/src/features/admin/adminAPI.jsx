@@ -6,12 +6,17 @@ const AdminAPI = {
     getPendingSkillRequests:async() => {
         const response = await axios.get(`${API_BASE_URL}/skill-requests/pending` , {withCredentials:true});
         return response.data;
-        
-        
     },
     updateSkillRequestStatus: async(requestId ,status)=> {
         const response = await axios.post(`${API_BASE_URL}/skill-requests/status` ,
             {requestId , status} ,
+            {withCredentials:true}
+        );
+        return response.data;
+    },
+    updateSkillStatus: async(skillId, status) => {
+        const response = await axios.put(`${API_BASE_URL}/skills/status` ,
+            {skillId, status} ,
             {withCredentials:true}
         );
         return response.data;

@@ -25,3 +25,15 @@ export const updateSkillRequestStatus = createAsyncThunk(
       }
     }
   );
+
+export const updateSkillStatus = createAsyncThunk(
+    'admin/updateSkillStatus',
+    async ({ skillId, status }, thunkAPI) => {
+      try {
+        await AdminAPI.updateSkillStatus(skillId, status);
+        return { skillId, status };
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      }
+    }
+  );
