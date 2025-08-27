@@ -4,9 +4,9 @@ import PendingSkillRequestsList from '../components/PendingSkillRequestsList';
 import { useState } from 'react';
 const AdminPanel = () => {
   const dispatch = useDispatch();
-  const [isCliked , setIsCliked] = useState(false);
+  const [isClicked , setIsClicked] = useState(false);
   const handleClick = () => {
-    setIsCliked(true);
+    setIsClicked(true);
     dispatch(fetchPendingSkillRequests());
 
   }
@@ -15,7 +15,7 @@ const AdminPanel = () => {
       <h1>Admin Panel</h1>
       <p>Welcome to the admin panel. Here you can manage users, settings, and more.</p>
       <button onClick={handleClick}>fetch pending skill requests</button>
-      {isCliked &&<PendingSkillRequestsList/>}
+      {isClicked &&<PendingSkillRequestsList/>}
     </div>
   );
 }
