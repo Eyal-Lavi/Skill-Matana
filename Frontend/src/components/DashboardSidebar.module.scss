@@ -1,7 +1,7 @@
 @import "../styles/variables";
 
 .sidebar {
-  position: fixed;
+  position: absolute;
   left: 2rem;
   top: 50%;
   transform: translateY(-50%);
@@ -16,12 +16,24 @@
 
   &:hover {
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-    transform: translateY(-50%) scale(1.02);
+  }
+
+  @media (max-width: 1024px) {
+    left: 1rem;
+    padding: 1rem 0.75rem;
   }
 
   @media (max-width: $breakpoint-mobile) {
-    left: 1rem;
-    padding: 1rem 0.75rem;
+    position: fixed;
+    inset: auto 0 0 0;
+    top: auto;
+    left: 0;
+    right: 0;
+    transform: none;
+    border-radius: 1rem 1rem 0 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-bottom: none;
   }
 }
 
@@ -29,12 +41,26 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 0.25rem;
+  }
 }
 
 .navItems {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.25rem;
+  }
 }
 
 .navItem {
@@ -83,6 +109,24 @@
       font-weight: 600;
     }
   }
+
+  @media (max-width: 1024px) {
+    padding: 0.5rem;
+    min-width: auto;
+    border-radius: 1rem;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    background: transparent;
+
+    &.active {
+      background: transparent;
+
+      .iconContainer {
+        background: $color-primary;
+      }
+    }
+  }
 }
 
 .iconContainer {
@@ -109,6 +153,17 @@
     transition: opacity 0.3s ease;
     z-index: -1;
   }
+
+  @media (max-width: 1024px) {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    width: 2.75rem;
+    height: 2.75rem;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  }
 }
 
 .navItem:hover .iconContainer::before,
@@ -120,6 +175,10 @@
   font-size: 1.2rem;
   color: $color-primary;
   transition: all 0.3s ease;
+
+  @media (max-width: 1024px) {
+    font-size: 1.1rem;
+  }
 }
 
 .label {
@@ -130,47 +189,12 @@
   white-space: nowrap;
   opacity: 0.8;
 
-  @media (max-width: $breakpoint-mobile) {
-    font-size: 0.7rem;
+  @media (max-width: 1024px) {
+    display: none;
   }
 }
 
 .navItem:hover .label,
 .navItem.active .label {
   opacity: 1;
-}
-
-// Floating animation for the entire sidebar
-@keyframes float {
-  0%, 100% {
-    transform: translateY(-50%);
-  }
-  50% {
-    transform: translateY(-52%);
-  }
-}
-
-.sidebar {
-  animation: float 6s ease-in-out infinite;
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  .sidebar {
-    left: 0.5rem;
-    padding: 1rem 0.5rem;
-  }
-
-  .iconContainer {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  .icon {
-    font-size: 1rem;
-  }
-
-  .label {
-    font-size: 0.65rem;
-  }
 }
