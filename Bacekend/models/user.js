@@ -46,9 +46,9 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 1,
     },
-    instegramUrl: {
+    instagramUrl: {
         type: DataTypes.STRING,
-        field: 'instegram_url',
+        field: 'instagram_url',
         allowNull: true
     },
     linkedinUrl: {

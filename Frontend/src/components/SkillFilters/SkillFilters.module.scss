@@ -20,6 +20,7 @@
 .input {
   width: 100%;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
+  box-sizing: border-box;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 1rem;
@@ -53,6 +54,7 @@
   flex-direction: column;
   gap: 0.5rem;
   min-width: 150px;
+  width: 25%;
 }
 
 .filterLabel {
@@ -103,10 +105,13 @@
   }
 
   .filterGroup {
+    width: auto;
     min-width: auto;
   }
 
   .clearButton {
     align-self: flex-start;
+    width: auto;
+    min-width: auto;
   }
 }
