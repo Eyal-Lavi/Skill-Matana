@@ -27,12 +27,12 @@ const MainLayout = () => {
             console.log(error);
             
             dispatch(metaDataActions.set({
-              skills:[
+              skills: [
                 {id:1 , name:"JavaScript"},
                 {id:2 , name:"Python"},
                 {id:3 , name:"Math"},
                 {id:4 , name:"SQL"},
-             ]
+              ]
             }));
           }
           

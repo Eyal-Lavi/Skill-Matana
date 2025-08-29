@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  skills:[],
+  skills:{
+    data:[],
+    total:0,
+    hasMore:null
+  },
 };
 
 const metaDataSlice = createSlice({

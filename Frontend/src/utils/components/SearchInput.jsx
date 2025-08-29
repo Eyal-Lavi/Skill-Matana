@@ -2,13 +2,13 @@ import { Search } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectSkills } from '../../features/metaData/MetaDataSelectors';
+import { selectSkillsData } from '../../features/metaData/MetaDataSelectors';
 import SearchAPI from '../../features/search/SearchAPI';
 import './SearchInput.scss';
 import { searchUsers } from '../../features/search/SearchThunks';
 
 export default function SearchInput() {
-  const skills = useSelector(selectSkills);
+  const skills = useSelector(selectSkillsData);
   const dispatch = useDispatch();
   const inputRef = useRef(null);
   const [selectedSkill, setSelectedSkill] = useState(null);
@@ -22,10 +22,10 @@ export default function SearchInput() {
     SearchAPI.search(searchValue, skillValue);
   };
 
-  const skillOptions = skills.map(skill => ({
+  const skillOptions = Array.isArray(skills) ?skills.map(skill => ({
     value: skill.id,
     label: skill.name,
-  }));
+  })) : [{value:null,label:'No skills found'}];
 
   return (
     <div className="search-bar">

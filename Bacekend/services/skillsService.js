@@ -36,7 +36,7 @@ const getAll = async (options = {}) => {
     });
     
     return {
-        skills: skills.rows,
+        data: skills.rows,
         total: skills.count,
         hasMore: skills.count > offset + skills.rows.length
     };

@@ -87,14 +87,14 @@ const router = createBrowserRouter([
           },
         ],
       },
-      {
-        path: "search",
-        element: (
-          <AuthenticatedRoute>
-            <Search />
-          </AuthenticatedRoute>
-        ),
-      },
+      // {
+      //   path: "search",
+      //   element: (
+      //     <AuthenticatedRoute>
+      //       <Search />
+      //     </AuthenticatedRoute>
+      //   ),
+      // },
       {
         path: "profile",
         element: (

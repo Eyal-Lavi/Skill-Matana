@@ -50,7 +50,7 @@ export default function Navbar() {
           {
             isAuthenticated && 
             <>
-              <StyledNavLink onClick={handleNavClick} to="/search">Search</StyledNavLink>
+              {/* <StyledNavLink onClick={handleNavClick} to="/search">Search</StyledNavLink> */}
               {/* <StyledNavLink onClick={handleNavClick} to="/ChatAi">Chat AI</StyledNavLink> */}
               <StyledNavLink onClick={handleNavClick} to="/dashboard">Dashboard</StyledNavLink>
             </>
@@ -77,7 +77,7 @@ export default function Navbar() {
     <StyledNavLink onClick={handleNavClick} to="/">Home</StyledNavLink>
     {isAuthenticated && (
       <>
-        <StyledNavLink onClick={handleNavClick} to="/search">Search</StyledNavLink>
+        {/* <StyledNavLink onClick={handleNavClick} to="/search">Search</StyledNavLink> */}
         <StyledNavLink onClick={handleNavClick} to="/dashboard">Dashboard</StyledNavLink>
       </>
     )}
