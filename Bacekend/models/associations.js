@@ -9,7 +9,8 @@ module.exports = (models) => {
         Status,
         ImageType,
         SkillRequest,
-        ContactRequest
+        ContactRequest,
+        PasswordResetToken
     } = models;
 
     User.hasMany(UserImage, {
@@ -90,5 +91,13 @@ module.exports = (models) => {
         as: 'recipient',
     });
 
-};
+    PasswordResetToken.belongsTo(User , {
+        foreignKey:'userId',
+        as:'user'
+    });
 
+    User.hasMany(PasswordResetToken , {
+        foreignKey:'userId',
+        as:'resetToken'
+    });
+};

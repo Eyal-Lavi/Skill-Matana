@@ -79,9 +79,9 @@ export default function LoginForm() {
             </p>
             <p className={styles.linkText}>
                 Forgot your password?{" "}
-                <a href="/reset-password" className={styles.link}>
+                <Link to="../forgot-password" className={styles.link}>
                     Reset it
-                </a>
+                </Link>
             </p>
             <Logo size="xl-large" link={false} />
         </form>

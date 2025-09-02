@@ -269,12 +269,43 @@ const register = async (request, response, next) => {
       });
     }
   };
-  
 
+
+
+const sendPasswordResetLink = async(request, response, next) => {
+  const { email } = request.body;
+  const transaction = sequelize.transaction();
+  if(!email){
+    return response.status().json({message:'Email is required'});
+  }
+  try{
+    const user = await findUserByUsernameOrEmail(email , transaction);
+    if(!user){
+      return response.status().json({message:'User not found'});
+    }
+
+    
+
+    return response.status(200).json({message:'Check your inbox'});
+  }catch(e){
+    response.status(500).json({})
+  }
+}
+  
+const chekPasswordResetLink = async(request , response , next) => {
+  const {token} = request.body;
+  try{
+
+  }catch(error){
+
+  }
+}
 module.exports = {
     register,
     login,
     logout,
     updateUserProfile,
-    getSession
+    getSession,
+    sendPasswordResetLink,
+    chekPasswordResetLink
 }

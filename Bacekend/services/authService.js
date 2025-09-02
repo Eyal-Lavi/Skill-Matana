@@ -1,9 +1,10 @@
 const {Op} = require('sequelize');
-const {User} = require('../models');
+const {User, PasswordResetToken} = require('../models');
 const {Permission} = require('../models');
-
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const {UserImage} = require('../models');
+const { sendEmail } = require('./emailService');
 
 const validateUserFields = (user) => {
     const required = ['username', 'email', 'password', 'firstname', 'lastname', 'gender'];
@@ -109,11 +110,53 @@ const createUser = async (user, transaction) => {
     };
 };
 
+
+const createToken = async(userId) => {
+    if(!userId){throw new Error('UserId is requierd');}
+
+    const existToken = await checkIfActiveTokenExist(userId);
+    if(existToken){
+        return existToken;
+    }
+    const token = await crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    const newToken = await PasswordResetToken.create({
+        userId,
+        token,
+        expiresAt,
+        used:false
+    });
+
+    return newToken;
+}
+
+const checkIfActiveTokenExist = async(userId) => {
+    if(!userId) {throw new Error('user id is required');}
+    
+    const existToken = await PasswordResetToken.findOne({where:{
+        userId:userId,
+        used:false,
+        expiresAt:{[Op.gt]: new Date()}
+    }});
+    return existToken;
+}
+
+const sendEmailWithLinkReset = async(email , link) => {
+    if(!email) {throw new Error('Email is required');}
+
+    
+
+
+}
 module.exports = {
     validateUserFields,
     ComperePasswords,
     findUserByUsernameOrEmailWithPermissions,
     findUserByUsernameOrEmail,
     createUser,
-    updateUserById
+    updateUserById,
+    createToken,
+    checkIfActiveTokenExist,
+    sendEmailWithLinkReset
 };

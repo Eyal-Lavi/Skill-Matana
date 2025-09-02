@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Dashboard from "../pages/Dashboard";
 import DashboardLayout from "../components/DashboardLayout";
@@ -19,6 +19,9 @@ import Profile from "../pages/Profile";
 import ChatAI from "../pages/ChatAI";
 import HomeSecond from "../pages/HomeSecond";
 import Search from "../pages/Search";
+import ResetGuardRoute from './ResetGuardRoute';
+import ResetPassword from '../features/auth/ResetPassword';
+import ForgotPassword from '../features/auth/ForgotPassword';
 import SkillManagement from "../components/SkillManagement";
 const router = createBrowserRouter([
   {
@@ -47,6 +50,26 @@ const router = createBrowserRouter([
               </GuestRoute>
             ),
           },
+          {
+            path:'forgot-password',
+            element:(
+              <GuestRoute>
+                <ForgotPassword/>
+              </GuestRoute>
+            )
+          },
+          {
+            path:'reset-password/:token',
+            element:(
+              <ResetGuardRoute>
+                <ResetPassword/>
+              </ResetGuardRoute>
+            )
+          },
+          {
+            path:'reset-password',
+            element:<Navigate to='/auth/login'/>
+          }
         ],
       },
       {

@@ -59,7 +59,26 @@ const authAPI = {
       console.error('Session check error:', error.response?.data?.message || error.message);
       throw error;
     }
-  }
+  },
+  sendLinkReset: async(email) => {
+    try{
+      const response = await axios.post(`${API_BASE_URL}/reset-password` , {email} , {withCredentials:true});
+      return response.data;
+    }catch(error){
+      console.error(error.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+  checkToken: async(token) => {
+    try{
+      const response = await axios.get(`${API_BASE_URL}/check-token/${token}` , {withCredentials:true});
+      return response.data;
+    }catch(error){
+      console.error(error.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+
 
 };
 

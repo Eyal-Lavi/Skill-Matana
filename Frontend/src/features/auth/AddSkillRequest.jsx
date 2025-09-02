@@ -35,7 +35,7 @@ function AddSkillRequest() {
     }
   return (
     <div>
-        <input ref={input} type='text'/>
+        <input ref={input} type='text' placeholder='enter the skill request'/>
         <button onClick={handelClick}>{loading ? 'Loading...' : 'send'}</button>
         {succses && <p>Your request send in succses</p>}
         {error && <p>{error}</p>}
