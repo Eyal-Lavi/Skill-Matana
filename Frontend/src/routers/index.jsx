@@ -22,6 +22,7 @@ import Search from "../pages/Search";
 import ResetPassword from "../features/auth/ResetPassword";
 import ForgotPassword from "../features/auth/ForgotPassword";
 import ResetGuardRoute from './ResetGuardRoute';
+import SkillManagement from "../components/SkillManagement";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
