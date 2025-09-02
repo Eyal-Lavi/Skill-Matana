@@ -7,9 +7,14 @@ const {
         ComperePasswords,
         createUser,
         findUserByUsernameOrEmailWithPermissions,
-        updateUserById
+        updateUserById,
+        checkIfActiveTokenExist,
+        createToken,
+        sendEmailWithLinkReset,
+        resetUserPassword
      } = require('../services/authService');
 const UserImage = require('../models/userImage');
+const { User } = require('../models');
 
 const updateUserProfile = async (req, res) => {
   const { id, firstname, lastname, email, gender, profileImage } = req.body;
@@ -274,7 +279,6 @@ const register = async (request, response, next) => {
 
 const sendPasswordResetLink = async(request, response, next) => {
   const { email } = request.body;
-  const transaction = sequelize.transaction();
   if(!email){
     return response.status().json({message:'Email is required'});
   }
@@ -284,20 +288,43 @@ const sendPasswordResetLink = async(request, response, next) => {
       return response.status().json({message:'User not found'});
     }
 
+    const exsitsToken = await checkIfActiveTokenExist(user.id , null);
+    let token = exsitsToken ?  exsitsToken.token : (await createToken(user.id)).token;
     
-
+    const link = `${process.env.CLIENT_URL}/reset-password/${token}` 
+    await sendEmailWithLinkReset(email , link);
+  
     return response.status(200).json({message:'Check your inbox'});
   }catch(e){
-    response.status(500).json({})
+    response.status(500).json({message:e.message});
   }
 }
   
 const chekPasswordResetLink = async(request , response , next) => {
   const {token} = request.body;
   try{
+    const exsitsToken = await checkIfActiveTokenExist(null,token);
 
+    if(!exsitsToken){
+      return response.status(401).json({message:'Unauthoriez user'});
+    }
+
+    response.status(200).json({message:'This user has active reset link'});
   }catch(error){
+    response.status(500).json({message:e.message});
+  }
+}
 
+const resetPassword = async(request , response , next) => {
+  const {token , newPassword} = request.body;
+  if(!newPassword){
+    return response.status(400).json({message:'New password is required'});
+  }
+  try{
+    const result = await resetUserPassword(token , newPassword);
+    response.status(200).json({message:'Password update successfuly'});
+  }catch(error){
+    response.status(500).json({message:e.message});
   }
 }
 module.exports = {
@@ -307,5 +334,6 @@ module.exports = {
     updateUserProfile,
     getSession,
     sendPasswordResetLink,
-    chekPasswordResetLink
+    chekPasswordResetLink,
+    resetPassword
 }

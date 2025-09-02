@@ -73,7 +73,6 @@ const updateUserById = async (userId, updates, transaction) => {
 
 const findUserByUsernameOrEmail = async (identifier, transaction) => {
     if (!identifier) throw new Error("Username or email is required");
-    if (!transaction) throw new Error("Transaction is required");
 
     const user = await User.findOne({
         where: {
@@ -131,23 +130,62 @@ const createToken = async(userId) => {
     return newToken;
 }
 
-const checkIfActiveTokenExist = async(userId) => {
-    if(!userId) {throw new Error('user id is required');}
-    
-    const existToken = await PasswordResetToken.findOne({where:{
-        userId:userId,
-        used:false,
-        expiresAt:{[Op.gt]: new Date()}
-    }});
-    return existToken;
-}
+const checkIfActiveTokenExist = async ({ userId, token }) => {
+    if (!userId && !token) {
+        throw new Error("either userId or token is required");
+    }
+
+    const whereClause = {
+        used: false,
+        expiresAt: { [Op.gt]: new Date() }
+    };
+
+    if (userId) {
+        whereClause.userId = userId;
+    }
+
+    if (token) {
+        whereClause.token = token;
+    }
+
+    return await PasswordResetToken.findOne({ where: whereClause });
+};
 
 const sendEmailWithLinkReset = async(email , link) => {
-    if(!email) {throw new Error('Email is required');}
+    if (!email) throw new Error('Email is required');
+    if (!link) throw new Error('Link is required');
 
-    
+    const subject = 'Password Reset Request';
+    const html = `
+        <p>Hello,</p>
+        <p>You requested a password reset. Click the link below to reset your password:</p>
+        <a href="${link}">Reset Password</a>
+        <p>If you did not request this, please ignore this email.</p>
+    `;
 
+    return await sendEmail(email, subject, html);
+}
 
+const resetUserPassword = async (token , newPassword) => {
+    if (!token || !newPassword){
+        throw new Error('Token & new Password is required');
+    }
+    const existToken = await checkIfActiveTokenExist(null , token);
+    if(!existToken){
+        throw new Error('Invalid or expired token');
+    }
+
+    const user = await User.findByPk(existToken.userId);
+
+    if(!user){
+        throw new Error('User not found');
+    }
+
+    await user.update({password:newPassword});
+
+    await existToken.update({used:true});
+
+    return true;
 }
 module.exports = {
     validateUserFields,
@@ -158,5 +196,6 @@ module.exports = {
     updateUserById,
     createToken,
     checkIfActiveTokenExist,
-    sendEmailWithLinkReset
+    sendEmailWithLinkReset,
+    resetUserPassword
 };

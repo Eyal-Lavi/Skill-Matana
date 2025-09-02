@@ -103,9 +103,17 @@ const validateLogin = [
   .notEmpty().withMessage('Password cannot be empty'),
 ];
 
+const validatePassword = [
+  body('newPassword')
+    .trim()
+    .exists().withMessage('Password is required')
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+]
+
 
 module.exports = {
     validateLogin,
     validateRegister,
-    validateUpdateProfile
+    validateUpdateProfile,
+    validatePassword
 }
