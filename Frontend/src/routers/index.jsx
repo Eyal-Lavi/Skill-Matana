@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Dashboard from "../pages/Dashboard";
 import DashboardLayout from "../components/DashboardLayout";
@@ -19,6 +19,9 @@ import Profile from "../pages/Profile";
 import ChatAI from "../pages/ChatAI";
 import HomeSecond from "../pages/HomeSecond";
 import Search from "../pages/Search";
+import ResetPassword from "../features/auth/ResetPassword";
+import ForgotPassword from "../features/auth/ForgotPassword";
+import ResetGuardRoute from './ResetGuardRoute';
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
