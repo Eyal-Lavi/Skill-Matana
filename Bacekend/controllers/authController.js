@@ -280,15 +280,16 @@ const register = async (request, response, next) => {
 const sendPasswordResetLink = async(request, response, next) => {
   const { email } = request.body;
   if(!email){
-    return response.status().json({message:'Email is required'});
+    return response.status(400).json({message:'Email is required'});
   }
   try{
-    const user = await findUserByUsernameOrEmail(email , transaction);
+    const user = await findUserByUsernameOrEmail(email);
     if(!user){
-      return response.status().json({message:'User not found'});
+      return response.status(409).json({message:'User not found'});
     }
-
-    const exsitsToken = await checkIfActiveTokenExist(user.id , null);
+    console.log(user.id);
+    
+    const exsitsToken = await checkIfActiveTokenExist(user.id);
     let token = exsitsToken ?  exsitsToken.token : (await createToken(user.id)).token;
     
     const link = `${process.env.CLIENT_URL}/reset-password/${token}` 

@@ -7,6 +7,7 @@ import authAPI from './AuthAPI';
 function ForgotPassword() {
     const {register , handleSubmit ,setError ,formState:{errors, isSubmitting}} = useForm();
     const [succses , setSuccess] = useState();
+    
 
     const onSubmit = async(formData) => {
         try{

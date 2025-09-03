@@ -62,7 +62,7 @@ const authAPI = {
   },
   sendLinkReset: async(email) => {
     try{
-      const response = await axios.post(`${API_BASE_URL}/reset-password` , {email} , {withCredentials:true});
+      const response = await axios.post(`${API_BASE_URL}/forgot-password` , {email} , {withCredentials:true});
       return response.data;
     }catch(error){
       console.error(error.response?.data?.message || error.message);
@@ -78,7 +78,17 @@ const authAPI = {
       throw error;
     }
   },
-
+  resetPassord: async(token , newPassword) =>{
+    try{
+      const response = await axios.post(`${API_BASE_URL}/reset-password`,
+        {token , newPassword} , 
+        {withCredentials:true});
+      return response.data;
+    }catch(error){
+      console.error(error.response?.data?.message || error.message);
+      throw error;
+    }
+  }
 
 };
 

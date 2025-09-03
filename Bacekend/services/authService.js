@@ -71,7 +71,7 @@ const updateUserById = async (userId, updates, transaction) => {
     return user;
 };
 
-const findUserByUsernameOrEmail = async (identifier, transaction) => {
+const findUserByUsernameOrEmail = async (identifier, transaction=null) => {
     if (!identifier) throw new Error("Username or email is required");
 
     const user = await User.findOne({
@@ -130,7 +130,9 @@ const createToken = async(userId) => {
     return newToken;
 }
 
-const checkIfActiveTokenExist = async ({ userId, token }) => {
+const checkIfActiveTokenExist = async (userId=null, token=null) => {
+    console.log(userId , token);
+    
     if (!userId && !token) {
         throw new Error("either userId or token is required");
     }
@@ -185,6 +187,21 @@ const resetUserPassword = async (token , newPassword) => {
 
     await existToken.update({used:true});
 
+    const subject = 'Your Password Has Been Reset Successfully';
+
+    const html =
+     `<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+            <h2>Password Reset Confirmation</h2>
+            <p>Hi ${user.firstname || user.username},</p>
+            <p>Your password has been successfully reset.</p>
+            <p>If you did not perform this action, please <a href="https://yourwebsite.com/reset-password">contact support immediately</a>.</p>
+            <p>You can now <a href="https://yourwebsite.com/login">log in</a> with your new password.</p>
+            <br>
+            <p>Thank you,<br>The YourWebsite Team</p>
+        </div>`;
+
+    await sendEmail(user.email , subject , html);
+    
     return true;
 }
 module.exports = {
