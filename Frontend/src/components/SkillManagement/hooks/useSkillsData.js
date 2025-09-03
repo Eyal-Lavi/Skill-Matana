@@ -53,22 +53,24 @@ export const useSkillsData = () => {
         throw new Error('Failed to fetch skills');
       }
       
-      const data = await response.json();
+      const responseJson = await response.json();
       
       if (reset) {
-        setSkills(data.skills);
+        console.log(responseJson);
+        
+        setSkills(responseJson.data);
         setPagination(prev => ({
           ...prev,
-          offset: data.skills.length,
-          hasMore: data.hasMore,
-          total: data.total
+          offset: responseJson.data.length,
+          hasMore: responseJson.hasMore,
+          total: responseJson.total
         }));
       } else {
-        setSkills(prev => [...prev, ...data.skills]);
+        setSkills(prev => [...prev, ...responseJson.data]);
         setPagination(prev => ({
           ...prev,
-          offset: prev.offset + data.skills.length,
-          hasMore: data.hasMore
+          offset: prev.offset + responseJson.data.length,
+          hasMore: responseJson.hasMore
         }));
       }
     } catch (err) {
