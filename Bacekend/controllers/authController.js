@@ -160,6 +160,10 @@ const login = async (request, response, next) => {
     const profileImg = existUser.Images.find(img => img.typeId === 1);
     const bannerImg = existUser.Images.find(img => img.typeId === 2);
     
+    const skills = existUser.skills.map(skill => ({
+      id:skill.id,
+      name:skill.name
+    }));
     
 
     request.session.isLoggedIn = true;
@@ -173,7 +177,8 @@ const login = async (request, response, next) => {
       gender: existUser.gender,
       permissions,
       profilePicture: profileImg?.url || null,
-      bannerPicture: bannerImg?.url || null
+      bannerPicture: bannerImg?.url || null,
+      skills
     };
     
 
