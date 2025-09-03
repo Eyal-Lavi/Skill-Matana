@@ -5,7 +5,7 @@ import styles from "./LoginForm.module.scss";
 import authAPI from './AuthAPI';
 
 function ForgotPassword() {
-    const {register , handleSubmit ,setError ,formState:{errors, isSubmitting}} = useForm();
+    const {register , handleSubmit ,setError, clearErrors ,formState:{errors, isSubmitting}} = useForm({mode:'onChange'});
     const [succses , setSuccess] = useState();
     
 
@@ -13,12 +13,15 @@ function ForgotPassword() {
         try{
             await authAPI.sendLinkReset(formData.email);
             setSuccess(true);
-            setError(null);
+            clearErrors('email');
         }catch(error){
-            setError(error.response?.data?.message || error.message);
+            setError("email", {
+                type: "server",
+                message: error.response?.data?.message || "Something went wrong",
+              });
         }
     }
-    if (succses) {return <p>Link send successfuly to your inbox</p>}
+    if (succses) {return (<div className={styles.formContainer}><p className={styles.successText}>Link send successfuly to your inbox</p></div>)}
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
         <h2>Forgot Password</h2>

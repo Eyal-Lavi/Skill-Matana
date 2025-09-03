@@ -191,14 +191,18 @@ const resetUserPassword = async (token , newPassword) => {
 
     const html =
      `<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
-            <h2>Password Reset Confirmation</h2>
-            <p>Hi ${user.firstname || user.username},</p>
-            <p>Your password has been successfully reset.</p>
-            <p>If you did not perform this action, please <a href="https://yourwebsite.com/reset-password">contact support immediately</a>.</p>
-            <p>You can now <a href="https://yourwebsite.com/login">log in</a> with your new password.</p>
-            <br>
-            <p>Thank you,<br>The YourWebsite Team</p>
-        </div>`;
+         <h2>Password Reset Confirmation</h2>
+         <p>Hi ${user.firstname},</p>
+         <p>Your password has been successfully reset.</p>
+         <p>If you did not perform this action, please 
+        <a href="mailto:${process.env.SMTP_USER}?subject=Support Request&body=Hello, I need help with my account.">
+            contact support immediately
+        </a>.
+    </p>
+    <p>You can now <a href="${process.env.CLIENT_URL}/auth/login">log in</a> with your new password.</p>
+    <br>
+    <p>Thank you,<br>The SkillMatana Team</p>
+    </div>`
 
     await sendEmail(user.email , subject , html);
     

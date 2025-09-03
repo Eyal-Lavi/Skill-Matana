@@ -71,14 +71,14 @@ const authAPI = {
   },
   checkToken: async(token) => {
     try{
-      const response = await axios.get(`${API_BASE_URL}/check-token/${token}` , {withCredentials:true});
+      const response = await axios.post(`${API_BASE_URL}/check-link` , {token}, {withCredentials:true});
       return response.data;
     }catch(error){
       console.error(error.response?.data?.message || error.message);
       throw error;
     }
   },
-  resetPassord: async(token , newPassword) =>{
+  resetPassword: async(token , newPassword) =>{
     try{
       const response = await axios.post(`${API_BASE_URL}/reset-password`,
         {token , newPassword} , 

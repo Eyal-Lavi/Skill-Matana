@@ -6,14 +6,14 @@ import authAPI from './AuthAPI';
 import { useNavigate } from 'react-router-dom';
 
 function ResetPassword({token}) {
-    const {register , handleSubmit , watch , formState:{errors , isSubmitting }} = useForm();
+    const {register , handleSubmit , watch , formState:{errors , isSubmitting }} = useForm({mode:'onChange'});
     const [isSuccess , setIsSuccess] = useState(false);
     const [errorMessage , setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const onSubmit = async(formData) => {
         try{
-            const result = await authAPI.resetPassord(token , formData.newPassword);
+            const result = await authAPI.resetPassword(token , formData.newPassword);
             setIsSuccess(true);
 
             setTimeout(() =>{

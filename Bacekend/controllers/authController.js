@@ -292,7 +292,7 @@ const sendPasswordResetLink = async(request, response, next) => {
     const exsitsToken = await checkIfActiveTokenExist(user.id);
     let token = exsitsToken ?  exsitsToken.token : (await createToken(user.id)).token;
     
-    const link = `${process.env.CLIENT_URL}/reset-password/${token}` 
+    const link = `${process.env.CLIENT_URL}/auth/reset-password/${token}`;
     await sendEmailWithLinkReset(email , link);
   
     return response.status(200).json({message:'Check your inbox'});
