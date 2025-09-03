@@ -160,6 +160,7 @@ const login = async (request, response, next) => {
     const profileImg = existUser.Images.find(img => img.typeId === 1);
     const bannerImg = existUser.Images.find(img => img.typeId === 2);
     
+      debugger;
     const skills = existUser.skills.map(skill => ({
       id:skill.id,
       name:skill.name
