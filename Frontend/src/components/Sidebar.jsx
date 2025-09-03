@@ -12,7 +12,6 @@ export default function Sidebar({ items, variant = "dashboard" }) {
               key={item.path}
               to={item.path}
               end={item.end}
-              // exact
               className={({ isActive }) =>
                 `${style.navItem} ${isActive ? style.active : ""}`
               }
