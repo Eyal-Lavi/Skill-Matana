@@ -1,5 +1,5 @@
 const {Op} = require('sequelize');
-const {User, PasswordResetToken} = require('../models');
+const {User, PasswordResetToken, Skill} = require('../models');
 const {Permission} = require('../models');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
@@ -42,6 +42,16 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
                 as: 'Images',
                 // through:{attributes:[]}
             },
+            {
+                model:Skill,
+                attributes:['id' , 'name'],
+                where:{
+                    status:{
+                        [Op.eq]:1
+                    }
+                },
+                as:'skills'
+            }
         ],
         transaction
     });

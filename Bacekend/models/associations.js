@@ -26,13 +26,13 @@ module.exports = (models) => {
         through: SkillUser,
         foreignKey: 'userId',
         otherKey: 'skillId',
-        // as: 'skills',
+        as: 'skills',
     });
     Skill.belongsToMany(User, {
         through: SkillUser,
         foreignKey: 'skillId',
         otherKey: 'userId',
-        // as: 'users',
+        as: 'users',
     });
 
     // Define Many-to-Many Relationships
