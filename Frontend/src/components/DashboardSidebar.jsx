@@ -10,7 +10,7 @@ import {
 import Sidebar from "./Sidebar";
 
 const navItems = [
-  { path: "/dashboard", icon: faHome, label: "Overview" },
+  { path: "/dashboard", icon: faHome, label: "Overview",end:true },
   { path: "/dashboard/search", icon: faSearch, label: "Search" },
   { path: "/dashboard/profile", icon: faUser, label: "Profile" },
   { path: "/dashboard/skills", icon: faChartBar, label: "My Skills" },
