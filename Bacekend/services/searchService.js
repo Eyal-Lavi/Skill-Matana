@@ -21,7 +21,7 @@ const searchUsersByNameAndSkillIds  = async(name , skillId) => {
             include:[
                 {
                     model:Skill,
-                    as:'Skills',
+                    as:'skills',
                     through:{attributes:[]}
                 },
                 {
@@ -40,10 +40,10 @@ const searchUsersByNameAndSkillIds  = async(name , skillId) => {
       attributes: ['id'],
       include: [{
         model: Skill,
-        as: 'Skills',
+        as: 'skills',
         where: {
           id: {
-            [Op.in]: skillId
+            [Op.in]: Array.isArray(skillId) ? skillId : [skillId]
           }
         },
         attributes: [], // no need to fetch skill details
@@ -68,7 +68,7 @@ const searchUsersByNameAndSkillIds  = async(name , skillId) => {
       include: [
         {
           model: Skill,
-          as: 'Skills',
+          as: 'skills',
           through: { attributes: [] }
         },
         {
