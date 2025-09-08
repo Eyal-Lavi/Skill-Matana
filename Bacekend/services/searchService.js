@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const {User , Skill , UserImage } = require('../models');
-const searchUsersByNameAndSkillIds  = async(name , skillId) => {
+const searchUsersByNameAndSkillIds  = async(name , skillId, userIdRequester) => {
     console.log(1);
     
     const whereClause = {};
@@ -49,7 +49,7 @@ const searchUsersByNameAndSkillIds  = async(name , skillId) => {
       }]
     });
     
-    const userIds = usersWithSkill.map(user => user.id);
+    const userIds = usersWithSkill.map(user => user.id).filter(id=> id !== userIdRequester);
     
     if(userIds.length === 0) {
       return [];

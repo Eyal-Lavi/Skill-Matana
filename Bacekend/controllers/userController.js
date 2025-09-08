@@ -3,6 +3,7 @@ const {searchUsersByNameAndSkillIds} = require('../services/searchService');
 const searchUsers = async(request , response , next) =>{
     try{
         let { name , skillId} = request.query;
+        const userIdRequester = request.session.user.id;
 
         if(!name && !skillId){
             return response.status(400).json({message:'Missing required query parameters: name and skillId.'})
@@ -16,10 +17,10 @@ const searchUsers = async(request , response , next) =>{
         }
         console.log(name , skillId);
         
-
+        
        
 
-        const users = await searchUsersByNameAndSkillIds(name , skillId);
+        const users = await searchUsersByNameAndSkillIds(name , skillId,userIdRequester);
         if(users.length === 0){
            return response.status(404).json({ message: 'No users found matching the criteria.' });
         }
