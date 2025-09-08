@@ -34,8 +34,6 @@ const searchUsersByNameAndSkillIds  = async(name , skillId) => {
         });
     }
 
-    console.log(2);
-
     const usersWithSkill = await User.findAll({
       attributes: ['id'],
       include: [{
