@@ -6,8 +6,6 @@ const {Skill,SkillUser,UserPermission,Permission} = require('../models'); // Imp
 
 const getAll = async (options = {}) => {
     const {
-        limit = 10,
-        offset = 0,
         search = '',
         status = null,
         sortBy = 'name',
