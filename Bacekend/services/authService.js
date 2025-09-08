@@ -50,6 +50,7 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
                         [Op.eq]:1
                     }
                 },
+                required:false,
                 as:'skills'
             }
         ],
