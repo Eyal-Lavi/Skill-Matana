@@ -29,8 +29,6 @@ const getAll = async (options = {}) => {
 
     const skills = await Skill.findAndCountAll({
         where: whereClause,
-        // limit: parseInt(limit),
-        // offset: parseInt(offset),
         order: [[sortBy, sortOrder.toUpperCase()]],
         attributes: ['id', 'name', 'status']
     });
@@ -38,7 +36,6 @@ const getAll = async (options = {}) => {
     return {
         data: skills.rows,
         total: skills.count,
-        // hasMore: skills.count > offset + skills.rows.length
     };
 }
 
