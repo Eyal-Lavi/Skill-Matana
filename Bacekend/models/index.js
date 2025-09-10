@@ -10,6 +10,7 @@ const ImageType = require('./imageType.js');
 const SkillRequest = require('./skillRequests.js');
 const ContactRequest = require('./contactRequests.js');
 const PasswordResetToken = require('./passwordResetToken.js');
+const Connection = require('./connection.js');
 
 const models = {
     Permission,
@@ -23,6 +24,7 @@ const models = {
     SkillRequest,
     ContactRequest,
     PasswordResetToken,
+    Connection,
 };
 
 require('./associations.js')(models);
@@ -39,4 +41,5 @@ module.exports ={
     SkillRequest,
     ContactRequest,
     PasswordResetToken,
+    Connection,
 }

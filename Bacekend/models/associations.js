@@ -1,103 +1,129 @@
 module.exports = (models) => {
-    const {
-        User,
-        UserImage,
-        Skill,
-        SkillUser,
-        Permission,
-        UserPermission,
-        Status,
-        ImageType,
-        SkillRequest,
-        ContactRequest,
-        PasswordResetToken
-    } = models;
+  const {
+    User,
+    UserImage,
+    Skill,
+    SkillUser,
+    Permission,
+    UserPermission,
+    Status,
+    ImageType,
+    SkillRequest,
+    ContactRequest,
+    PasswordResetToken,
+    Connection,
+  } = models;
 
-    User.hasMany(UserImage, {
-        foreignKey: 'userId',
-        as: 'Images',
-    });
-    UserImage.belongsTo(User, {
-        foreignKey: 'userId',
-        // as: 'user',
-    });
+  User.hasMany(UserImage, {
+    foreignKey: "userId",
+    as: "Images",
+  });
+  UserImage.belongsTo(User, {
+    foreignKey: "userId",
+    // as: 'user',
+  });
 
-    User.belongsToMany(Skill, {
-        through: SkillUser,
-        foreignKey: 'userId',
-        otherKey: 'skillId',
-        as: 'skills',
-    });
-    Skill.belongsToMany(User, {
-        through: SkillUser,
-        foreignKey: 'skillId',
-        otherKey: 'userId',
-        as: 'users',
-    });
+  User.belongsToMany(Skill, {
+    through: SkillUser,
+    foreignKey: "userId",
+    otherKey: "skillId",
+    as: "skills",
+  });
+  Skill.belongsToMany(User, {
+    through: SkillUser,
+    foreignKey: "skillId",
+    otherKey: "userId",
+    as: "users",
+  });
 
-    // Define Many-to-Many Relationships
-    User.belongsToMany(Permission, {  // User belongs to many permissions 
-        through: UserPermission,//through UserPermission
-        foreignKey: 'userId' // in UserPermission the foreignKey that belongs to User is 'userId'
-    });
+  // Define Many-to-Many Relationships
+  User.belongsToMany(Permission, {
+    // User belongs to many permissions
+    through: UserPermission, //through UserPermission
+    foreignKey: "userId", // in UserPermission the foreignKey that belongs to User is 'userId'
+  });
 
-    Permission.belongsToMany(User, { //Permission belongs to many users 
-        through: UserPermission,  // through UserPermission
-        foreignKey: 'permissionId'// in UserPermission the foreignKey that belongs to Permission is 'permissionId'
-    });
+  Permission.belongsToMany(User, {
+    //Permission belongs to many users
+    through: UserPermission, // through UserPermission
+    foreignKey: "permissionId", // in UserPermission the foreignKey that belongs to Permission is 'permissionId'
+  });
 
-    User.belongsTo(Status, {
-        foreignKey: 'status',
-        // as: 'statusInfo',
-    });
+  User.belongsTo(Status, {
+    foreignKey: "status",
+    // as: 'statusInfo',
+  });
 
-    UserImage.belongsTo(ImageType , {
-        foreignKey:'typeId',
-        as:'type'
-    });
+  UserImage.belongsTo(ImageType, {
+    foreignKey: "typeId",
+    as: "type",
+  });
 
-    ImageType.hasMany(UserImage , {
-        foreignKey:'typeId',
-        as:'Images'
-    });
+  ImageType.hasMany(UserImage, {
+    foreignKey: "typeId",
+    as: "Images",
+  });
 
-    User.hasMany(models.SkillRequest, {
-        foreignKey: 'requestedBy',
-        as: 'skillRequests',
-    });
+  User.hasMany(models.SkillRequest, {
+    foreignKey: "requestedBy",
+    as: "skillRequests",
+  });
 
-    SkillRequest.belongsTo(User, {
-        foreignKey: 'requestedBy',
-        as: 'requester',
-    });
+  SkillRequest.belongsTo(User, {
+    foreignKey: "requestedBy",
+    as: "requester",
+  });
+  User.hasMany(ContactRequest, {
+    foreignKey: { name: "requestedBy", allowNull: false },
+    as: "contactRequests", 
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  ContactRequest.belongsTo(User, {
+    foreignKey: { name: "requestedBy", allowNull: false },
+    as: "requester",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
 
-    User.hasMany(models.ContactRequest, {
-        foreignKey: 'requestedBy',
-        as: 'contactRequests',
-    });
+  User.hasMany(ContactRequest, {
+    foreignKey: { name: "requestedTo", allowNull: false },
+    as: "incomingContactRequests",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  ContactRequest.belongsTo(User, {
+    foreignKey: { name: "requestedTo", allowNull: false },
+    as: "recipient",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
 
-    ContactRequest.belongsTo(User, {
-        foreignKey: 'requestedBy',
-        as: 'requester',
-    });
+  PasswordResetToken.belongsTo(User, {
+    foreignKey: "userId",
+    as: "user",
+  });
 
-    User.hasMany(models.ContactRequest, {
-        foreignKey: 'requestedTo',
-        as: 'incomingContactRequests',
-    });
-    
-    ContactRequest.belongsTo(User, {
-        foreignKey: 'requestedTo',
-        as: 'recipient',
-    });
+  User.hasMany(PasswordResetToken, {
+    foreignKey: "userId",
+    as: "resetToken",
+  });
 
-    PasswordResetToken.belongsTo(User , {
-        foreignKey:'userId',
-        as:'user'
-    });
+  // Connections: symmetric user-to-user relationship via Connection table
+  Connection.belongsTo(User, { foreignKey: 'userA', as: 'userAInfo' });
+  Connection.belongsTo(User, { foreignKey: 'userB', as: 'userBInfo' });
 
-    User.hasMany(PasswordResetToken , {
-        foreignKey:'userId',
-        as:'resetToken'
-    });
+  User.belongsToMany(User, {
+    through: Connection,
+    as: 'connectionsA',
+    foreignKey: 'userA',
+    otherKey: 'userB',
+  });
+
+  User.belongsToMany(User, {
+    through: Connection,
+    as: 'connectionsB',
+    foreignKey: 'userB',
+    otherKey: 'userA',
+  });
 };

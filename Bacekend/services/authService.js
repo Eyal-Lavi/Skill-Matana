@@ -1,5 +1,5 @@
 const {Op} = require('sequelize');
-const {User, PasswordResetToken, Skill} = require('../models');
+const {User, PasswordResetToken, Skill, Connection} = require('../models');
 const {Permission} = require('../models');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
@@ -52,6 +52,23 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
                 },
                 required:false,
                 as:'skills'
+            },
+            // Connections from both directions
+            {
+                model: User,
+                as: 'connectionsA',
+                attributes: ['id','firstName','lastName'],
+                through: { attributes: [] },
+                include: [{ model: UserImage, as: 'Images', attributes: ['url','typeId'] }],
+                required: false,
+            },
+            {
+                model: User,
+                as: 'connectionsB',
+                attributes: ['id','firstName','lastName'],
+                through: { attributes: [] },
+                include: [{ model: UserImage, as: 'Images', attributes: ['url','typeId'] }],
+                required: false,
             }
         ],
         transaction

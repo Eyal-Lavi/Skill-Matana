@@ -164,6 +164,23 @@ const login = async (request, response, next) => {
       id:skill.id,
       name:skill.name
     }));
+
+    // Build connections array (both directions)
+    const mapConn = (u) => {
+      const imgs = Array.isArray(u.Images) ? u.Images : [];
+      const prof = imgs.find(img => img.typeId === 1);
+      return {
+        id: u.id,
+        firstName: u.firstName,
+        lastName: u.lastName,
+        profilePicture: prof?.url || null,
+      };
+    };
+    const connsA = Array.isArray(existUser.connectionsA) ? existUser.connectionsA.map(mapConn) : [];
+    const connsB = Array.isArray(existUser.connectionsB) ? existUser.connectionsB.map(mapConn) : [];
+    const connectionsMap = new Map();
+    [...connsA, ...connsB].forEach(c => { if (!connectionsMap.has(c.id)) connectionsMap.set(c.id, c); });
+    const connections = Array.from(connectionsMap.values());
     
 
     request.session.isLoggedIn = true;
@@ -178,7 +195,8 @@ const login = async (request, response, next) => {
       permissions,
       profilePicture: profileImg?.url || null,
       bannerPicture: bannerImg?.url || null,
-      skills
+      skills,
+      connections
     };
     
 

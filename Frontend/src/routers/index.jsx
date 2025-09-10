@@ -11,7 +11,7 @@ import Login from "../pages/Login";
 import GuestRoute from "./GuestRoute";
 import AdminRoute from "./AdminRoute";
 import AdminPanel from "../pages/AdminPanel";
-import AdminLayout from "../components/AdminLayout";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 import Error from "../pages/Error";
 import ProtectedRoute from "./ProtectedRoute";
 import AuthenticatedRoute from "./AuthenticatedRoute";
@@ -23,6 +23,7 @@ import ResetPassword from "../features/auth/ResetPassword";
 import ForgotPassword from "../features/auth/ForgotPassword";
 import ResetGuardRoute from './ResetGuardRoute';
 import SkillManagement from "../components/SkillManagement";
+import ContactManagement from "../components/ContactManagement";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
           {
             path: "skills",
             element: <DashboardSkills />,
+          },
+          {
+            path: "contact-requests",
+            element: <ContactManagement />,
           },
           {
             path: "bookmarks",

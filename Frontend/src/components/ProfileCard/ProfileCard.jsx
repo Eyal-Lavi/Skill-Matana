@@ -7,16 +7,16 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import "./ProfileCard.scss";
-import Tooltip from "../utils/components/Tooltip/Tooltip";
-import Tag from "../utils/components/Tag/Tag";
+import Tooltip from "../../utils/components/Tooltip/Tooltip";
+import Tag from "../../utils/components/Tag/Tag";
 
 export default function ProfileCard({
   avatarUrl = "https://vucvdpamtrjkzmubwlts.supabase.co/storage/v1/object/public/users/user_2zMtrqo9RMaaIn4f8F2z3oeY497/avatar.png",
   name = "Default User",
   title = "Developer",
   skills = [
-    { id: "1000" ,name: "No skills"},
-    { id: "1000" ,name: "No skills"},
+    { id: "1000", name: "No skills" },
+    { id: "1000", name: "No skills" },
   ],
   bio = "Building beautiful and intuitive digital experiences. Passionate about design systems and web animation.",
   socialLinks = [
@@ -27,7 +27,7 @@ export default function ProfileCard({
   ],
   actionButton = {
     text: "Contact Me",
-    href: "#",
+    onClick: () => alert("Contact Me clicked!"),
   },
 }) {
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -97,7 +97,10 @@ const SocialButton = ({ item, setHoveredItem, hoveredItem }) => (
 const ActionButton = ({ action }) => (
   <a
     href={action.href}
-    onClick={(e) => e.preventDefault()}
+    onClick={(e) => {
+      e.preventDefault();
+      action.onClick();
+    }}
     className="action-button"
   >
     <span>{action.text}</span>

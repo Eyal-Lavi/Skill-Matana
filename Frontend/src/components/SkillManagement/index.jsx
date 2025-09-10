@@ -12,7 +12,7 @@ import { useSkillActions } from './hooks/useSkillActions';
 import TabNavigation from './TabNavigation';
 import ExistingSkillsSection from './ExistingSkillsSection';
 import PendingRequestsSection from './PendingRequestsSection';
-import AddSkillModal from '../AddSkillModal';
+import AddSkillModal from './AddSkillModal/AddSkillModal.jsx';
 import styles from './SkillManagement.module.scss';
 
 const SkillManagement = () => {

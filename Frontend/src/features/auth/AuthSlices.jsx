@@ -11,7 +11,9 @@ const initialState = {
     permissions: null,
     gender: null,
     profilePicture: 'asdasd',
-    skills : null
+    bannerPicture: null,
+    skills : null,
+    connections: []
   }
 };
 
@@ -31,7 +33,8 @@ const authSlice = createSlice({
             gender: action.payload.gender,
             profilePicture: action.payload.profilePicture,
             bannerPicture: action.payload.bannerPicture,
-            skills : action.payload.skills
+            skills : action.payload.skills,
+            connections: action.payload.connections || []
         };
 
     },
@@ -48,7 +51,8 @@ const authSlice = createSlice({
             gender: action.payload.gender,
             profilePicture: action.payload.profilePicture,
             bannerPicture: action.payload.bannerPicture,
-            skills : action.payload.skills
+            skills : action.payload.skills,
+            connections: action.payload.connections || []
         };
     },
     logout(state) {
@@ -63,7 +67,8 @@ const authSlice = createSlice({
             gender: null,
             profilePicture: null,
             bannerPicture: null,
-            skills : null
+            skills : null,
+            connections: []
         };
     },
   },
