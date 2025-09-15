@@ -24,6 +24,7 @@ import ForgotPassword from "../features/auth/ForgotPassword";
 import ResetGuardRoute from './ResetGuardRoute';
 import SkillManagement from "../components/SkillManagement";
 import ContactManagement from "../components/ContactManagement";
+import MeetingRoom from "../pages/MeetingRoom";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
             <Profile />
           </AuthenticatedRoute>
         ),
+      },
+      {
+        path: "meeting/:meetingId",
+        element: <MeetingRoom />,
       },
       {
         path: "admin",
