@@ -12,10 +12,7 @@ export default function MeetingRoom() {
   useEffect(() => {
     (async () => {
       try {
-        // const qs = window.location.search?.replace(/^\?/, '') || '';
-        // const url =
-        //  qs ? `http://localhost:3000/meetings/${meetingId}/join-token?${qs}` : 
-        
+
         const url = `http://localhost:3000/meetings/${meetingId}/join-token`;
         const res = await fetch(url, { credentials: 'include' });
         const body = await res.json().catch(() => ({}));
@@ -52,14 +49,14 @@ export default function MeetingRoom() {
       showTextChat: true,
       showUserList: true,
       // Share link
-      sharedLinks: [{ name: 'Meeting Link', url: `${window.location.origin}/meeting/${meetingId}` }],
+      sharedLinks: [{ name: 'Meeting Link', url: `${window.location.origin}/meeting/${roomId}` }],
       // Basic permissions
       maxUsers: 12,
       layout: 'Auto',
     });
 
     return () => zp.destroy();
-  }, [data, meetingId]);
+  }, [data, roomId]);
 
   if (error) return <div style={{ padding: 24 }}>Error: {error}</div>;
   return <div ref={containerRef} style={{ width: '100%', height: '90vh' }} />;

@@ -52,8 +52,8 @@ router.get("/:meetingId/join-token", (req, res) => {
     const ttl = Number(process.env.TOKEN_TTL_SECONDS || 3600);
 
     const { meetingId } = req.params;
-    const userId = String(req.query.userId || "dev-user").slice(0, 64);
-    const userName = String(req.query.userName || "Dev User").slice(0, 64);
+    const userId = String(req.session.user.id || "No have Id").slice(0, 64);
+    const userName = String(req.session.user.username || "No have Username").slice(0, 64);
 
     const token = generateToken04(appId, userId, secret, ttl, "");
     res.json({ appId, token, roomId: String(meetingId), userId, userName });
