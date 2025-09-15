@@ -49,14 +49,14 @@ export default function MeetingRoom() {
       showTextChat: true,
       showUserList: true,
       // Share link
-      sharedLinks: [{ name: 'Meeting Link', url: `${window.location.origin}/meeting/${roomId}` }],
+      sharedLinks: [{ name: 'Meeting Link', url: `${window.location.origin}/meeting/${meetingId}` }],
       // Basic permissions
       maxUsers: 12,
       layout: 'Auto',
     });
 
     return () => zp.destroy();
-  }, [data, roomId]);
+  }, [data, meetingId]);
 
   if (error) return <div style={{ padding: 24 }}>Error: {error}</div>;
   return <div ref={containerRef} style={{ width: '100%', height: '90vh' }} />;
