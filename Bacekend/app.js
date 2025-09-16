@@ -45,51 +45,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
- 
 
-// פונקציה לבניית פרומפט מתוך ההיסטוריה בלבד
-function buildChatPrompt(messages) {
-  const chatHistory = messages.map((msg) =>
-    msg.from === 'user'
-      ? `👤 משתמש: ${msg.text}`
-      : `🤖 עוזר: ${msg.text}`
-  ).join('\n');
-
-  return `
-ענה בעברית בלבד ובהקשר לשיחה.
-
-🔁 היסטוריית שיחה:
-${chatHistory}
-
-🤖 עוזר:
-  `;
-}
-
-// פנייה ל-Ollama
-async function queryOllama(prompt) {
-  const res = await axios.post('http://localhost:11434/api/generate', {
-    model: 'llama3',
-    prompt,
-    stream: false
-  });
-
-  return res.data.response;
-}
-
-// מסלול POST /ask
-app.post('/ask', async (req, res) => {
-  try {
-    const { messages } = req.body;
-    const prompt = buildChatPrompt(messages);
-    const answer = await queryOllama(prompt);
-
-    res.json({ answer });
-
-  } catch (err) {
-    console.error('❌ Error:', err.message);
-    res.status(500).send('שגיאה בטיפול בשאלה');
-  }
-});
 
 
 app.use("/", routes);
