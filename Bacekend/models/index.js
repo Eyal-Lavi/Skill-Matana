@@ -11,6 +11,9 @@ const SkillRequest = require('./skillRequests.js');
 const ContactRequest = require('./contactRequests.js');
 const PasswordResetToken = require('./passwordResetToken.js');
 const Connection = require('./connection.js');
+const Availability = require('./availability.js');
+const Meeting = require('./meeting.js');
+const MeetingAlert = require('./meetingAlert.js');
 
 const models = {
     Permission,
@@ -25,6 +28,9 @@ const models = {
     ContactRequest,
     PasswordResetToken,
     Connection,
+    Availability,
+    Meeting,
+    MeetingAlert,
 };
 
 require('./associations.js')(models);
@@ -42,4 +48,7 @@ module.exports ={
     ContactRequest,
     PasswordResetToken,
     Connection,
+    Availability,
+    Meeting,
+    MeetingAlert,
 }

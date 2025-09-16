@@ -29,6 +29,7 @@ export default function ProfileCard({
     text: "Contact Me",
     onClick: () => alert("Contact Me clicked!"),
   },
+  extraActions = [],
 }) {
   const [hoveredItem, setHoveredItem] = useState(null);
 
@@ -70,6 +71,24 @@ export default function ProfileCard({
           ))}
         </div>
         <ActionButton action={actionButton} />
+        {Array.isArray(extraActions) && extraActions.length > 0 && (
+          <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+            {extraActions.map((act, idx) => (
+              <a
+                key={idx}
+                href={act.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  act.onClick();
+                }}
+                className="action-button"
+                style={{ padding: '8px 12px' }}
+              >
+                <span>{act.text}</span>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
       <div className="card-glow" />
     </div>

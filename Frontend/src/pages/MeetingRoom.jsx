@@ -27,12 +27,14 @@ export default function MeetingRoom() {
   useEffect(() => {
     if (!data || !containerRef.current) return;
     const { appId, token, roomId, userId, userName } = data;
+
     if (!token) {
       throw new Error("token missing from server response");
     }
+
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
       appId,
-      token,     // זה ה-Token04 שמגיע מהשרת (מתחיל ב-"04")
+      token,
       roomId,
       userId,
       userName
@@ -42,16 +44,16 @@ export default function MeetingRoom() {
     zp.joinRoom({
       container: containerRef.current,
       scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
-      showPreJoinView: true,
+      showPreJoinView: false,
       turnOnCameraWhenJoining: true,
       turnOnMicrophoneWhenJoining: true,
       // Built-in text chat and user list
       showTextChat: true,
       showUserList: true,
       // Share link
-      sharedLinks: [{ name: 'Meeting Link', url: `${window.location.origin}/meeting/${meetingId}` }],
+      // sharedLinks: [{ name: 'Meeting Link', url: `${window.location.origin}/meeting/${meetingId}` }],
       // Basic permissions
-      maxUsers: 12,
+      maxUsers: 2,
       layout: 'Auto',
     });
 

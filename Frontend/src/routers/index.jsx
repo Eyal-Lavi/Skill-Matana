@@ -25,6 +25,7 @@ import ResetGuardRoute from './ResetGuardRoute';
 import SkillManagement from "../components/SkillManagement";
 import ContactManagement from "../components/ContactManagement";
 import MeetingRoom from "../pages/MeetingRoom";
+import MyAvailability from "../pages/MyAvailability";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -101,6 +102,10 @@ const router = createBrowserRouter([
           {
             path: "contact-requests",
             element: <ContactManagement />,
+          },
+          {
+            path: "availability",
+            element: <MyAvailability />,
           },
           {
             path: "bookmarks",

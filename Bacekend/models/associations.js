@@ -12,6 +12,9 @@ module.exports = (models) => {
     ContactRequest,
     PasswordResetToken,
     Connection,
+    Availability,
+    Meeting,
+    MeetingAlert
   } = models;
 
   User.hasMany(UserImage, {
@@ -126,4 +129,17 @@ module.exports = (models) => {
     foreignKey: 'userB',
     otherKey: 'userA',
   });
+
+  Availability.belongsTo(User, { foreignKey: 'userId', as: 'owner' });
+  User.hasMany(Availability, { foreignKey: 'userId', as: 'availabilities' });
+
+
+  Meeting.belongsTo(User, { foreignKey: 'hostId', as: 'host' });
+  Meeting.belongsTo(User, { foreignKey: 'guestId', as: 'guest' });
+
+  Meeting.belongsTo(Availability, { foreignKey: 'availabilityId', as: 'availability' });
+  Availability.hasOne(Meeting, { foreignKey: 'availabilityId', as: 'meeting' });
+
+  MeetingAlert.belongsTo(User, { foreignKey: 'watcherId', as: 'watcher' });
+  MeetingAlert.belongsTo(User, { foreignKey: 'targetUserId', as: 'targetUser' });
 };

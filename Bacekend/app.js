@@ -9,6 +9,7 @@ const { sequelize } = require('./utils/database'); //create a connection to the 
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const routes = require('./routes/index');
+const { startReminderScheduler } = require('./services/meetingReminderService');
 const SequelizeStore = require('express-session-sequelize')(session.Store);
 const xss = require('xss-clean');
 const helmet = require('helmet');
@@ -102,4 +103,9 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, async () => {
   console.log('server started');
+  try {
+    startReminderScheduler();
+  } catch (e) {
+    console.error('Failed to start reminder scheduler', e.message);
+  }
 });
