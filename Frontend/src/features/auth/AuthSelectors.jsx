@@ -13,5 +13,6 @@ export const selectConnections = (state) => state.auth.user.connections || [];
 export const selectGender = (state) => state.auth.user.gender;
 export const selectProfilePicture = (state) => state.auth.user.profilePicture;
 
+
 export const selectIsAdmin = (state) => 
   state.auth.user?.permissions?.some(permission => permission.id === 99);
