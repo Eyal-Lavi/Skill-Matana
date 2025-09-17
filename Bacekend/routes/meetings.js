@@ -41,12 +41,12 @@ router.get('/:meetingId/join-token',isLoggedIn,isMeetingParticipant, limiter, (r
     const ttl = Number(process.env.TOKEN_TTL_SECONDS || 3600);
 
     // const { meetingId } = req.params;
-    const meetingId = req.meeting;
+    const {roomId} = req.meeting;
     const userId = String(req.session.user?.id || 'guest').slice(0, 64);
     const userName = String(req.session.user?.username || 'Guest').slice(0, 64);
 
     const token = generateToken04(appId, userId, secret, ttl, '');
-    res.json({ appId, token, roomId: String(meetingId), userId, userName });
+    res.json({ appId, token, roomId, userId, userName });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: e.message || 'failed_to_create_token' });

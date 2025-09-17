@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Meeting } = require('../models');
 
 const isMeetingParticipant = async (req, res, next) =>{
@@ -18,23 +19,27 @@ const isMeetingParticipant = async (req, res, next) =>{
       return res.status(400).json({ error: 'Invalid meetingId' });
     }
 
-    const meeting = await Meeting.findByPk(meetingIdNum, {
-      attributes: ['id', 'host_id', 'guest_id'],
+    const meeting = await Meeting.findOne({
+        where:{
+            id: meetingIdNum, 
+            status:'scheduled',
+            startTime: { [Op.lte]: new Date(Date.now() + 5 * 60 * 1000) },
+            endTime: { [Op.gt]: new Date() }
+        }
     });
 
     if (!meeting) {
-      // אפשר לבחור 404 כדי לא לחשוף קיום פגישות
       return res.status(404).json({ error: 'Meeting not found' });
     }
 
     const uid = Number(userId);
-    const allowed = meeting.host_id === uid || meeting.guest_id === uid;
+    const allowed = meeting.hostId === uid || meeting.guestId === uid;
 
     if (!allowed) {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    // אפשר לשמור את המפגש להמשך השרשרת
+
     req.meeting = meeting;
     next();
   } catch (err) {
