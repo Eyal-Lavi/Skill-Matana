@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { isLoggedIn } = require('../middlewares/authMiddleware');
 const meetingsController = require('../controllers/meetingsController');
 const { generateToken04 } = require('../lib/zegoToken');
-
+const {isMeetingParticipant} = require('../middlewares/meetingMiddleware');
 // Optional rate limiter (fallback simple impl if package missing)
 let rateLimit;
 try {
@@ -34,13 +34,14 @@ if (rateLimit) {
   };
 }
 
-router.get('/:meetingId/join-token', limiter, (req, res) => {
+router.get('/:meetingId/join-token',isLoggedIn,isMeetingParticipant, limiter, (req, res) => {
   try {
     const appId = Number(process.env.ZEGO_APP_ID);
     const secret = process.env.ZEGO_SERVER_SECRET;
     const ttl = Number(process.env.TOKEN_TTL_SECONDS || 3600);
 
-    const { meetingId } = req.params;
+    // const { meetingId } = req.params;
+    const meetingId = req.meeting;
     const userId = String(req.session.user?.id || 'guest').slice(0, 64);
     const userName = String(req.session.user?.username || 'Guest').slice(0, 64);
 

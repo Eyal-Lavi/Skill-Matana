@@ -42,7 +42,10 @@ const ConnectionsGrid = ({ connections }) => {
   const onScheduled = (meeting) => {
     if (meeting?.id) {
       navigate(`/meeting/${meeting.id}`);
-    } else if (meeting?.roomId) {
+    }
+    else if (meeting?.roomId) {
+      debugger;
+      alert('נקבע שיעור ונשלח מייל לשני הצדדים.');
       navigate(`/meeting/${meeting.roomId}`);
     }
   };
@@ -103,7 +106,7 @@ const ConnectionsGrid = ({ connections }) => {
             skills={[]}
             bio={''}
             socialLinks={[]}
-            actionButton={{ text: 'Message', onClick: () => handleMessage(c) }}
+            actionButton={{ text: 'Join metting', onClick: () => handleMessage(c) }}
             extraActions={[{ text: 'Schedule', onClick: () => openSchedule(c) }]}
           />
         ))}
