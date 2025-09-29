@@ -23,7 +23,7 @@ const isMeetingParticipant = async (req, res, next) =>{
         where:{
             id: meetingIdNum, 
             status:'scheduled',
-            startTime: { [Op.lte]: new Date(Date.now() + 5 * 60 * 1000) },
+            startTime: { [Op.lte]: new Date(Date.now() - 5 * 60 * 1000) },
             endTime: { [Op.gt]: new Date() }
         }
     });

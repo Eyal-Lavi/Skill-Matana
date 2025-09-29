@@ -27,7 +27,7 @@ export default function LoginForm() {
 
             try {
                 const metaDataResponse = await MetaDataAPI.metaData();
-                debugger;
+                
                 dispatch(metaDataActions.set(metaDataResponse));
             } catch (error) {
                 console.log(error);
