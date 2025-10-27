@@ -2,6 +2,7 @@
 // const Skill = require('../models/skill');
 // const SkillUser = require('../models/skillUser');
 // const UserPermission = require('../models/userPermission');
+const { Op } = require('sequelize');
 const {Skill,SkillUser,UserPermission,Permission} = require('../models'); // Importing associate to ensure associations are set up
 
 const getAll = async (options = {}) => {
@@ -17,7 +18,7 @@ const getAll = async (options = {}) => {
     
     if (search) {
         whereClause.name = {
-            [require('sequelize').Op.iLike]: `%${search}%`
+            [Op.iLike]: `%${search}%`
         };
     }
     
