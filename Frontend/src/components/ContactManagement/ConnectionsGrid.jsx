@@ -44,13 +44,8 @@ const ConnectionsGrid = ({ connections }) => {
   };
 
   const onScheduled = (meeting) => {
-    if (meeting?.id) {
-      navigate(`/meeting/${meeting.id}`);
-    }
-    else if (meeting?.roomId) {
-
+    if (meeting?.roomId) {
       alert('נקבע שיעור ונשלח מייל לשני הצדדים.');
-      navigate(`/meeting/${meeting.roomId}`);
     }
   };
 

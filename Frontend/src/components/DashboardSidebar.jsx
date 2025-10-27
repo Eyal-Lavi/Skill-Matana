@@ -16,7 +16,7 @@ const navItems = [
   { path: "/dashboard", icon: faHome, label: "Overview",end:true },
   { path: "/dashboard/search", icon: faSearch, label: "Search" },
   { path: "/dashboard/profile", icon: faUser, label: "Profile" },
-  { path: "/dashboard/skills", icon: faChartBar, label: "My Skills" },
+  { path: "/dashboard/skills", icon: faChartBar, label: "My Skill" },
   { path: "/dashboard/availability", icon: faCalendarDays, label: "My Availability" },
   // { path: "/dashboard/bookmarks", icon: faBookmark, label: "Bookmarks" },
   { path: "/dashboard/contact-requests", icon: faCodePullRequest, label: "Contact Requests" },

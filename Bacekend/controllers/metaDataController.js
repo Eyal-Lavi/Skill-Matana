@@ -3,7 +3,7 @@ const sequelize = require('../utils/database');
 
 const getMetaData = async (request, response,next) => {
     try {
-        const skills = await getAll();
+        const skills = await getAll({search:'',status:1});
         const metaData = {
             skills: skills,
         };

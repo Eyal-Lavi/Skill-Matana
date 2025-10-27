@@ -7,6 +7,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba($color-primary, 0.1);
   transition: all 0.3s ease;
+  position: relative;
 
   &:hover {
     transform: translateY(-5px);
@@ -14,11 +15,45 @@
     border-color: $color-primary;
   }
 
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: $color-text-primary;
-    margin: 0 0 1rem 0;
+  .skillHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $color-text-primary;
+      margin: 0;
+      flex: 1;
+    }
+
+    .deleteButton {
+      background: rgba($color-error, 0.1);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem;
+      cursor: pointer;
+      color: $color-error;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+
+      &:hover {
+        background: rgba($color-error, 0.2);
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
   }
 
   p {
@@ -26,6 +61,23 @@
     color: $color-text-secondary;
     margin: 1rem 0 0 0;
     line-height: 1.5;
+  }
+
+  .skillBadge {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, rgba($color-accent, 0.1) 0%, rgba($color-primary, 0.1) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba($color-accent, 0.2);
+
+    span {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $color-accent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
   }
 }
 

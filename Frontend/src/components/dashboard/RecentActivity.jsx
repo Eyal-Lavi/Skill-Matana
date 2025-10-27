@@ -1,42 +1,93 @@
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import ActivityItem from "./ActivityItem";
+import meetingsAPI from '../../services/meetingsAPI';
 import style from "./RecentActivity.module.scss";
 
-const activityData = [
-  {
-    icon: "🎨",
-    title: "UI/UX Design",
-    description: "Completed a new project review",
-    time: "2 hours ago"
-  },
-  {
-    icon: "💻",
-    title: "React Development",
-    description: "Started learning new hooks",
-    time: "1 day ago"
-  },
-  {
-    icon: "📱",
-    title: "Mobile Development",
-    description: "Updated portfolio with new projects",
-    time: "3 days ago"
-  }
-];
-
 export default function RecentActivity() {
+  const user = useSelector((s) => s.auth?.user);
+  const navigate = useNavigate();
+  const [activeMeetings, setActiveMeetings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.id) {
+      loadActiveMeetings();
+    }
+  }, [user?.id]);
+
+  const loadActiveMeetings = async () => {
+    try {
+      const response = await meetingsAPI.getMyMeetings('scheduled');
+      const meetings = response?.meetings || [];
+      
+      // Filter active meetings (currently happening)
+      const now = new Date();
+      const active = meetings.filter(meeting => {
+        const startTime = new Date(meeting.startTime);
+        const endTime = new Date(meeting.endTime);
+        return startTime <= now && endTime >= now;
+      });
+      
+      setActiveMeetings(active);
+    } catch (err) {
+      console.error('Error loading active meetings:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getMeetingPartner = (meeting) => {
+    const currentUserId = user?.id;
+    if (currentUserId === meeting.host?.id) {
+      return meeting.guest;
+    }
+    return meeting.host;
+  };
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('he-IL', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const handleJoinMeeting = (meetingId) => {
+    navigate(`/meeting/${meetingId}`);
+  };
+
   return (
     <div className={style.recentActivity}>
-      <h2>Recent Activity</h2>
-      <div className={style.activityList}>
-        {activityData.map((activity, index) => (
-          <ActivityItem
-            key={index}
-            icon={activity.icon}
-            title={activity.title}
-            description={activity.description}
-            time={activity.time}
-          />
-        ))}
-      </div>
+      <h2>פעילות אחרונה</h2>
+      {loading ? (
+        <div className={style.loading}>טוען...</div>
+      ) : activeMeetings.length > 0 ? (
+        <div className={style.activityList}>
+          {activeMeetings.map((meeting) => {
+            const partner = getMeetingPartner(meeting);
+            return (
+              <div
+                key={meeting.id}
+                className={style.activeMeetingItem}
+                onClick={() => handleJoinMeeting(meeting.id)}
+              >
+                <ActivityItem
+                  icon="🔴"
+                  title="פגישה פעילה"
+                  description={`עם ${partner?.firstName} ${partner?.lastName}`}
+                  time={`${formatTime(meeting.startTime)} - ${formatTime(meeting.endTime)}`}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className={style.empty}>
+          <p>אין פעילות אחרונה</p>
+        </div>
+      )}
     </div>
   );
 }

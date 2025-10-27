@@ -26,6 +26,7 @@ import SkillManagement from "../components/SkillManagement";
 import ContactManagement from "../components/ContactManagement";
 import MeetingRoom from "../pages/MeetingRoom";
 import MyAvailability from "../pages/MyAvailability";
+import Notifications from "../pages/Notifications";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -113,7 +114,7 @@ const router = createBrowserRouter([
           },
           {
             path: "notifications",
-            element: <DashboardPlaceholder title="Notifications" description="Stay updated with your skill-related activities and messages" />,
+            element: <Notifications />,
           },
           {
             path: "settings",

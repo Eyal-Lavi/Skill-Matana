@@ -1,16 +1,26 @@
 import style from "./SkillCard.module.scss";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function SkillCard({ title, progress, description }) {
+export default function SkillCard({ id, title, description, onDelete }) {
   return (
     <div className={style.skillCard}>
-      <h3>{title}</h3>
-      <div className={style.skillLevel}>
-        <div className={style.progressBar}>
-          <div className={style.progress} style={{ width: `${progress}%` }}></div>
-        </div>
-        <span>{progress}%</span>
+      <div className={style.skillHeader}>
+        <h3>{title}</h3>
+        {onDelete && (
+          <button 
+            className={style.deleteButton}
+            onClick={() => onDelete(id)}
+            title="הסר סקיל"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        )}
       </div>
       <p>{description}</p>
+      <div className={style.skillBadge}>
+        <span>🎓 אני יכול ללמד את זה</span>
+      </div>
     </div>
   );
 }

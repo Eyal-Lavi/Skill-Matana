@@ -43,6 +43,15 @@ async function scheduleMeeting(requesterId, targetUserId, availabilityId, t) {
   slot.isBooked = true;
   await slot.save({ transaction: t });
 
+  console.log('Meeting created successfully:', {
+    id: created.id,
+    hostId: created.hostId,
+    guestId: created.guestId,
+    startTime: created.startTime,
+    endTime: created.endTime,
+    status: created.status
+  });
+
   // טיפ: עדיף לשלוח מיילים אחרי commit בקונטרולר (כדי לא להיכשל אם יתגלגל אחורה)
   try {
     const host = await User.findByPk(targetUserId, { transaction: t });
@@ -90,7 +99,28 @@ async function listMyMeetings(userId, { status = 'scheduled' } = {}) {
     [Op.or]: [{ hostId: userId }, { guestId: userId }],
   };
   if (status) where.status = status;
-  return Meeting.findAll({ where, order: [['startTime', 'ASC']] });
+  
+  const meetings = await Meeting.findAll({ 
+    where, 
+    order: [['startTime', 'ASC']],
+    include: [
+      { 
+        model: User, 
+        as: 'host', 
+        attributes: ['id', 'firstName', 'lastName', 'username'],
+        required: false
+      },
+      { 
+        model: User, 
+        as: 'guest', 
+        attributes: ['id', 'firstName', 'lastName', 'username'],
+        required: false
+      }
+    ]
+  });
+
+  console.log(`Found ${meetings.length} meetings for user ${userId} with status ${status}`);
+  return meetings;
 }
 
 module.exports = {

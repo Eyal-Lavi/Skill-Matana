@@ -79,7 +79,10 @@ const addSkillToUser = async (userId, skillId, transaction) => {
     }
 
     const existingUserSkill = await SkillUser.findOne({
-        where: { skillId: skillId },
+        where: { 
+            skillId: skillId,
+            userId: userId
+        },
         transaction
     });
 

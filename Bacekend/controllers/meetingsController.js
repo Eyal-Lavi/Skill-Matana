@@ -48,8 +48,11 @@ const listMine = async (req, res, next) => {
     const userId = req.session.user?.id;
     const { status } = req.query;
     const list = await meetingService.listMyMeetings(Number(userId), { status });
+    
+    console.log(`Returning ${list?.length || 0} meetings to user ${userId}`);
     res.json({ meetings: list });
   } catch (e) {
+    console.error('Error in listMine:', e);
     next(e);
   }
 };

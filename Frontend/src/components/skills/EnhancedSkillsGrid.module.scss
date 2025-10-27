@@ -1,0 +1,41 @@
+@use "../../styles/variables" as *;
+
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: $color-surface;
+  border-radius: 1rem;
+  border: 2px dashed $color-border;
+  margin-top: 2rem;
+
+  .emptyIcon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: $color-text-primary;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    color: $color-text-secondary;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .skillsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

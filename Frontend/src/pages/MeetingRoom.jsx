@@ -1,10 +1,11 @@
 // client/src/pages/MeetingRoom.jsx
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 
 export default function MeetingRoom() {
   const { meetingId } = useParams();
+  const navigate = useNavigate();
   const containerRef = useRef(null);
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
@@ -41,6 +42,17 @@ export default function MeetingRoom() {
     );
     const zp = ZegoUIKitPrebuilt.create(kitToken);
 
+    // Listen for room left event
+    const handleRoomLeft = () => {
+      console.log('User left the room, navigating to notifications');
+      navigate('/dashboard/notifications');
+    };
+
+    // Attach event listener for room left
+    if (zp.on && typeof zp.on === 'function') {
+      zp.on('leave', handleRoomLeft);
+    }
+
     zp.joinRoom({
       container: containerRef.current,
       scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
@@ -55,10 +67,16 @@ export default function MeetingRoom() {
       // Basic permissions
       maxUsers: 2,
       layout: 'Auto',
+      onLeaveRoom: handleRoomLeft, // Callback when leaving room
     });
 
-    return () => zp.destroy();
-  }, [data, meetingId]);
+    return () => {
+      if (zp.off && typeof zp.off === 'function') {
+        zp.off('leave', handleRoomLeft);
+      }
+      zp.destroy();
+    };
+  }, [data, meetingId, navigate]);
 
   if (error) return <div style={{ padding: 24 }}>Error: {error}</div>;
   return <div ref={containerRef} style={{ width: '100%', height: '90vh' }} />;

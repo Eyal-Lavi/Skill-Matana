@@ -6,7 +6,6 @@ import { authActions } from '../features/auth/AuthSlices'
 import styles from "./Profile.module.scss";
 import { ProfileHeader, ProfileView, ProfileEditForm } from "../components/profile";
 import authAPI from "../features/auth/AuthAPI";
-import AddSkillRequest from "../features/auth/AddSkillRequest";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -97,7 +96,6 @@ function Profile() {
           <ProfileView user={user} onEdit={handleEditClick} />
         )}
       </div>
-      <AddSkillRequest />
     </div>
   );
 }
