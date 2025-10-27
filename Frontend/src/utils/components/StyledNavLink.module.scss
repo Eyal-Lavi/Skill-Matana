@@ -3,18 +3,41 @@
 .navLink {
   text-decoration: none;
   color: var.$color-primary;
-  font-size: 1.2rem;
-  padding: 10px 15px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1.05rem;
+  padding: 10px 18px;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.1);
+    transform: translate(-50%, -50%);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
   &:hover {
-    background-color: var.$color-hover-overlay;
-    color: var.$color-primary;
+    color: var.$color-primary-dark;
+    transform: translateY(-2px);
+    
+    &::before {
+      width: 100px;
+      height: 100px;
+    }
   }
 
   &.active {
-    font-weight: bold;
-    color: var.$color-primary;
+    font-weight: 600;
+    color: var.$color-primary-dark;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.15) 100%);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
   }
 }
