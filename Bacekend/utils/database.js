@@ -6,7 +6,8 @@ const credetials = configSettings[ENV];
 
 const sequelize = new Sequelize(credetials.database , credetials.username , credetials.password , {
     host:credetials.host,
-    dialect: credetials.dialect
+    dialect: credetials.dialect,
+    timezone:credetials.timezone
 });
 
 const getModelAttributes = (model) => {
