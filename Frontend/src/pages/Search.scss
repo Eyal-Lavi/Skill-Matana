@@ -1,11 +1,10 @@
 @use '../styles/variables' as var;
 
 .container {
+  max-width: 1200px;
   width: 100%;
-  // margin: auto;
+  margin: 0 auto;
   font-family: sans-serif;
-  // padding: 20px;
-  // background-color: green;
 }
 
 .search-results{

@@ -5,6 +5,8 @@
   display: grid;
   gap: 1.25rem;
   padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .profileContainer::before {

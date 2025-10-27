@@ -4,6 +4,7 @@ import "flatpickr/dist/flatpickr.min.css";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useSelector } from "react-redux";
+import styles from "./MyAvailability.module.scss";
 
 export default function MyAvailability() {
   const user = useSelector((s) => s.auth?.user);
@@ -120,14 +121,16 @@ export default function MyAvailability() {
   const formatTime = (date) => `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
 
   return (
-    <div style={{ padding: 24, fontFamily: "Arial, sans-serif" }}>
-      <h2 style={{ marginBottom: 8 }}>הזמינות שלי</h2>
-      <p style={{ color: "#666", marginBottom: 20 }}>
-        לחץ על יום בלוח השנה, בחר שעת התחלה ושעת סיום, ואז הוסף לרשימה.
-      </p>
+    <div className={styles.availabilityContainer}>
+      <div className={styles.header}>
+        <h2>הזמינות שלי</h2>
+        <p>
+          לחץ על יום בלוח השנה, בחר שעת התחלה ושעת סיום, ואז הוסף לרשימה.
+        </p>
+      </div>
 
       {/* לוח שנה */}
-      <div style={{ maxWidth: 350, marginBottom: 24 }}>
+      <div className={styles.calendarSection}>
         <Calendar
           onClickDay={(date) => setSelectedDay(date)}
           value={selectedDay}
@@ -137,23 +140,13 @@ export default function MyAvailability() {
 
       {/* בחירת שעות */}
       {selectedDay && (
-        <div
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: 12,
-            padding: 16,
-            marginBottom: 24,
-            maxWidth: 400,
-            background: "#f9f9f9",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-          }}
-        >
-          <h4 style={{ marginBottom: 12 }}>
+        <div className={styles.timeSelector}>
+          <h4>
             בחירת שעות ליום {selectedDay.toLocaleDateString()}
           </h4>
-          <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: "block", marginBottom: 4, fontWeight: 500 }}>שעת התחלה</label>
+          <div className={styles.timeFields}>
+            <div className={styles.timeField}>
+              <label>שעת התחלה</label>
               <Flatpickr
                 value={startHour}
                 options={{
@@ -169,8 +162,8 @@ export default function MyAvailability() {
                 placeholder="בחר שעה"
               />
             </div>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: "block", marginBottom: 4, fontWeight: 500 }}>שעת סיום</label>
+            <div className={styles.timeField}>
+              <label>שעת סיום</label>
               <Flatpickr
                 value={endHour}
                 options={{
@@ -189,17 +182,7 @@ export default function MyAvailability() {
           </div>
           <button
             onClick={addPendingSlot}
-            style={{
-              padding: "10px 20px",
-              background: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-              transition: "background 0.2s",
-            }}
-            onMouseOver={(e) => (e.currentTarget.style.background = "#0056b3")}
-            onMouseOut={(e) => (e.currentTarget.style.background = "#007bff")}
+            className={styles.addButton}
           >
             הוסף חלון לרשימה
           </button>
@@ -207,61 +190,33 @@ export default function MyAvailability() {
       )}
 
       {/* שמירה */}
-      <div style={{ marginBottom: 24 }}>
+      <div>
         <button
           onClick={saveAll}
           disabled={saving || pendingSlots.length === 0}
-          style={{
-            padding: "10px 20px",
-            background: saving || pendingSlots.length === 0 ? "#ccc" : "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: 8,
-            cursor:
-              saving || pendingSlots.length === 0 ? "not-allowed" : "pointer",
-            transition: "background 0.2s",
-          }}
+          className={styles.saveButton}
         >
           {saving ? "שומר…" : `שמור ${pendingSlots.length} חלונות`}
         </button>
       </div>
 
       {error && (
-        <div style={{ color: "crimson", marginBottom: 20 }}>{error}</div>
+        <div className={styles.error}>{error}</div>
       )}
 
       {/* Pending */}
       {pendingSlots.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
+        <div className={styles.slotsSection}>
           <h3>חלונות שממתינים לשמירה</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className={styles.slotList}>
             {pendingSlots.map((s, i) => (
-              <div
-                key={i}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: 12,
-                  padding: 12,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  background: "white",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                }}
-              >
-                <span>
+              <div key={i} className={styles.slotCard}>
+                <span className={styles.slotInfo}>
                   {new Date(s.startTime).toLocaleString()} → {new Date(s.endTime).toLocaleString()}
                 </span>
                 <button
                   onClick={() => removePendingSlot(i)}
-                  style={{
-                    padding: "4px 10px",
-                    background: "#dc3545",
-                    color: "white",
-                    border: "none",
-                    borderRadius: 6,
-                    cursor: "pointer",
-                  }}
+                  className={styles.removeButton}
                 >
                   הסר
                 </button>
@@ -272,47 +227,31 @@ export default function MyAvailability() {
       )}
 
       {/* Existing availability */}
-      <div>
+      <div className={styles.slotsSection}>
         <h3>הזמינות הקרובה שלי</h3>
         {loading ? (
-          <div>טוען…</div>
+          <div className={styles.loading}>טוען…</div>
         ) : availability.length === 0 ? (
-          <div>אין כרגע זמינות עתידית.</div>
+          <div className={styles.empty}>אין כרגע זמינות עתידית.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className={styles.slotList}>
             {availability.map((a) => (
               <div
                 key={a.id}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: 12,
-                  padding: 12,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  background: a.isBooked ? "#f1f1f1" : "white",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                }}
+                className={`${styles.slotCard} ${a.isBooked ? styles.booked : ""}`}
               >
-                <span>
+                <span className={styles.slotInfo}>
                   {new Date(a.startTime).toLocaleString()} → {new Date(a.endTime).toLocaleString()}
                 </span>
                 {!a.isBooked ? (
                   <button
                     onClick={() => deleteSlot(a.id)}
-                    style={{
-                      padding: "4px 10px",
-                      background: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: 6,
-                      cursor: "pointer",
-                    }}
+                    className={styles.removeButton}
                   >
                     מחק
                   </button>
                 ) : (
-                  <span style={{ color: "#888" }}>(שמור לשיעור)</span>
+                  <span className={styles.bookedLabel}>(שמור לשיעור)</span>
                 )}
               </div>
             ))}
