@@ -20,13 +20,38 @@ export default function MyAvailability() {
   const [startHour, setStartHour] = useState(null);
   const [endHour, setEndHour] = useState(null);
 
+  // Create ISO string converting local time to UTC
   const toISO = (date, time) => {
     if (!date || !time) return "";
-    const d = new Date(date);
-    const t = new Date(time);
-    d.setHours(t.getHours());
-    d.setMinutes(t.getMinutes());
-    return d.toISOString();
+    
+    // Get local time components
+    const localDate = new Date(date);
+    const localTime = new Date(time);
+    
+    // Combine date and time in local timezone
+    const combinedDate = new Date(
+      localDate.getFullYear(),
+      localDate.getMonth(),
+      localDate.getDate(),
+      localTime.getHours(),
+      localTime.getMinutes()
+    );
+    
+    // Return ISO string - this automatically handles timezone conversion
+    return combinedDate.toISOString();
+  };
+
+  // Format date for display (shows local time)
+  const formatDateForDisplay = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleString('he-IL', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
   };
 
   const loadAvailability = async () => {
@@ -49,6 +74,7 @@ export default function MyAvailability() {
 
   useEffect(() => {
     loadAvailability();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const addPendingSlot = () => {
@@ -212,7 +238,7 @@ export default function MyAvailability() {
             {pendingSlots.map((s, i) => (
               <div key={i} className={styles.slotCard}>
                 <span className={styles.slotInfo}>
-                  {new Date(s.startTime).toLocaleString()} → {new Date(s.endTime).toLocaleString()}
+                  {formatDateForDisplay(s.startTime)} → {formatDateForDisplay(s.endTime)}
                 </span>
                 <button
                   onClick={() => removePendingSlot(i)}
@@ -241,7 +267,7 @@ export default function MyAvailability() {
                 className={`${styles.slotCard} ${a.isBooked ? styles.booked : ""}`}
               >
                 <span className={styles.slotInfo}>
-                  {new Date(a.startTime).toLocaleString()} → {new Date(a.endTime).toLocaleString()}
+                  {formatDateForDisplay(a.startTime)} → {formatDateForDisplay(a.endTime)}
                 </span>
                 {!a.isBooked ? (
                   <button
