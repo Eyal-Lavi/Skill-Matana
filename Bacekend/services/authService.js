@@ -1,9 +1,9 @@
-const {Op} = require('sequelize');
-const {User, PasswordResetToken, Skill, Connection} = require('../models');
-const {Permission} = require('../models');
+const { Op } = require('sequelize');
+const { User, PasswordResetToken, Skill, Connection } = require('../models');
+const { Permission } = require('../models');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
-const {UserImage} = require('../models');
+const { UserImage } = require('../models');
 const { sendEmail } = require('./emailService');
 
 const validateUserFields = (user) => {
@@ -22,52 +22,52 @@ const ComperePasswords = async (password, hashedPassword) => {
 const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction) => {
     if (!identifier) throw new Error("Username or email is required");
     if (!transaction) throw new Error("Transaction is required");
-    
+
     const user = await User.findOne({
         where: {
-            [Op.or]:{
+            [Op.or]: {
                 username: identifier,
                 email: identifier,
             },
         },
-        include:[
+        include: [
             {
-                model:Permission,
-                attributes:['id' , 'name'],
+                model: Permission,
+                attributes: ['id', 'name'],
                 // through:{attributes:[]}
             },
             {
-                model:UserImage,
-                attributes:['url','typeId'],
+                model: UserImage,
+                attributes: ['url', 'typeId'],
                 as: 'Images',
                 // through:{attributes:[]}
             },
             {
-                model:Skill,
-                attributes:['id' , 'name'],
-                where:{
-                    status:{
-                        [Op.eq]:1
+                model: Skill,
+                attributes: ['id', 'name'],
+                where: {
+                    status: {
+                        [Op.eq]: 1
                     }
                 },
-                required:false,
-                as:'skills'
+                required: false,
+                as: 'skills'
             },
             // Connections from both directions
             {
                 model: User,
                 as: 'connectionsA',
-                attributes: ['id','firstName','lastName'],
+                attributes: ['id', 'firstName', 'lastName'],
                 through: { attributes: [] },
-                include: [{ model: UserImage, as: 'Images', attributes: ['url','typeId'] }],
+                include: [{ model: UserImage, as: 'Images', attributes: ['url', 'typeId'] }],
                 required: false,
             },
             {
                 model: User,
                 as: 'connectionsB',
-                attributes: ['id','firstName','lastName'],
+                attributes: ['id', 'firstName', 'lastName'],
                 through: { attributes: [] },
-                include: [{ model: UserImage, as: 'Images', attributes: ['url','typeId'] }],
+                include: [{ model: UserImage, as: 'Images', attributes: ['url', 'typeId'] }],
                 required: false,
             }
         ],
@@ -88,7 +88,7 @@ const updateUserById = async (userId, updates, transaction) => {
 
     // רק העדכון הרלוונטי לשדות המותרים
     const allowedFields = ['firstName', 'lastName', 'email', 'gender'];
-    
+
     for (const field of allowedFields) {
         if (updates[field] !== undefined) {
             user[field] = updates[field];
@@ -99,7 +99,7 @@ const updateUserById = async (userId, updates, transaction) => {
     return user;
 };
 
-const findUserByUsernameOrEmail = async (identifier, transaction=null) => {
+const findUserByUsernameOrEmail = async (identifier, transaction = null) => {
     if (!identifier) throw new Error("Username or email is required");
 
     const user = await User.findOne({
@@ -138,11 +138,11 @@ const createUser = async (user, transaction) => {
 };
 
 
-const createToken = async(userId) => {
-    if(!userId){throw new Error('UserId is requierd');}
+const createToken = async (userId) => {
+    if (!userId) { throw new Error('UserId is requierd'); }
 
     const existToken = await checkIfActiveTokenExist(userId);
-    if(existToken){
+    if (existToken) {
         return existToken;
     }
     const token = await crypto.randomBytes(32).toString('hex');
@@ -152,15 +152,15 @@ const createToken = async(userId) => {
         userId,
         token,
         expiresAt,
-        used:false
+        used: false
     });
 
     return newToken;
 }
 
-const checkIfActiveTokenExist = async (userId=null, token=null) => {
-    console.log(userId , token);
-    
+const checkIfActiveTokenExist = async (userId = null, token = null) => {
+    console.log(userId, token);
+
     if (!userId && !token) {
         throw new Error("either userId or token is required");
     }
@@ -181,7 +181,7 @@ const checkIfActiveTokenExist = async (userId=null, token=null) => {
     return await PasswordResetToken.findOne({ where: whereClause });
 };
 
-const sendEmailWithLinkReset = async(email , link) => {
+const sendEmailWithLinkReset = async (email, link) => {
     if (!email) throw new Error('Email is required');
     if (!link) throw new Error('Link is required');
 
@@ -196,29 +196,29 @@ const sendEmailWithLinkReset = async(email , link) => {
     return await sendEmail(email, subject, html);
 }
 
-const resetUserPassword = async (token , newPassword) => {
-    if (!token || !newPassword){
+const resetUserPassword = async (token, newPassword) => {
+    if (!token || !newPassword) {
         throw new Error('Token & new Password is required');
     }
-    const existToken = await checkIfActiveTokenExist(null , token);
-    if(!existToken){
+    const existToken = await checkIfActiveTokenExist(null, token);
+    if (!existToken) {
         throw new Error('Invalid or expired token');
     }
 
     const user = await User.findByPk(existToken.userId);
 
-    if(!user){
+    if (!user) {
         throw new Error('User not found');
     }
 
-    await user.update({password:newPassword});
+    await user.update({ password: newPassword });
 
-    await existToken.update({used:true});
+    await existToken.update({ used: true });
 
     const subject = 'Your Password Has Been Reset Successfully';
 
     const html =
-     `<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+        `<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
          <h2>Password Reset Confirmation</h2>
          <p>Hi ${user.firstname},</p>
          <p>Your password has been successfully reset.</p>
@@ -232,8 +232,8 @@ const resetUserPassword = async (token , newPassword) => {
     <p>Thank you,<br>The SkillMatana Team</p>
     </div>`
 
-    await sendEmail(user.email , subject , html);
-    
+    await sendEmail(user.email, subject, html);
+
     return true;
 }
 module.exports = {

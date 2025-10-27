@@ -70,7 +70,7 @@ export default function ProfileCard({
             />
           ))}
         </div>
-        <ActionButton action={actionButton} />
+        {actionButton && <ActionButton action={actionButton} />}
         {Array.isArray(extraActions) && extraActions.length > 0 && (
           <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
             {extraActions.map((act, idx) => (
