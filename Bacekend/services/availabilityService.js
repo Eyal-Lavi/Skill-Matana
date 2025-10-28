@@ -49,6 +49,18 @@ async function addSlots(userId, rawSlots) {
   );
 
   // Notify watchers (alerts)
+  const formatDateForEmail = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleString('he-IL', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
+
   try {
     const alerts = await MeetingAlert.findAll({ where: { targetUserId: userId, active: true } });
     if (alerts.length) {
@@ -56,16 +68,83 @@ async function addSlots(userId, rawSlots) {
       for (const alert of alerts) {
         const watcher = await User.findByPk(alert.watcherId);
         if (!watcher?.email) continue;
-        const list = created
-          .map((c) => `• ${c.startTime.toISOString()} - ${c.endTime.toISOString()}`)
-          .join('<br/>');
+        
+        const timeSlots = created
+          .map((c) => `
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <div style="color: white; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 20px;">📅</span>
+                <span>${formatDateForEmail(c.startTime)} → ${formatDateForEmail(c.endTime)}</span>
+              </div>
+            </div>
+          `)
+          .join('');
+        
         const html = `
-          <p>שלום ${watcher.firstName || ''},</p>
-          <p>${owner?.firstName || 'משתמש'} הוסיף זמני פניות חדשים:</p>
-          <p>${list}</p>
-          <p>היכנס/י לאתר כדי לקבוע שיעור.</p>
+          <!DOCTYPE html>
+          <html dir="rtl" lang="he">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f7fa; padding: 40px 20px;">
+              <tr>
+                <td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+                    
+                    <!-- Header -->
+                    <tr>
+                      <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+                        <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 700;">
+                          🎓 זמני פניות חדשים
+                        </h1>
+                      </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                      <td style="padding: 40px 30px;">
+                        <p style="margin: 0 0 20px 0; color: #333; font-size: 18px; line-height: 1.6;">
+                          שלום <strong>${watcher.firstName || 'משתמש'}</strong>,
+                        </p>
+                        <p style="margin: 0 0 30px 0; color: #666; font-size: 16px; line-height: 1.6;">
+                          <strong style="color: #667eea;">${owner?.firstName || 'משתמש'}</strong> הוסיף זמני פניות חדשים זמינים לשיעורים:
+                        </p>
+                        
+                        ${timeSlots}
+                        
+                        <div style="margin-top: 40px; text-align: center;">
+                          <a href="http://localhost:5173/dashboard" 
+                             style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); transition: all 0.3s;">
+                            היכנס לקביעת שיעור
+                          </a>
+                        </div>
+                        
+                        <p style="margin: 40px 0 0 0; color: #999; font-size: 14px; text-align: center; line-height: 1.6;">
+                          מתכווננים לתגובות ההתאמת ביותר כדי להבטיח שהשיעור שלכם מתקיים בזמן
+                        </p>
+                      </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                      <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e9ecef;">
+                        <p style="margin: 0; color: #999; font-size: 13px;">
+                          © Skill Matana - פלטפורמה ללימוד משותף
+                        </p>
+                      </td>
+                    </tr>
+                    
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+          </html>
         `;
-        await sendEmail(watcher.email, 'התראה: נוספו זמני פניות', html);
+        
+        await sendEmail(watcher.email, 'התראה: נוספו זמני פניות חדשים 🎓', html);
       }
     }
   } catch (e) {
