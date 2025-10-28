@@ -185,12 +185,71 @@ const sendEmailWithLinkReset = async (email, link) => {
     if (!email) throw new Error('Email is required');
     if (!link) throw new Error('Link is required');
 
-    const subject = 'Password Reset Request';
+    const subject = 'Password Reset Request 🔐';
     const html = `
-        <p>Hello,</p>
-        <p>You requested a password reset. Click the link below to reset your password:</p>
-        <a href="${link}">Reset Password</a>
-        <p>If you did not request this, please ignore this email.</p>
+      <!DOCTYPE html>
+      <html dir="ltr" lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f7fa; padding: 40px 20px;">
+          <tr>
+            <td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+                
+                <!-- Header -->
+                <tr>
+                  <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+                    <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 700;">
+                      🔐 Password Reset Request
+                    </h1>
+                  </td>
+                </tr>
+                
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 40px 30px;">
+                    <p style="margin: 0 0 20px 0; color: #333; font-size: 18px; line-height: 1.6;">
+                      Hello,
+                    </p>
+                    <p style="margin: 0 0 20px 0; color: #666; font-size: 16px; line-height: 1.6;">
+                      You requested a password reset for your Skill Matana account. Click the button below to reset your password:
+                    </p>
+                    
+                    <div style="margin-top: 40px; text-align: center;">
+                      <a href="${link}" 
+                         style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);">
+                        Reset My Password
+                      </a>
+                    </div>
+                    
+                    <p style="margin: 40px 0 0 0; color: #999; font-size: 14px; text-align: center; line-height: 1.6;">
+                      If you did not request this, please ignore this email. Your password will remain unchanged.
+                    </p>
+                    
+                    <p style="margin: 20px 0 0 0; color: #999; font-size: 13px; text-align: center; line-height: 1.6;">
+                      <strong>Security Tip:</strong> This link will expire in 15 minutes for your protection.
+                    </p>
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e9ecef;">
+                    <p style="margin: 0; color: #999; font-size: 13px;">
+                      © Skill Matana - Collaborative Learning Platform
+                    </p>
+                  </td>
+                </tr>
+                
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
     `;
 
     return await sendEmail(email, subject, html);
@@ -215,22 +274,79 @@ const resetUserPassword = async (token, newPassword) => {
 
     await existToken.update({ used: true });
 
-    const subject = 'Your Password Has Been Reset Successfully';
+    const subject = 'Password Reset Successful ✅';
 
-    const html =
-        `<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
-         <h2>Password Reset Confirmation</h2>
-         <p>Hi ${user.firstname},</p>
-         <p>Your password has been successfully reset.</p>
-         <p>If you did not perform this action, please 
-        <a href="mailto:${process.env.SMTP_USER}?subject=Support Request&body=Hello, I need help with my account.">
-            contact support immediately
-        </a>.
-    </p>
-    <p>You can now <a href="${process.env.CLIENT_URL}/auth/login">log in</a> with your new password.</p>
-    <br>
-    <p>Thank you,<br>The SkillMatana Team</p>
-    </div>`
+    const html = `
+      <!DOCTYPE html>
+      <html dir="ltr" lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f7fa; padding: 40px 20px;">
+          <tr>
+            <td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+                
+                <!-- Header -->
+                <tr>
+                  <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+                    <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 700;">
+                      ✅ Password Reset Successful
+                    </h1>
+                  </td>
+                </tr>
+                
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 40px 30px;">
+                    <p style="margin: 0 0 20px 0; color: #333; font-size: 18px; line-height: 1.6;">
+                      Hi <strong>${user.firstName || 'User'}</strong>,
+                    </p>
+                    <p style="margin: 0 0 20px 0; color: #666; font-size: 16px; line-height: 1.6;">
+                      Your password has been successfully reset.
+                    </p>
+                    
+                    <!-- Success Card -->
+                    <div style="background: #f8f9fa; border-left: 4px solid #667eea; padding: 20px; border-radius: 8px; margin: 30px 0;">
+                      <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.6;">
+                        ✅ Your account is secure. You can now log in with your new password.
+                      </p>
+                    </div>
+                    
+                    <div style="margin-top: 40px; text-align: center;">
+                      <a href="${process.env.CLIENT_URL}/auth/login" 
+                         style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);">
+                        Log In to Your Account
+                      </a>
+                    </div>
+                    
+                    <p style="margin: 40px 0 0 0; color: #999; font-size: 14px; text-align: center; line-height: 1.6;">
+                      If you did not perform this action, please 
+                      <a href="mailto:${process.env.SMTP_USER}?subject=Support Request&body=Hello, I need help with my account." style="color: #667eea; text-decoration: none;">
+                        contact support immediately
+                      </a>.
+                    </p>
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e9ecef;">
+                    <p style="margin: 0; color: #999; font-size: 13px;">
+                      © Skill Matana - Collaborative Learning Platform
+                    </p>
+                  </td>
+                </tr>
+                
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
 
     await sendEmail(user.email, subject, html);
 

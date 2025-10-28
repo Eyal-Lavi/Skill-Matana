@@ -51,7 +51,7 @@ async function addSlots(userId, rawSlots) {
   // Notify watchers (alerts)
   const formatDateForEmail = (isoString) => {
     const date = new Date(isoString);
-    return date.toLocaleString('he-IL', {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -82,7 +82,7 @@ async function addSlots(userId, rawSlots) {
         
         const html = `
           <!DOCTYPE html>
-          <html dir="rtl" lang="he">
+          <html dir="ltr" lang="en">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,7 +97,7 @@ async function addSlots(userId, rawSlots) {
                     <tr>
                       <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
                         <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 700;">
-                          🎓 זמני פניות חדשים
+                          🎓 New Available Time Slots
                         </h1>
                       </td>
                     </tr>
@@ -106,10 +106,10 @@ async function addSlots(userId, rawSlots) {
                     <tr>
                       <td style="padding: 40px 30px;">
                         <p style="margin: 0 0 20px 0; color: #333; font-size: 18px; line-height: 1.6;">
-                          שלום <strong>${watcher.firstName || 'משתמש'}</strong>,
+                          Hello <strong>${watcher.firstName || 'User'}</strong>,
                         </p>
                         <p style="margin: 0 0 30px 0; color: #666; font-size: 16px; line-height: 1.6;">
-                          <strong style="color: #667eea;">${owner?.firstName || 'משתמש'}</strong> הוסיף זמני פניות חדשים זמינים לשיעורים:
+                          <strong style="color: #667eea;">${owner?.firstName || 'User'}</strong> has added new available time slots for lessons:
                         </p>
                         
                         ${timeSlots}
@@ -117,12 +117,12 @@ async function addSlots(userId, rawSlots) {
                         <div style="margin-top: 40px; text-align: center;">
                           <a href="http://localhost:5173/dashboard" 
                              style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); transition: all 0.3s;">
-                            היכנס לקביעת שיעור
+                            Go to Schedule a Lesson
                           </a>
                         </div>
                         
                         <p style="margin: 40px 0 0 0; color: #999; font-size: 14px; text-align: center; line-height: 1.6;">
-                          מתכווננים לתגובות ההתאמת ביותר כדי להבטיח שהשיעור שלכם מתקיים בזמן
+                          We're committed to the best experience to ensure your lesson happens on time
                         </p>
                       </td>
                     </tr>
@@ -131,7 +131,7 @@ async function addSlots(userId, rawSlots) {
                     <tr>
                       <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e9ecef;">
                         <p style="margin: 0; color: #999; font-size: 13px;">
-                          © Skill Matana - פלטפורמה ללימוד משותף
+                          © Skill Matana - Collaborative Learning Platform
                         </p>
                       </td>
                     </tr>
@@ -144,7 +144,7 @@ async function addSlots(userId, rawSlots) {
           </html>
         `;
         
-        await sendEmail(watcher.email, 'התראה: נוספו זמני פניות חדשים 🎓', html);
+        await sendEmail(watcher.email, 'Alert: New Available Time Slots 🎓', html);
       }
     }
   } catch (e) {
