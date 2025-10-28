@@ -1,5 +1,4 @@
-// Note: This project uses CommonJS. If switching to ES Modules, replace
-// require/module.exports with import/export accordingly.
+
 const { Router } = require('express');
 const { generateToken04 } = require('../lib/zegoToken');
 
@@ -19,17 +18,14 @@ try {
     console.log("Not function");
 }
 
-// const { authOptional } = require('../middlewares/authOptional');
-// const { isParticipant } = require('../services/meetingMembership');
+
 
 const router = Router();
 
-// Gentle rate limiter for token endpoint
 let limiter;
 if (rateLimit) {
   limiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
 } else {
-  // Fallback simple limiter per IP in memory (DEV only)
   const hits = new Map();
   const windowMs = 60 * 1000;
   const max = 30;
@@ -48,7 +44,7 @@ if (rateLimit) {
 router.get("/:meetingId/join-token", (req, res) => {
   try {
     const appId = Number(process.env.ZEGO_APP_ID);
-    const secret = process.env.ZEGO_SERVER_SECRET; // אורך 32 נפוץ
+    const secret = process.env.ZEGO_SERVER_SECRET;
     const ttl = Number(process.env.TOKEN_TTL_SECONDS || 3600);
 
     const { meetingId } = req.params;

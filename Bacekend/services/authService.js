@@ -34,13 +34,13 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
             {
                 model: Permission,
                 attributes: ['id', 'name'],
-                // through:{attributes:[]}
+            
             },
             {
                 model: UserImage,
                 attributes: ['url', 'typeId'],
                 as: 'Images',
-                // through:{attributes:[]}
+              
             },
             {
                 model: Skill,
@@ -53,7 +53,7 @@ const findUserByUsernameOrEmailWithPermissions = async (identifier, transaction)
                 required: false,
                 as: 'skills'
             },
-            // Connections from both directions
+  
             {
                 model: User,
                 as: 'connectionsA',
@@ -86,7 +86,7 @@ const updateUserById = async (userId, updates, transaction) => {
         throw new Error("User not found");
     }
 
-    // רק העדכון הרלוונטי לשדות המותרים
+ 
     const allowedFields = ['firstName', 'lastName', 'email', 'gender'];
 
     for (const field of allowedFields) {

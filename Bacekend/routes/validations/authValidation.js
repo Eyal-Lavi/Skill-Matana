@@ -89,11 +89,6 @@ const validateUpdateProfile = [
     .notEmpty().withMessage('Lastname cannot be empty')
     .isLength({ min: 2 }).withMessage('Lastname must be at least 2 characters'),
 
-  // body('password')
-  //   .trim()
-  //   .exists().withMessage('Password is required')
-  //   .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-
 ];
 
 const validateLogin = [

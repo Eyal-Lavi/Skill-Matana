@@ -1,4 +1,4 @@
-// NewContactModal.jsx (מרכיב המלכד)
+
 import { useState, useRef } from "react";
 import ModalShell from "../../utils/components/Modal/ModalShell";
 import { ModalHeader } from "../../utils/components/Modal/ModalHeader";

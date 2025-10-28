@@ -19,7 +19,7 @@ const SkillManagement = () => {
   const [activeTab, setActiveTab] = useState('existing');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Custom hooks
+  
   const {
     skills,
     loading,
@@ -39,18 +39,18 @@ const SkillManagement = () => {
     fetchSkills(true)
   );
 
-  // Redux selectors
+
   const pendingRequests = useSelector(selectPendingSkillRequests);
   const pendingLoading = useSelector(selectAdminLoading);
   const pendingError = useSelector(selectAdminError);
 
-  // Fetch data on component mount
+
   useEffect(() => {
     fetchPendingSkillRequests();
     fetchSkills(true);
   }, []);
 
-  // Infinite scroll hook
+
   const lastElementRef = useInfiniteScroll(loadMore, pagination.hasMore, isLoadingMore);
 
   const handleTabChange = (tab) => {

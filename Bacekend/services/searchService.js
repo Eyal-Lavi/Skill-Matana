@@ -44,7 +44,7 @@ const searchUsersByNameAndSkillIds  = async(name , skillId, userIdRequester) => 
             [Op.in]: Array.isArray(skillId) ? skillId : [skillId]
           }
         },
-        attributes: [], // no need to fetch skill details
+        attributes: [],
         through: { attributes: [] }
       }]
     });

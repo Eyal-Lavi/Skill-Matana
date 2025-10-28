@@ -8,7 +8,7 @@ export const useSkillActions = (onRefresh) => {
   const handleSkillStatusChange = useCallback(async (skillId, newStatus) => {
     try {
       await dispatch(updateSkillStatus({ skillId, status: newStatus })).unwrap();
-      // Refresh skills after update
+      
       onRefresh();
     } catch (err) {
       throw new Error(err.message);
@@ -31,7 +31,7 @@ export const useSkillActions = (onRefresh) => {
         throw new Error(errorData.message || 'Failed to add skill');
       }
       
-      // Refresh skills after adding
+      
       onRefresh();
     } catch (err) {
       throw new Error(err.message || 'Failed to add skill');

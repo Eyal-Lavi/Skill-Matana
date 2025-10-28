@@ -1,9 +1,6 @@
-// const Permission = require('../models/permission');
-// const Skill = require('../models/skill');
-// const SkillUser = require('../models/skillUser');
-// const UserPermission = require('../models/userPermission');
+
 const { Op } = require('sequelize');
-const {Skill,SkillUser,UserPermission,Permission} = require('../models'); // Importing associate to ensure associations are set up
+const {Skill,SkillUser,UserPermission,Permission} = require('../models'); 
 
 const getAll = async (options = {}) => {
     const {
@@ -13,7 +10,7 @@ const getAll = async (options = {}) => {
         sortOrder = 'ASC'
     } = options;
 
-    // Build where clause
+    
     const whereClause = {};
     
     if (search) {

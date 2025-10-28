@@ -124,12 +124,12 @@ async function sendDailyReminders() {
 }
 
 function startReminderScheduler() {
-  // Run every hour
+
   setInterval(() => {
     sendDailyReminders().catch((e) => console.error('Reminder job failed:', e.message));
   }, 60 * 60 * 1000);
 
-  // Also run shortly after boot
+
   setTimeout(() => {
     sendDailyReminders().catch((e) => console.error('Reminder job failed (initial):', e.message));
   }, 30 * 1000);

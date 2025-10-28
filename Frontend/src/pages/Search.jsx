@@ -1,4 +1,4 @@
-// pages/Search.jsx
+
 import "./Search.scss";
 import { Github, Linkedin } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -9,7 +9,7 @@ import ProfileCard from "../components/ProfileCard/ProfileCard";
 import NewContactModal from "../components/NewContactModal/NewContactModal";
 
 import { selectSearch } from "../features/search/SearchSelectors";
-// import { selectUserId } from "../features/auth/AuthSelectors";
+
 import { useConnectionActions } from "../components/ContactManagement/hooks/useConnectionActions";
 
 function Search() {
@@ -39,7 +39,7 @@ function Search() {
     async (message = "") => {
       if (!selectedUserId) return;
       await handleSendConnectionRequest(selectedUserId, message);
-      // בהצלחה: סגירה וניקוי
+   
       setIsModalOpen(false);
       setSelectedUserId(null);
       setSelectedUserName(null);
@@ -86,7 +86,7 @@ function Search() {
       <NewContactModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        onSendRequest={handleSendRequest} // מקבל message מהמודאל
+        onSendRequest={handleSendRequest} 
         targetUserName={selectedUserName}
       />
     </div>

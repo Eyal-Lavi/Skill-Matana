@@ -19,7 +19,7 @@ export const useSkillsData = () => {
     sortOrder: 'ASC'
   });
 
-  // Debounced search value
+
   const debouncedSearch = useDebounce(filters.search, 500);
 
   const fetchSkills = useCallback(async (reset = false) => {
@@ -81,7 +81,7 @@ export const useSkillsData = () => {
     }
   }, [debouncedSearch, filters.status, filters.sortBy, filters.sortOrder, pagination.limit, pagination.offset]);
 
-  // Fetch skills when filters change
+  
   useEffect(() => {
     fetchSkills(true);
   }, [debouncedSearch, filters.status, filters.sortBy, filters.sortOrder]);

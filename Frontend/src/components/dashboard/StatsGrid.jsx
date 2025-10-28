@@ -13,8 +13,6 @@ export default function StatsGrid() {
   
   const statsData = [
     { icon: "📚", title: "My Skills", value: skillLength, label: "Active skills" },
-    // { icon: "🎯", title: "Learning Goals", value: "5", label: "In progress" },
-    // { icon: "⭐", title: "Rating", value: "4.8", label: "Average rating" },
     { icon: "👥", title: "Connections", value: connections.length , label: "Active connections" },
   ];
 

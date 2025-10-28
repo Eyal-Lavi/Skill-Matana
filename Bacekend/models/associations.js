@@ -23,7 +23,6 @@ module.exports = (models) => {
   });
   UserImage.belongsTo(User, {
     foreignKey: "userId",
-    // as: 'user',
   });
 
   User.belongsToMany(Skill, {
@@ -39,22 +38,22 @@ module.exports = (models) => {
     as: "users",
   });
 
-  // Define Many-to-Many Relationships
+
   User.belongsToMany(Permission, {
-    // User belongs to many permissions
-    through: UserPermission, //through UserPermission
-    foreignKey: "userId", // in UserPermission the foreignKey that belongs to User is 'userId'
+  
+    through: UserPermission, 
+    foreignKey: "userId", 
   });
 
   Permission.belongsToMany(User, {
-    //Permission belongs to many users
-    through: UserPermission, // through UserPermission
-    foreignKey: "permissionId", // in UserPermission the foreignKey that belongs to Permission is 'permissionId'
+   
+    through: UserPermission, 
+    foreignKey: "permissionId", 
   });
 
   User.belongsTo(Status, {
     foreignKey: "status",
-    // as: 'statusInfo',
+    
   });
 
   UserImage.belongsTo(ImageType, {
@@ -112,7 +111,6 @@ module.exports = (models) => {
     as: "resetToken",
   });
 
-  // Connections: symmetric user-to-user relationship via Connection table
   Connection.belongsTo(User, { foreignKey: 'userA', as: 'userAInfo' });
   Connection.belongsTo(User, { foreignKey: 'userB', as: 'userBInfo' });
 

@@ -67,16 +67,6 @@ const User = sequelize.define('User', {
         timestamps: false,
         tableName: 'users',
         associate: (models) => {
-            // User.belongsToMany(models.Skill, {
-            //     through: models.SkillUser,
-            //     foreignKey: 'userId',
-            //     otherKey: 'skillId',
-            //     as: 'skills'
-            // });
-            // User.hasOne(models.UserImage, {
-            //     foreignKey: 'userId',
-            //     as: 'image'
-            // });
         },
         hooks: {
             beforeCreate: async (user) => {
@@ -97,16 +87,7 @@ const User = sequelize.define('User', {
 
 );
 
-// User.hasMany(UserImage, {
-//     foreignKey: 'userId',
-//     as: 'images'
-// });
-// User.belongsToMany(Skill,{
-//     through: SkillUser,
-//     foreignKey: 'userId',
-//     otherKey: 'skillId',
-//     as : 'users'
-// });
+
 
 module.exports = User;
 

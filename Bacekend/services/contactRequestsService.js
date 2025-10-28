@@ -172,7 +172,7 @@ const updateContactRequestStatus = async (requestId, status) => {
   request.status = status;
   await request.save();
 
-  // On approval, create a Connection if not exists
+ 
   if (status === 'approved') {
     const a = Math.min(request.requestedBy, request.requestedTo);
     const b = Math.max(request.requestedBy, request.requestedTo);

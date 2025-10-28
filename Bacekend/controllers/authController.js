@@ -33,13 +33,13 @@ const updateUserProfile = async (req, res) => {
       gender,
     }, transaction);
 
-    // העלאת תמונת פרופיל אם קיימת
+    
     if (profileImage) {
       const result = await uploadBase64Image(profileImage, `${id}_profile`);
       await UserImage.upsert({
         userId: id,
         url: result.url,
-        typeId: 1, // 1 = profile
+        typeId: 1, 
       }, { transaction });
     }
 
@@ -60,7 +60,7 @@ const updateUserProfile = async (req, res) => {
     delete userWithImage.Images;
     console.log("Here 4");
 
-    // עדכון session אם מדובר במשתמש המחובר
+   
     if (req.session.user?.id === userWithImage.id) {
       req.session.user = {
         ...req.session.user,
@@ -115,11 +115,11 @@ const logout = async (request, response, next) => {
                 console.error("Session destruction error:", err);
                 return response.status(500).json({ message: "Internal server error" });
             }
-            response.clearCookie('connect.sid'); // Clear the session cookie
+            response.clearCookie('connect.sid'); 
             response.status(200).json({ message: "Logged out successfully" });
         });
 
-        // return response.status(200).json({ message: "Logged out successfully" });
+        
 
     } catch (e) {
         console.error(e);
@@ -147,15 +147,6 @@ const login = async (request, response, next) => {
       name: permission.name
     }));
     console.log(existUser);
-    
-    // const images = existUser.Images.map(image => ({
-    //   // id: image.id,
-    //   url: image.url
-    // }));
-    // console.log(images);
-    // const userWithImage = await updatedUser.reload({
-    //   include: { model: UserImage, as: 'Images' }
-    // });
 
     const profileImg = existUser.Images.find(img => img.typeId === 1);
     const bannerImg = existUser.Images.find(img => img.typeId === 2);
@@ -165,7 +156,7 @@ const login = async (request, response, next) => {
       name:skill.name
     }));
 
-    // Build connections array (both directions)
+    
     const mapConn = (u) => {
       const imgs = Array.isArray(u.Images) ? u.Images : [];
       const prof = imgs.find(img => img.typeId === 1);
