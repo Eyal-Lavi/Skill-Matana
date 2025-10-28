@@ -4,15 +4,15 @@
   background: $color-surface;
   border-radius: 1.5rem;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba($color-primary, 0.1);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba($color-primary, 0.2);
   transition: all 0.3s ease;
   position: relative;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    border-color: $color-primary;
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.2);
+    border-color: rgba($color-primary, 0.4);
   }
 
   .skillHeader {
@@ -25,7 +25,10 @@
     h3 {
       font-size: 1.25rem;
       font-weight: 600;
-      color: $color-text-primary;
+      background: $gradient-primary;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin: 0;
       flex: 1;
     }
@@ -66,14 +69,17 @@
   .skillBadge {
     margin-top: 1.5rem;
     padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, rgba($color-accent, 0.1) 0%, rgba($color-primary, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
     border-radius: 10px;
-    border: 1px solid rgba($color-accent, 0.2);
+    border: 1px solid rgba(236, 72, 153, 0.3);
 
     span {
       font-size: 0.875rem;
       font-weight: 600;
-      color: $color-accent;
+      background: $gradient-secondary;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -97,7 +103,7 @@
 
   .progress {
     height: 100%;
-    background: linear-gradient(90deg, $color-primary, $color-accent);
+    background: $gradient-primary;
     border-radius: 4px;
     transition: width 0.3s ease;
   }
@@ -105,7 +111,10 @@
   span {
     font-size: 0.875rem;
     font-weight: 600;
-    color: $color-primary;
+    background: $gradient-primary;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     min-width: 3rem;
   }
 }

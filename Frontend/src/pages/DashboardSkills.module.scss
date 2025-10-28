@@ -31,7 +31,7 @@
   }
 
   .addButton {
-    background: linear-gradient(135deg, $color-background-btn 0%, #2563EB 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -43,7 +43,7 @@
     align-items: center;
     gap: 0.75rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
     white-space: nowrap;
 
     svg {
@@ -51,9 +51,9 @@
     }
 
     &:hover {
-      background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
     }
 
     &:active {

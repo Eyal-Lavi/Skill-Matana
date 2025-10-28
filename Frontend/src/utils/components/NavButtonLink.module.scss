@@ -1,6 +1,6 @@
 @use '../../styles/variables' as var;
 .navButtonLink {
-  background: linear-gradient(135deg, var.$color-background-btn 0%, #2563EB 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
   color: var.$color-text-inverse;
   padding: 12px 28px;
   border-radius: 10px;
@@ -9,7 +9,7 @@
   text-align: center;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
   position: relative;
   overflow: hidden;
 
@@ -25,9 +25,9 @@
   }
 
   &:hover {
-    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
 
     &::before {
       left: 100%;
@@ -36,11 +36,11 @@
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
   }
 
   &.active {
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
   }
 }

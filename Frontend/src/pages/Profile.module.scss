@@ -59,8 +59,8 @@
   height: 120px;
   padding: 3px;
   border-radius: 9999px;
-  background: linear-gradient(135deg, var.$color-primary, var.$color-accent);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  background: linear-gradient(135deg, #6366F1, #EC4899);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
 }
 
 .profileImage {
@@ -111,16 +111,19 @@
 .editButton {
   margin-top: 0.5rem;
   padding: 0.6rem 1rem;
-  background-color: var.$color-background-btn;
+  background: linear-gradient(135deg, #6366F1, #8B5CF6);
   color: var.$color-text-inverse;
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
   font-weight: 600;
-  transition: transform 0.08s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 8px 18px rgba(59,130,246,0.25);
+  transition: transform 0.08s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
 
-  &:hover { background-color: var.$color-background-btn-hover; }
+  &:hover { 
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    transform: translateY(-1px);
+  }
   &:active { transform: translateY(1px); }
 }
 
@@ -136,16 +139,19 @@
 .submitButton {
   min-width: 160px;
   padding: 0.75rem 1rem;
-  background-color: var.$color-background-btn;
+  background: linear-gradient(135deg, #6366F1, #8B5CF6);
   color: var.$color-text-inverse;
   font-weight: 700;
   border: none;
   border-radius: 0.9rem;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.08s ease;
-  box-shadow: 0 8px 22px rgba(59,130,246,0.28);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.08s ease;
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.4);
 
-  &:hover { background-color: var.$color-background-btn-hover; }
+  &:hover { 
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    transform: translateY(-1px);
+  }
   &:active { transform: translateY(1px); }
 }
 
