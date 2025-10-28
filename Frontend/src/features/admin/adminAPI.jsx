@@ -20,6 +20,20 @@ const AdminAPI = {
             {withCredentials:true}
         );
         return response.data;
+    },
+    getAllUsers: async(page = 1, limit = 10, search = '', status = null) => {
+        const response = await axios.get(`${API_BASE_URL}/users`, {
+            params: { page, limit, search, status },
+            withCredentials: true
+        });
+        return response.data;
+    },
+    updateUserStatus: async(userId, status) => {
+        const response = await axios.put(`${API_BASE_URL}/users/status`, 
+            { userId, status },
+            { withCredentials: true }
+        );
+        return response.data;
     }
 }
 export default AdminAPI;

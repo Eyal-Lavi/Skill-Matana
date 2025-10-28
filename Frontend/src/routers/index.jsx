@@ -27,6 +27,7 @@ import ContactManagement from "../components/ContactManagement";
 import MeetingRoom from "../pages/MeetingRoom";
 import MyAvailability from "../pages/MyAvailability";
 import Notifications from "../pages/Notifications";
+import UserManagement from "../components/UserManagement";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -143,7 +144,7 @@ const router = createBrowserRouter([
         ),
         children: [
           { index: true, element: <AdminPanel /> },
-          { path: "users", element: <div>users</div>},
+          { path: "users", element: <UserManagement /> },
           { path: "skills", element: <SkillManagement /> },
           { path: "settings", element: <div>Settings</div> },
         ]

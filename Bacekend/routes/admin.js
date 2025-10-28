@@ -10,5 +10,7 @@ router.post('/add-permission-to-user',validateAddPermissionToUser,handleValidati
 router.post('/skill-requests/status' , adminController.handleSkillRequestStatus);
 router.get('/skill-requests/pending' , adminController.fetchPendingRequests);
 router.put('/skills/status' , adminController.handleSkillStatusUpdate);
+router.get('/users' , adminController.getAllUsers);
+router.put('/users/status' , adminController.updateUserStatus);
 
 module.exports = router;

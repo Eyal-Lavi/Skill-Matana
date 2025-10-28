@@ -37,3 +37,27 @@ export const updateSkillStatus = createAsyncThunk(
       }
     }
   );
+
+export const fetchUsers = createAsyncThunk(
+    'admin/fetchUsers',
+    async ({ page = 1, limit = 10, search = '', status = null }, thunkAPI) => {
+      try {
+        const response = await AdminAPI.getAllUsers(page, limit, search, status);
+        return response;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      }
+    }
+);
+
+export const updateUserStatus = createAsyncThunk(
+    'admin/updateUserStatus',
+    async ({ userId, status }, thunkAPI) => {
+      try {
+        await AdminAPI.updateUserStatus(userId, status);
+        return { userId, status };
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      }
+    }
+  );

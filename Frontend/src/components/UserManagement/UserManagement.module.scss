@@ -1,0 +1,250 @@
+@use "../../styles/variables" as *;
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $color-text-primary;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $color-text-secondary;
+    margin: 0;
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: column;
+  }
+}
+
+.searchContainer {
+  flex: 1;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid $color-border;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+  }
+}
+
+.filterContainer {
+  min-width: 150px;
+}
+
+.statusSelect {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid $color-border;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background: $color-surface;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+  }
+}
+
+.error {
+  background: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #f44336;
+}
+
+.tableContainer {
+  background: $color-surface;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: $color-background;
+    
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: $color-text-primary;
+      border-bottom: 2px solid $color-border;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $color-border;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: rgba($color-primary, 0.03);
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 1rem;
+      color: $color-text-primary;
+    }
+  }
+}
+
+.activeStatus {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.inactiveStatus {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  background: rgba(158, 158, 158, 0.1);
+  color: #9e9e9e;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.activateBtn,
+.deactivateBtn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.activateBtn {
+  background: #4CAF50;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: #45a049;
+  }
+}
+
+.deactivateBtn {
+  background: #f44336;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: #da190b;
+  }
+}
+
+.loading,
+.empty {
+  padding: 3rem;
+  text-align: center;
+  color: $color-text-secondary;
+  font-size: 1.125rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid $color-border;
+}
+
+.pageBtn {
+  padding: 0.5rem 1rem;
+  border: 1px solid $color-border;
+  border-radius: 0.5rem;
+  background: $color-surface;
+  color: $color-text-primary;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    background: $color-background;
+    border-color: $color-primary;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pageInfo {
+  color: $color-text-secondary;
+  font-weight: 600;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .container {
+    padding: 1rem;
+  }
+
+  .table {
+    font-size: 0.875rem;
+
+    thead th {
+      padding: 0.75rem 0.5rem;
+    }
+
+    tbody td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+  }
+}
+

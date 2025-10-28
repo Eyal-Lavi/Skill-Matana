@@ -2,6 +2,7 @@ const User =  require('../models/user');
 const {addPermission , addUserPermission} = require('../services/permissionService');
 const { updateSkillRequestStatus, getAllPendingRequests } = require('../services/skillRequestsService');
 const { updateSkillStatus } = require('../services/skillsService');
+const { Op } = require('sequelize');
 const { sequelize } = require('../utils/database');
 
 const addPermissionToDB = async (request, response, next) => {
@@ -88,10 +89,82 @@ const handleSkillStatusUpdate = async (request, response, next) => {
     }
 }
 
+const getAllUsers = async (request, response, next) => {
+    try {
+        const { page = 1, limit = 10, search = '', status = null } = request.query;
+        const offset = (page - 1) * limit;
+
+        const whereClause = {};
+        if (search) {
+            whereClause[Op.or] = [
+                { firstName: { [Op.iLike]: `%${search}%` } },
+                { lastName: { [Op.iLike]: `%${search}%` } },
+                { username: { [Op.iLike]: `%${search}%` } },
+                { email: { [Op.iLike]: `%${search}%` } }
+            ];
+        }
+        if (status !== null && status !== undefined) {
+            whereClause.status = status;
+        }
+
+        const { count, rows: users } = await User.findAndCountAll({
+            where: whereClause,
+            attributes: ['id', 'username', 'email', 'firstName', 'lastName', 'gender', 'status', 'instagramUrl', 'linkedinUrl', 'githubUrl'],
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            order: [['id', 'ASC']]
+        });
+
+        response.status(200).json({
+            users,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total: count,
+                pages: Math.ceil(count / limit)
+            }
+        });
+    } catch (e) {
+        response.status(500).json({ message: e.message });
+    }
+}
+
+const updateUserStatus = async (request, response, next) => {
+    try {
+        const { userId, status } = request.body;
+
+        if (!userId || status === undefined) {
+            return response.status(400).json({ message: 'Missing userId or status' });
+        }
+
+        const validStatuses = [0, 1];
+        if (!validStatuses.includes(status)) {
+            return response.status(400).json({ message: 'Invalid status value. Must be 0 or 1' });
+        }
+
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return response.status(404).json({ message: 'User not found' });
+        }
+
+        user.status = status;
+        await user.save();
+
+        response.status(200).json({
+            message: `User ${status === 1 ? 'activated' : 'deactivated'} successfully`,
+            user
+        });
+    } catch (e) {
+        response.status(409).json({ message: e.message });
+    }
+}
+
 module.exports = {
     addPermissionToDB,
     addPermissionToUser,
     handleSkillRequestStatus,
     fetchPendingRequests,
-    handleSkillStatusUpdate
+    handleSkillStatusUpdate,
+    getAllUsers,
+    updateUserStatus
 }
