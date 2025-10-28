@@ -21,7 +21,6 @@ async function addSlots(userId, rawSlots) {
   const startMin = new Date(Math.min(...slots.map((s) => s.startTime.getTime())));
   const endMax = new Date(Math.max(...slots.map((s) => s.endTime.getTime())));
 
-  destroyExpireAvailability(userId)
 
   const existing = await Availability.findAll({
     where: {
@@ -78,16 +77,11 @@ async function addSlots(userId, rawSlots) {
 
 async function listUserAvailability(targetUserId, { start, end } = {}) {
   if (!targetUserId) throw new Error('targetUserId is required');
-
-  const now = new Date();
-  const twoMinutesAgo = new Date(now.getTime() - 2 * 60 * 1000);
   
-  destroyExpireAvailability(targetUserId);
-
   const where = {
     userId: targetUserId,
     isBooked: false,
-    startTime: { [Op.gte]: twoMinutesAgo }, 
+    endTime: { [Op.gt]: new Date()}, 
   };
 
   if (end) where.startTime[Op.lte] = new Date(end);
@@ -97,19 +91,6 @@ async function listUserAvailability(targetUserId, { start, end } = {}) {
     where,
     order: [['startTime', 'ASC']],
   });
-}
-
-const destroyExpireAvailability = async(userId) =>{
-  const now = new Date();
-  const threeMinutesAgo = new Date(now.getTime() - 3 * 60 * 1000);
-
-  await Availability.destroy({
-    where:{
-      userId,
-      isBooked:false,
-      startTime:{[Op.lt]: threeMinutesAgo}
-    }
-  })
 }
 
 async function removeSlot(userId, availabilityId) {
