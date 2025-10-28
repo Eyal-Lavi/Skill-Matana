@@ -11,7 +11,7 @@ export default function SkillCard({ id, title, description, onDelete }) {
           <button 
             className={style.deleteButton}
             onClick={() => onDelete(id)}
-            title="הסר סקיל"
+            title="Remove skill"
           >
             <FontAwesomeIcon icon={faTrash} />
           </button>
@@ -19,7 +19,7 @@ export default function SkillCard({ id, title, description, onDelete }) {
       </div>
       <p>{description}</p>
       <div className={style.skillBadge}>
-        <span>🎓 אני יכול ללמד את זה</span>
+        <span>🎓 I can teach this</span>
       </div>
     </div>
   );

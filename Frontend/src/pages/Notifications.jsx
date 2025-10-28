@@ -58,7 +58,7 @@ export default function Notifications() {
       setActiveMeetings(active);
     } catch (err) {
       console.error('Error loading meetings:', err);
-      setError(err.message || 'שגיאה בטעינת הפגישות');
+      setError(err.message || 'Error loading meetings');
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ export default function Notifications() {
   };
 
   const handleCancelMeeting = async (meetingId) => {
-    if (!window.confirm('האם אתה בטוח שברצונך לבטל את הפגישה?')) {
+    if (!window.confirm('Are you sure you want to cancel the meeting?')) {
       return;
     }
 
@@ -78,7 +78,7 @@ export default function Notifications() {
       await meetingsAPI.cancelMeeting(meetingId);
       await loadMeetings();
     } catch (err) {
-      alert(err.message || 'שגיאה בביטול הפגישה');
+      alert(err.message || 'Error canceling meeting');
     }
   };
 
@@ -88,7 +88,7 @@ export default function Notifications() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('he-IL', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -99,7 +99,7 @@ export default function Notifications() {
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('he-IL', {
+    return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -129,8 +129,8 @@ export default function Notifications() {
   return (
     <div className={styles.notificationsContainer}>
       <div className={styles.header}>
-        <h1>התראות</h1>
-        <p>עדכונים על פגישות עתידיות והתראות מהמערכת</p>
+        <h1>Notifications</h1>
+        <p>Updates on upcoming meetings and system notifications</p>
       </div>
 
       <div className={styles.tabs}>
@@ -138,7 +138,7 @@ export default function Notifications() {
           className={`${styles.tab} ${activeTab === 'active' ? styles.active : ''}`}
           onClick={() => setActiveTab('active')}
         >
-          פעיל כעת
+          Active Now
           {activeMeetings.length > 0 && (
             <span className={styles.badge}>{activeMeetings.length}</span>
           )}
@@ -147,7 +147,7 @@ export default function Notifications() {
           className={`${styles.tab} ${activeTab === 'meetings' ? styles.active : ''}`}
           onClick={() => setActiveTab('meetings')}
         >
-          פגישות עתידיות
+          Upcoming Meetings
           {upcomingMeetings.length > 0 && (
             <span className={styles.badge}>{upcomingMeetings.length}</span>
           )}
@@ -156,7 +156,7 @@ export default function Notifications() {
           className={`${styles.tab} ${activeTab === 'system' ? styles.active : ''}`}
           onClick={() => setActiveTab('system')}
         >
-          התראות מערכת
+          System Notifications
           {systemNotifications.length > 0 && (
             <span className={styles.badge}>{systemNotifications.length}</span>
           )}
@@ -165,16 +165,16 @@ export default function Notifications() {
 
       <div className={styles.content}>
         {loading ? (
-          <div className={styles.loading}>טוען...</div>
+          <div className={styles.loading}>Loading...</div>
         ) : activeTab === 'active' ? (
           <div className={styles.meetingsSection}>
             {error && <div className={styles.error}>{error}</div>}
             
             {activeMeetings.length === 0 ? (
               <div className={styles.empty}>
-                <p>אין פגישות פעילות כרגע</p>
+                <p>No active meetings right now</p>
                 <p className={styles.emptySubtext}>
-                  פגישות פעילות יופיעו כאן כשהן מתחילות
+                  Active meetings will appear here when they start
                 </p>
               </div>
             ) : (
@@ -187,10 +187,10 @@ export default function Notifications() {
                       key={meeting.id}
                       className={`${styles.meetingCard} ${styles.activeNow}`}
                     >
-                      <div className={styles.liveBadge}>🔴 פעיל כעת</div>
+                      <div className={styles.liveBadge}>🔴 Active Now</div>
                       
                       <div className={styles.meetingHeader}>
-                        <h3>פגישה עם {partner?.firstName} {partner?.lastName}</h3>
+                        <h3>Meeting with {partner?.firstName} {partner?.lastName}</h3>
                         {partner?.username && (
                           <span className={styles.username}>@{partner.username}</span>
                         )}
@@ -198,19 +198,19 @@ export default function Notifications() {
 
                       <div className={styles.meetingDetails}>
                         <div className={styles.detailRow}>
-                          <span className={styles.label}>📅 תאריך:</span>
+                          <span className={styles.label}>📅 Date:</span>
                           <span className={styles.value}>{formatDate(meeting.startTime)}</span>
                         </div>
                         <div className={styles.detailRow}>
-                          <span className={styles.label}>🕐 זמן:</span>
+                          <span className={styles.label}>🕐 Time:</span>
                           <span className={styles.value}>
                             {formatTime(meeting.startTime)} - {formatTime(meeting.endTime)}
                           </span>
                         </div>
                         <div className={styles.detailRow}>
-                          <span className={styles.label}>📍 סטטוס:</span>
+                          <span className={styles.label}>📍 Status:</span>
                           <span className={styles.value}>
-                            {user?.id === meeting.host?.id ? 'מארח' : 'אורח'}
+                            {user?.id === meeting.host?.id ? 'Host' : 'Guest'}
                           </span>
                         </div>
                       </div>
@@ -220,7 +220,7 @@ export default function Notifications() {
                           className={styles.joinButton}
                           onClick={() => handleJoinMeeting(meeting.id)}
                         >
-                          להצטרף עכשיו
+                          Join Now
                         </button>
                       </div>
                     </div>
@@ -235,9 +235,9 @@ export default function Notifications() {
             
             {sortedMeetings.length === 0 ? (
               <div className={styles.empty}>
-                <p>אין לך פגישות עתידיות</p>
+                <p>You have no upcoming meetings</p>
                 <p className={styles.emptySubtext}>
-                  פגישות עתידיות יופיעו כאן כדי שתוכל להתעדכן ולראות את כל המידע החשוב
+                  Upcoming meetings will appear here so you can stay updated and see all the important information
                 </p>
               </div>
             ) : (
@@ -252,11 +252,11 @@ export default function Notifications() {
                       className={`${styles.meetingCard} ${isSoon ? styles.soon : ''}`}
                     >
                       {isSoon && (
-                        <div className={styles.soonBadge}>מתקרב</div>
+                        <div className={styles.soonBadge}>Coming Soon</div>
                       )}
                       
                       <div className={styles.meetingHeader}>
-                        <h3>פגישה עם {partner?.firstName} {partner?.lastName}</h3>
+                        <h3>Meeting with {partner?.firstName} {partner?.lastName}</h3>
                         {partner?.username && (
                           <span className={styles.username}>@{partner.username}</span>
                         )}
@@ -264,19 +264,19 @@ export default function Notifications() {
 
                       <div className={styles.meetingDetails}>
                         <div className={styles.detailRow}>
-                          <span className={styles.label}>📅 תאריך:</span>
+                          <span className={styles.label}>📅 Date:</span>
                           <span className={styles.value}>{formatDate(meeting.startTime)}</span>
                         </div>
                         <div className={styles.detailRow}>
-                          <span className={styles.label}>🕐 זמן:</span>
+                          <span className={styles.label}>🕐 Time:</span>
                           <span className={styles.value}>
                             {formatTime(meeting.startTime)} - {formatTime(meeting.endTime)}
                           </span>
                         </div>
                         <div className={styles.detailRow}>
-                          <span className={styles.label}>📍 סטטוס:</span>
+                          <span className={styles.label}>📍 Status:</span>
                           <span className={styles.value}>
-                            {user?.id === meeting.host?.id ? 'מארח' : 'אורח'}
+                            {user?.id === meeting.host?.id ? 'Host' : 'Guest'}
                           </span>
                         </div>
                       </div>
@@ -286,13 +286,13 @@ export default function Notifications() {
                           className={styles.joinButton}
                           onClick={() => handleJoinMeeting(meeting.id)}
                         >
-                          להצטרף לפגישה
+                          Join Meeting
                         </button>
                         <button
                           className={styles.cancelButton}
                           onClick={() => handleCancelMeeting(meeting.id)}
                         >
-                          בטל פגישה
+                          Cancel Meeting
                         </button>
                       </div>
                     </div>
@@ -305,9 +305,9 @@ export default function Notifications() {
           <div className={styles.systemSection}>
             {systemNotifications.length === 0 ? (
               <div className={styles.empty}>
-                <p>אין התראות חדשות</p>
+                <p>No new notifications</p>
                 <p className={styles.emptySubtext}>
-                  התראות מהמערכת יופיעו כאן בעתיד
+                  System notifications will appear here in the future
                 </p>
               </div>
             ) : (

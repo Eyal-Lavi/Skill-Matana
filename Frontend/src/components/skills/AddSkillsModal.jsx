@@ -34,7 +34,7 @@ export default function AddSkillsModal({ isOpen, onClose }) {
       setAllSkills(filtered);
       setFilteredSkills(filtered);
     } catch (error) {
-      setError("לא הצלחנו לטעון את הסקילים");
+      setError("Failed to load skills");
     } finally {
       setLoading(false);
     }
@@ -66,16 +66,16 @@ export default function AddSkillsModal({ isOpen, onClose }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "הוספת הסקיל נכשלה");
+        throw new Error(errorData.message || "Failed to add skill");
       }
 
-      setSuccess(`הסקיל "${skillName}" נוסף בהצלחה!`);
+      setSuccess(`Skill "${skillName}" added successfully!`);
       setTimeout(() => {
         onClose();
         window.location.reload();
       }, 1500);
     } catch (error) {
-      setError(error.message || "שגיאה בהוספת הסקיל");
+      setError(error.message || "Error adding skill");
     } finally {
       setLoading(false);
     }
@@ -87,7 +87,7 @@ export default function AddSkillsModal({ isOpen, onClose }) {
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h2>הוסף סקילים</h2>
+          <h2>Add Skills</h2>
           <button className={styles.closeButton} onClick={onClose}>
             <FontAwesomeIcon icon={faTimes} />
           </button>
@@ -97,7 +97,7 @@ export default function AddSkillsModal({ isOpen, onClose }) {
           <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
           <input
             type="text"
-            placeholder="חפש סקיל..."
+            placeholder="Search skill..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
@@ -108,9 +108,9 @@ export default function AddSkillsModal({ isOpen, onClose }) {
         {success && <div className={styles.success}>{success}</div>}
 
         <div className={styles.skillsList}>
-          {loading && <div className={styles.loading}>טוען...</div>}
+          {loading && <div className={styles.loading}>Loading...</div>}
           {!loading && filteredSkills.length === 0 && (
-            <div className={styles.emptyState}>לא נמצאו סקילים</div>
+            <div className={styles.emptyState}>No skills found</div>
           )}
           {!loading && filteredSkills.map((skill) => (
             <div key={skill.id} className={styles.skillItem}>
@@ -121,7 +121,7 @@ export default function AddSkillsModal({ isOpen, onClose }) {
                 disabled={loading}
               >
                 <FontAwesomeIcon icon={faPlus} />
-                הוסף
+                Add
               </button>
             </div>
           ))}

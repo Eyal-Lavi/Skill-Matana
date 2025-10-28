@@ -18,8 +18,8 @@ export default function EnhancedSkillsGrid() {
     return (
       <div className={styles.emptyState}>
         <div className={styles.emptyIcon}>🎯</div>
-        <h3>אין לך סקילים עדיין</h3>
-        <p>הוסף סקילים מהרשימה או בקש סקיל חדש</p>
+        <h3>You don't have any skills yet</h3>
+        <p>Add skills from the list or request a new skill</p>
       </div>
     );
   }
@@ -31,7 +31,7 @@ export default function EnhancedSkillsGrid() {
           key={skill.id}
           id={skill.id}
           title={skill.name}
-          description={`זה הסקיל שלך - אתה יכול ללמד את זה!`}
+          description={`This is your skill - you can teach this!`}
         />
       ))}
     </div>

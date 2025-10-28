@@ -11,12 +11,12 @@ function DashboardSkills() {
     <div className={style.skillsPage}>
       <div className={style.header}>
         <div>
-          <h1>הסקילים שלי</h1>
-          <p>נהל את הסקילים שלך - הוסף או הסר סקילים</p>
+          <h1>My Skills</h1>
+          <p>Manage your skills - add or remove skills</p>
         </div>
         <button className={style.addButton} onClick={() => setIsModalOpen(true)}>
           <FontAwesomeIcon icon={faPlus} />
-          <span>הוסף סקילים</span>
+          <span>Add Skills</span>
         </button>
       </div>
 

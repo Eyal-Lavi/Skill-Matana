@@ -22,7 +22,7 @@ export default function EnhancedAddSkillRequest() {
     
     const name = skillName.trim();
     if (!name || name.length < 2) {
-      setError("נא להכניס שם סקיל (לפחות 2 תווים)");
+      setError("Please enter a skill name (at least 2 characters)");
       return;
     }
 
@@ -42,7 +42,7 @@ export default function EnhancedAddSkillRequest() {
       }, 3000);
     } catch (error) {
       console.log(error.response?.data?.message || error.message);
-      setError(error.response?.data?.message || "שגיאה בשליחת הבקשה");
+      setError(error.response?.data?.message || "Error sending request");
     } finally {
       setLoading(false);
     }
@@ -55,8 +55,8 @@ export default function EnhancedAddSkillRequest() {
           <div className={styles.iconContainer}>
             <FontAwesomeIcon icon={faPaperPlane} />
           </div>
-          <h3>בקש סקיל חדש</h3>
-          <p>אין לך את הסקיל שאתה מחפש? בקש מנהל מערכת להוסיף אותו</p>
+          <h3>Request a New Skill</h3>
+          <p>Don't have the skill you're looking for? Ask an administrator to add it</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -64,7 +64,7 @@ export default function EnhancedAddSkillRequest() {
             <input
               ref={inputRef}
               type="text"
-              placeholder="הכנס שם הסקיל שברצונך לבקש..."
+              placeholder="Enter the name of the skill you want to request..."
               value={skillName}
               onChange={(e) => setSkillName(e.target.value)}
               className={styles.input}
@@ -76,7 +76,7 @@ export default function EnhancedAddSkillRequest() {
           {success && (
             <div className={styles.success}>
               <FontAwesomeIcon icon={faCheck} />
-              <span>הבקשה נשלחה בהצלחה!</span>
+              <span>Request sent successfully!</span>
             </div>
           )}
 
@@ -85,7 +85,7 @@ export default function EnhancedAddSkillRequest() {
             className={styles.submitButton}
             disabled={loading || !skillName.trim()}
           >
-            {loading ? "שולח..." : "שלח בקשה"}
+            {loading ? "Sending..." : "Send Request"}
           </button>
         </form>
       </div>

@@ -41,7 +41,7 @@ export default function MyAvailability() {
 
   const formatDateForDisplay = (isoString) => {
     const date = new Date(isoString);
-    return date.toLocaleString('he-IL', {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -77,7 +77,7 @@ export default function MyAvailability() {
   const addPendingSlot = () => {
     setError("");
     if (!selectedDay || !startHour || !endHour) {
-      setError("נא לבחור יום, שעת התחלה ושעת סיום");
+      setError("Please select a day, start time, and end time");
       return;
     }
 
@@ -85,7 +85,7 @@ export default function MyAvailability() {
     const endTimeISO = toISO(selectedDay, endHour);
 
     if (new Date(endTimeISO) <= new Date(startTimeISO)) {
-      setError("שעת הסיום חייבת להיות אחרי ההתחלה");
+      setError("End time must be after start time");
       return;
     }
 
@@ -115,7 +115,7 @@ export default function MyAvailability() {
         body: JSON.stringify({ slots: pendingSlots }),
       });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body?.error || "שמירת הזמינות נכשלה");
+      if (!res.ok) throw new Error(body?.error || "Failed to save availability");
       setPendingSlots([]);
       await loadAvailability();
     } catch (e) {
@@ -133,10 +133,10 @@ export default function MyAvailability() {
         credentials: "include",
       });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body?.error || "מחיקה נכשלה");
+      if (!res.ok) throw new Error(body?.error || "Delete failed");
       await loadAvailability();
     } catch (e) {
-      alert(e.message || "שגיאה במחיקה");
+      alert(e.message || "Delete error");
     }
   };
 
@@ -146,9 +146,9 @@ export default function MyAvailability() {
   return (
     <div className={styles.availabilityContainer}>
       <div className={styles.header}>
-        <h2>הזמינות שלי</h2>
+        <h2>My Availability</h2>
         <p>
-          לחץ על יום בלוח השנה, בחר שעת התחלה ושעת סיום, ואז הוסף לרשימה.
+          Click on a day in the calendar, select start and end times, and then add to the list.
         </p>
       </div>
       <div className={styles.calendarSection}>
@@ -162,11 +162,11 @@ export default function MyAvailability() {
       {selectedDay && (
         <div className={styles.timeSelector}>
           <h4>
-            בחירת שעות ליום {selectedDay.toLocaleDateString()}
+            Selecting hours for {selectedDay.toLocaleDateString()}
           </h4>
           <div className={styles.timeFields}>
             <div className={styles.timeField}>
-              <label>שעת התחלה</label>
+              <label>Start Time</label>
               <Flatpickr
                 value={startHour}
                 options={{
@@ -179,11 +179,11 @@ export default function MyAvailability() {
                 }}
                 onChange={(dates) => setStartHour(dates[0])}
                 className="border rounded-lg p-3 w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                placeholder="בחר שעה"
+                placeholder="Select time"
               />
             </div>
             <div className={styles.timeField}>
-              <label>שעת סיום</label>
+              <label>End Time</label>
               <Flatpickr
                 value={endHour}
                 options={{
@@ -196,7 +196,7 @@ export default function MyAvailability() {
                 }}
                 onChange={(dates) => setEndHour(dates[0])}
                 className="border rounded-lg p-3 w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                placeholder="בחר שעה"
+                placeholder="Select time"
               />
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function MyAvailability() {
             onClick={addPendingSlot}
             className={styles.addButton}
           >
-            הוסף חלון לרשימה
+            Add Slot to List
           </button>
         </div>
       )}
@@ -215,7 +215,7 @@ export default function MyAvailability() {
           disabled={saving || pendingSlots.length === 0}
           className={styles.saveButton}
         >
-          {saving ? "שומר…" : `שמור ${pendingSlots.length} חלונות`}
+          {saving ? "Saving…" : `Save ${pendingSlots.length} slots`}
         </button>
       </div>
 
@@ -226,7 +226,7 @@ export default function MyAvailability() {
      
       {pendingSlots.length > 0 && (
         <div className={styles.slotsSection}>
-          <h3>חלונות שממתינים לשמירה</h3>
+          <h3>Slots Pending Save</h3>
           <div className={styles.slotList}>
             {pendingSlots.map((s, i) => (
               <div key={i} className={styles.slotCard}>
@@ -237,7 +237,7 @@ export default function MyAvailability() {
                   onClick={() => removePendingSlot(i)}
                   className={styles.removeButton}
                 >
-                  הסר
+                  Remove
                 </button>
               </div>
             ))}
@@ -247,11 +247,11 @@ export default function MyAvailability() {
 
     
       <div className={styles.slotsSection}>
-        <h3>הזמינות הקרובה שלי</h3>
+        <h3>My Upcoming Availability</h3>
         {loading ? (
-          <div className={styles.loading}>טוען…</div>
+          <div className={styles.loading}>Loading…</div>
         ) : availability.length === 0 ? (
-          <div className={styles.empty}>אין כרגע זמינות עתידית.</div>
+          <div className={styles.empty}>No upcoming availability at this time.</div>
         ) : (
           <div className={styles.slotList}>
             {availability.map((a) => (
@@ -267,10 +267,10 @@ export default function MyAvailability() {
                     onClick={() => deleteSlot(a.id)}
                     className={styles.removeButton}
                   >
-                    מחק
+                    Delete
                   </button>
                 ) : (
-                  <span className={styles.bookedLabel}>(שמור לשיעור)</span>
+                  <span className={styles.bookedLabel}>(Reserved for lesson)</span>
                 )}
               </div>
             ))}
