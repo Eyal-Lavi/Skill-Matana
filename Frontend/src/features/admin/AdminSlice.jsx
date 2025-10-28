@@ -39,7 +39,7 @@ const adminSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(updateSkillStatus.fulfilled , (state , action) => {
-        // Skill status updated successfully
+   
         state.error = null;
       })
       .addCase(updateSkillStatus.rejected , (state , action) => {

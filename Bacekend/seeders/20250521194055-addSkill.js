@@ -7,8 +7,7 @@ const SkillModel = require('../models/skill');
 module.exports = {
   async up(queryInterface, Sequelize) {
 
-    // const createdAt = new Date();
-    // const updatedAt = new Date();
+ 
 
     await queryInterface.bulkInsert(SkillModel.tableName, data.map(skill => ({ ...skill })), {});
   },

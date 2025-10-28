@@ -4,7 +4,7 @@ const meetingsController = require('../controllers/meetingsController');
 const { generateToken04 } = require('../lib/zegoToken');
 const { isMeetingParticipant } = require('../middlewares/meetingMiddleware');
 const { Op } = require('sequelize');
-// Optional rate limiter (fallback simple impl if package missing)
+
 let rateLimit;
 try {
   const mod = require('express-rate-limit');
@@ -15,7 +15,7 @@ try {
 
 const router = Router();
 
-// Public: join token for Zego (keep path compatibility)
+
 let limiter;
 if (rateLimit) {
   limiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
@@ -69,7 +69,7 @@ router.get('/:meetingId/join-token', isLoggedIn, isMeetingParticipant, limiter, 
     const secret = process.env.ZEGO_SERVER_SECRET;
     const ttl = Number(process.env.TOKEN_TTL_SECONDS || 3600);
 
-    // const { meetingId } = req.params;
+    
     const { roomId } = req.meeting;
     const userId = String(req.session.user?.id || 'guest').slice(0, 64);
     const userName = String(req.session.user?.username || 'Guest').slice(0, 64);
@@ -82,13 +82,12 @@ router.get('/:meetingId/join-token', isLoggedIn, isMeetingParticipant, limiter, 
   }
 });
 
-// Schedule a meeting with a user using an availability slot
 router.post('/schedule', isLoggedIn, meetingsController.schedule);
 
-// Cancel a meeting (participant only)
+
 router.patch('/:id/cancel', isLoggedIn, meetingsController.cancel);
 
-// List my meetings
+
 router.get('/my', isLoggedIn, meetingsController.listMine);
 
 module.exports = router;

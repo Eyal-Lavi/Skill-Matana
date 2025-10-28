@@ -7,9 +7,7 @@ const UserPermissionModel = require('../models/userPermission');
 module.exports = {
   async up(queryInterface, Sequelize) {
 
-    // const createdAt = new Date();
-    // const updatedAt = new Date();
-
+   
     await queryInterface.bulkInsert(UserPermissionModel.tableName, data.map(user => ({ ...user })), {});
   },
 

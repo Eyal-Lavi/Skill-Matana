@@ -20,11 +20,11 @@
   @media (max-width: $breakpoint-mobile) {
     margin-left: 0;
     padding: 1rem;
-    padding-bottom: 5.5rem; // space for bottom nav
+    padding-bottom: 5.5rem; 
   }
 }
 
-// Add some decorative elements
+
 .adminLayout::before {
   content: '';
   position: fixed;

@@ -8,7 +8,7 @@
   width: 100%;
   max-width: 1200px;
   margin: auto;
-  // background-color: red;
+  
 
   @media (max-width: var.$breakpoint-mobile) {
     flex: none;
@@ -35,7 +35,6 @@
 .select-wrapper {
   width: 20%;
   min-width: 8rem;
-  // background-color: aqua;
   height: 4rem;
   display: flex;
   align-items: center;
@@ -45,12 +44,9 @@
     width: 100%;
   }
   .css-b62m3t-container{
-    // background-color: yellow;
     width: 100%;
   }
   .react-select__control {
-    // background-color: wheat;
-    // height: 100% !important;
     min-height: 100% !important;
     border-radius: 20px;
     border: 2px solid black;

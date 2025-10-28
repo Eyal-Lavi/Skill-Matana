@@ -18,7 +18,7 @@ async function scheduleMeeting(requesterId, targetUserId, availabilityId, t) {
   const connected = await areConnected(requesterId, targetUserId);
   if (!connected) throw new Error('Users are not connected');
 
-  // בלי wrap, פשוט להשתמש ב-t באופציות:
+  
   const slot = await Availability.findByPk(availabilityId, { transaction: t });
   if (!slot) throw new Error('Availability not found');
   if (slot.userId !== targetUserId) throw new Error('Slot does not belong to target user');
@@ -52,7 +52,7 @@ async function scheduleMeeting(requesterId, targetUserId, availabilityId, t) {
     status: created.status
   });
 
-  // Tip: Best to send emails after commit in controller (to avoid failures if rollback occurs)
+  
   try {
     const host = await User.findByPk(targetUserId, { transaction: t });
     const guest = await User.findByPk(requesterId, { transaction: t });

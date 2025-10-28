@@ -50,7 +50,7 @@ function Profile() {
         payload.profileImage = base64Image;
       }
 
-      const data = await authAPI.updateProfile(payload); // שליחת JSON
+      const data = await authAPI.updateProfile(payload); 
       dispatch(authActions.updateFromSession(data.user));
       reset(payload);
       setIsEditing(false);

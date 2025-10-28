@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './ChatAI.scss'; // אם אתה עדיין משתמש ב-CSS רגיל, שנה ל- .css
+import './ChatAI.scss'; 
 
 function ChatAI() {
   const [question, setQuestion] = useState('');
@@ -16,7 +16,7 @@ function ChatAI() {
 
     try {
       const res = await axios.post('http://localhost:3000/ask', {
-        messages: [...messages, userMsg], // חשוב – שליחה של ההיסטוריה
+        messages: [...messages, userMsg], 
       });
 
       const botMsg = { from: 'bot', text: res.data.answer };

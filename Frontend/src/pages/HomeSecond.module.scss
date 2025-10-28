@@ -192,8 +192,6 @@
 
 .stepCard {
   backdrop-filter: blur(4px);
-  // background-color: rgba(255, 255, 255, 0.05);
-  // border: 1px solid rgba(255, 255, 255, 0.1);
   border: 1px solid var.$color-text-inverse;
   border-radius: 1rem;
   padding: 1rem;
@@ -232,77 +230,10 @@
 
   &Description {
     font-size: 0.75rem;
-    // color: var.$color-text-secondary;
+    
 
     @media (min-width: var.$breakpoint-mobile) {
       font-size: 0.875rem;
     }
   }
 }
-
-
-
-// .steps {
-//   z-index: 1;
-
-//   h2 {
-//     font-size: 1.5rem;
-//     margin-bottom: 1.5rem;
-//     text-align: center;
-//     color: var.$color-primary;
-//     z-index: 1;
-
-//     @media (min-width: var.$breakpoint-mobile) {
-//       font-size: 2rem;
-//       margin-bottom: 2rem;
-//     }
-//   }
-
-//   .stepList {
-//     z-index: 1;
-
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     gap: 1.2rem;
-
-//     @media (min-width: var.$breakpoint-mobile) {
-//       flex-direction: row;
-//       justify-content: space-around;
-//       gap: 1.5rem;
-//       flex-wrap: wrap;
-//     }
-//   }
-
-//   .step {
-//     z-index: 1;
-//     background-color: var.$color-surface;
-//     box-shadow: 0 2px 5px var.$color-box-shadow;
-//     border-radius: 10px;
-//     padding: 1.5rem;
-//     width: 100%;
-//     max-width: 300px;
-//     text-align: center;
-
-//     h3 {
-//       font-size: 1.2rem;
-//       color: var.$color-primary-dark;
-//       margin-bottom: 0.5rem;
-//       // z-index: 1;
-
-//       @media (min-width: var.$breakpoint-mobile) {
-//         font-size: 1.4rem;
-//       }
-//     }
-
-//     p {
-//       color: var.$color-text-secondary;
-//       font-size: 0.95rem;
-//       // z-index: 1;
-
-//       @media (min-width: var.$breakpoint-mobile) {
-//         font-size: 1rem;
-//       }
-//     }
-//   }
-// }

@@ -20,7 +20,7 @@ export default function Notifications() {
       loadSystemNotifications();
     }
     
-    // Update active meetings every minute
+  
     const interval = setInterval(() => {
       if (user?.id) {
         loadMeetings();
@@ -38,7 +38,7 @@ export default function Notifications() {
       const meetings = response?.meetings || [];
       console.log('Raw meetings:', meetings);
       
-      // Filter active and upcoming meetings
+      
       const now = new Date();
       const upcoming = meetings.filter(meeting => {
         const startTime = new Date(meeting.startTime);
@@ -65,7 +65,7 @@ export default function Notifications() {
   };
 
   const loadSystemNotifications = () => {
-    // TODO: Implement when system notifications are ready
+  
     setSystemNotifications([]);
   };
 

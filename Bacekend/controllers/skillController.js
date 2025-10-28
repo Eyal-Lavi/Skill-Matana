@@ -32,7 +32,6 @@ const getAllSkills = async (request, response,next) => {
 
 const getSkillsForUser = async (request, response,next) => {
     try {
-        // const { id } = request.params;
         console.log("request.session.user : " + request.session.user);
 
         const userId = request.session.user.id ;

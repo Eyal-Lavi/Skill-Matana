@@ -32,7 +32,7 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <Error />,
     children: [
-      // { path: "/", element: <HomeSecond /> },
+    
       { path: "/", element: <Home /> },
       {
         path: "auth",
@@ -122,14 +122,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // {
-      //   path: "search",
-      //   element: (
-      //     <AuthenticatedRoute>
-      //       <Search />
-      //     </AuthenticatedRoute>
-      //   ),
-      // },
       {
         path: "profile",
         element: (

@@ -22,7 +22,7 @@ export default function RecentActivity() {
       const response = await meetingsAPI.getMyMeetings('scheduled');
       const meetings = response?.meetings || [];
       
-      // Filter active meetings (currently happening)
+      
       const now = new Date();
       const active = meetings.filter(meeting => {
         const startTime = new Date(meeting.startTime);

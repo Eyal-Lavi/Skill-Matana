@@ -20,15 +20,13 @@ export default function MyAvailability() {
   const [startHour, setStartHour] = useState(null);
   const [endHour, setEndHour] = useState(null);
 
-  // Create ISO string converting local time to UTC
+  
   const toISO = (date, time) => {
     if (!date || !time) return "";
     
-    // Get local time components
     const localDate = new Date(date);
     const localTime = new Date(time);
     
-    // Combine date and time in local timezone
     const combinedDate = new Date(
       localDate.getFullYear(),
       localDate.getMonth(),
@@ -37,11 +35,10 @@ export default function MyAvailability() {
       localTime.getMinutes()
     );
     
-    // Return ISO string - this automatically handles timezone conversion
+    
     return combinedDate.toISOString();
   };
 
-  // Format date for display (shows local time)
   const formatDateForDisplay = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleString('he-IL', {
@@ -74,7 +71,7 @@ export default function MyAvailability() {
 
   useEffect(() => {
     loadAvailability();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [userId]);
 
   const addPendingSlot = () => {
@@ -154,8 +151,6 @@ export default function MyAvailability() {
           לחץ על יום בלוח השנה, בחר שעת התחלה ושעת סיום, ואז הוסף לרשימה.
         </p>
       </div>
-
-      {/* לוח שנה */}
       <div className={styles.calendarSection}>
         <Calendar
           onClickDay={(date) => setSelectedDay(date)}
@@ -164,7 +159,6 @@ export default function MyAvailability() {
         />
       </div>
 
-      {/* בחירת שעות */}
       {selectedDay && (
         <div className={styles.timeSelector}>
           <h4>
@@ -215,7 +209,6 @@ export default function MyAvailability() {
         </div>
       )}
 
-      {/* שמירה */}
       <div>
         <button
           onClick={saveAll}
@@ -230,7 +223,7 @@ export default function MyAvailability() {
         <div className={styles.error}>{error}</div>
       )}
 
-      {/* Pending */}
+     
       {pendingSlots.length > 0 && (
         <div className={styles.slotsSection}>
           <h3>חלונות שממתינים לשמירה</h3>
@@ -252,7 +245,7 @@ export default function MyAvailability() {
         </div>
       )}
 
-      {/* Existing availability */}
+    
       <div className={styles.slotsSection}>
         <h3>הזמינות הקרובה שלי</h3>
         {loading ? (

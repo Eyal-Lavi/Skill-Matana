@@ -1,4 +1,4 @@
-// client/src/pages/MeetingRoom.jsx
+
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
@@ -42,13 +42,13 @@ export default function MeetingRoom() {
     );
     const zp = ZegoUIKitPrebuilt.create(kitToken);
 
-    // Listen for room left event
+   
     const handleRoomLeft = () => {
       console.log('User left the room, navigating to notifications');
       navigate('/dashboard/notifications');
     };
 
-    // Attach event listener for room left
+   
     if (zp.on && typeof zp.on === 'function') {
       zp.on('leave', handleRoomLeft);
     }
@@ -59,15 +59,11 @@ export default function MeetingRoom() {
       showPreJoinView: false,
       turnOnCameraWhenJoining: true,
       turnOnMicrophoneWhenJoining: true,
-      // Built-in text chat and user list
       showTextChat: true,
       showUserList: true,
-      // Share link
-      // sharedLinks: [{ name: 'Meeting Link', url: `${window.location.origin}/meeting/${meetingId}` }],
-      // Basic permissions
       maxUsers: 2,
       layout: 'Auto',
-      onLeaveRoom: handleRoomLeft, // Callback when leaving room
+      onLeaveRoom: handleRoomLeft, 
     });
 
     return () => {

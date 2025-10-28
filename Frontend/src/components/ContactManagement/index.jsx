@@ -10,7 +10,7 @@ import styles from './ContactManagement.module.scss';
 const ContactManagement = () => {
   const [activeTab, setActiveTab] = useState('connections');
 
-  // Contact requests data
+
   const { received, sent, loading: pendingLoading, error: pendingError, refresh } = useContactRequestsData();
   const { connections, total, filters, handleFilterChange, handleSearchChange, handleSortChange, handleClearFilters } = useConnectionsData();
   const { handleUpdateRequestStatus, handleCancelRequest } = useConnectionActions(refresh);

@@ -27,7 +27,7 @@ export default function AddSkillsModal({ isOpen, onClose }) {
       const response = await MetaDataAPI.metaData();
       const availableSkills = response.skills.data || [];
       
-      // Filter out skills the user already has
+      
       const userSkillIds = userSkills?.map(skill => skill.id) || [];
       const filtered = availableSkills.filter(skill => !userSkillIds.includes(skill.id));
       

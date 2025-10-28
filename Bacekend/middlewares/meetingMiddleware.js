@@ -13,7 +13,6 @@ const isMeetingParticipant = async (req, res, next) =>{
       return res.status(400).json({ error: 'meetingId is required' });
     }
 
-    // אם ה־IDs מספריים:
     const meetingIdNum = Number(meetingId);
     if (Number.isNaN(meetingIdNum)) {
       return res.status(400).json({ error: 'Invalid meetingId' });

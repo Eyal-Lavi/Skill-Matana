@@ -197,7 +197,7 @@
   font-weight: bold;
 }
 
-// Loading state
+
 .loadingContainer {
   display: flex;
   flex-direction: column;
@@ -227,7 +227,7 @@
   100% { transform: rotate(360deg); }
 }
 
-// Error state
+
 .errorContainer {
   display: flex;
   flex-direction: column;
@@ -252,7 +252,7 @@
   margin-bottom: 8px;
 }
 
-// Empty state
+
 .emptyContainer {
   display: flex;
   flex-direction: column;

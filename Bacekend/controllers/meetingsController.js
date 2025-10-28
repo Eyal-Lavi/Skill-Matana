@@ -12,7 +12,7 @@ const schedule = async (req, res, next) => {
       Number(requesterId),
       Number(targetUserId),
       Number(availabilityId),
-      t // ← מעבירים את הטרנזקציה עצמה, לא אובייקט {transaction}
+      t 
     );
 
     await t.commit();

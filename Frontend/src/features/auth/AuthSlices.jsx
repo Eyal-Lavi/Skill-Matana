@@ -39,7 +39,7 @@ const authSlice = createSlice({
 
     },
     updateFromSession(state, action) {
-      // this.login(state, action);
+     
         state.isAuthenticated = true;
         state.user = {
             id: action.payload.id,

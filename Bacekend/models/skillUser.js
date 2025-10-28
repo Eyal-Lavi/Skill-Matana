@@ -22,15 +22,8 @@ const SkillUser = sequelize.define('SkillUser', {
     ,{
         tableName: 'skill_user',    
         timestamps: false,
-        // associate: (models) => {
-        //     SkillUser.belongsTo(models.user)
-        // }
-    }
+        }
 );
-
-// SkillUser.belongsTo(Skill, {
-//     foreignKey: 'skillId',
-//     as: 'skill'
-// });
+;
 
 module.exports = SkillUser;

@@ -17,7 +17,7 @@ async function addSlots(userId, rawSlots) {
   const slots = normalizeSlots(rawSlots);
   if (!slots.length) throw new Error('No valid slots provided');
 
-  // Ensure no overlaps with existing availabilities
+
   const startMin = new Date(Math.min(...slots.map((s) => s.startTime.getTime())));
   const endMax = new Date(Math.max(...slots.map((s) => s.endTime.getTime())));
 
@@ -39,7 +39,7 @@ async function addSlots(userId, rawSlots) {
   });
 
   if (existing.length) {
-    // simple policy: do not allow overlapping creation in this batch
+  
     throw new Error('Overlapping with existing availabilities');
   }
 
@@ -48,7 +48,7 @@ async function addSlots(userId, rawSlots) {
     { returning: true }
   );
 
-  // Notify watchers (alerts)
+
   const formatDateForEmail = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleString('en-US', {

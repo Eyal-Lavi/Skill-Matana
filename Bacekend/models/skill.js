@@ -34,11 +34,4 @@ const Skill = sequelize.define('Skill', {
     }
 );
 
-// Skill.belongsToMany(User, {
-//     through: SkillUser,
-//     foreignKey: 'skillId',
-//     otherKey: 'userId',
-//     as: 'skills'
-// });
-
 module.exports = Skill;

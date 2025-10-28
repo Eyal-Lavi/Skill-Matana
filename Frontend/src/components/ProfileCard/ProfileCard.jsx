@@ -126,13 +126,3 @@ const ActionButton = ({ action }) => (
     <ArrowUpRight size={16} className="arrow-icon" />
   </a>
 );
-
-// const Tooltip = ({ item, hoveredItem }) => (
-//   <div
-//     className={`tooltip ${hoveredItem === item.id ? 'visible' : ''}`}
-//     role="tooltip"
-//   >
-//     {item.label}
-//     <div className="tooltip-arrow" />
-//   </div>
-// );
