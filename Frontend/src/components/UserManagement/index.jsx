@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { 
   selectUsers,
   selectUsersLoading,
   selectUsersError,
   selectUsersPagination
 } from '../../features/admin/adminSelectors';
-import { fetchUsers, updateUserStatus } from '../../features/admin/adminThunks';
+import { fetchUsers, updateUserStatus, updateUser, loginAsUser } from '../../features/admin/adminThunks';
+import { authActions } from '../../features/auth/AuthSlices';
+import authAPI from '../../features/auth/AuthAPI';
 import styles from './UserManagement.module.scss';
 import useDebounce from '../../hooks/useDebounce';
+import EditUserModal from './EditUserModal';
 
 const UserManagement = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const users = useSelector(selectUsers);
   const loading = useSelector(selectUsersLoading);
   const error = useSelector(selectUsersError);
@@ -20,6 +25,8 @@ const UserManagement = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [editingUser, setEditingUser] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -61,6 +68,53 @@ const UserManagement = () => {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+  };
+
+  const handleEditClick = (user) => {
+    setEditingUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
+    setEditingUser(null);
+  };
+
+  const handleSaveUser = async (userData) => {
+    try {
+      await dispatch(updateUser(userData)).unwrap();
+      // Refresh users list
+      await dispatch(fetchUsers({
+        page: currentPage,
+        limit: 10,
+        search: debouncedSearch,
+        status: statusFilter || null
+      })).unwrap();
+      handleEditModalClose();
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const handleLoginAsUser = async (userId) => {
+    try {
+      // Login as the selected user
+      await dispatch(loginAsUser(userId)).unwrap();
+      
+      // Refresh session to get updated user data
+      const sessionData = await authAPI.checkSession();
+      
+      if (sessionData.isAuthenticated && sessionData.user) {
+        // Update Redux store with new user
+        dispatch(authActions.updateFromSession(sessionData.user));
+        
+        // Navigate to dashboard
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Failed to login as user:', err);
+      alert(err || 'Failed to login as user');
+    }
   };
 
   return (
@@ -132,12 +186,28 @@ const UserManagement = () => {
                       </span>
                     </td>
                     <td>
-                      <button
-                        onClick={() => handleStatusToggle(user.id, user.status)}
-                        className={user.status === 1 ? styles.deactivateBtn : styles.activateBtn}
-                      >
-                        {user.status === 1 ? 'Deactivate' : 'Activate'}
-                      </button>
+                      <div className={styles.actionsContainer}>
+                        <button
+                          onClick={() => handleEditClick(user)}
+                          className={styles.editBtn}
+                          title="Edit User"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleLoginAsUser(user.id)}
+                          className={styles.loginAsBtn}
+                          title="Login As This User"
+                        >
+                          Login As
+                        </button>
+                        <button
+                          onClick={() => handleStatusToggle(user.id, user.status)}
+                          className={user.status === 1 ? styles.deactivateBtn : styles.activateBtn}
+                        >
+                          {user.status === 1 ? 'Deactivate' : 'Activate'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -166,6 +236,13 @@ const UserManagement = () => {
           </>
         )}
       </div>
+
+      <EditUserModal
+        isOpen={isEditModalOpen}
+        onClose={handleEditModalClose}
+        user={editingUser}
+        onSave={handleSaveUser}
+      />
     </div>
   );
 };

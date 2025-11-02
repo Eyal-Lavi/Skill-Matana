@@ -34,6 +34,20 @@ const AdminAPI = {
             { withCredentials: true }
         );
         return response.data;
+    },
+    updateUser: async(userData) => {
+        const response = await axios.put(`${API_BASE_URL}/users`, 
+            userData,
+            { withCredentials: true }
+        );
+        return response.data;
+    },
+    loginAsUser: async(userId) => {
+        const response = await axios.post(`${API_BASE_URL}/users/login-as`, 
+            { userId },
+            { withCredentials: true }
+        );
+        return response.data;
     }
 }
 export default AdminAPI;

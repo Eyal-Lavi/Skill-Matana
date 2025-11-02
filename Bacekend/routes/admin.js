@@ -12,5 +12,7 @@ router.get('/skill-requests/pending' , adminController.fetchPendingRequests);
 router.put('/skills/status' , adminController.handleSkillStatusUpdate);
 router.get('/users' , adminController.getAllUsers);
 router.put('/users/status' , adminController.updateUserStatus);
+router.put('/users' , adminController.updateUser);
+router.post('/users/login-as' , adminController.loginAsUser);
 
 module.exports = router;

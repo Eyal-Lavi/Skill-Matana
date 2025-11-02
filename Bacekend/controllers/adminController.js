@@ -159,6 +159,173 @@ const updateUserStatus = async (request, response, next) => {
     }
 }
 
+const updateUser = async (request, response, next) => {
+    try {
+        const { userId, username, firstName, lastName, email, gender, password, instagramUrl, linkedinUrl, githubUrl } = request.body;
+
+        if (!userId) {
+            return response.status(400).json({ message: 'Missing userId' });
+        }
+
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return response.status(404).json({ message: 'User not found' });
+        }
+
+        // Update fields if provided
+        if (username !== undefined) user.username = username;
+        if (firstName !== undefined) user.firstName = firstName;
+        if (lastName !== undefined) user.lastName = lastName;
+        if (email !== undefined) user.email = email;
+        if (gender !== undefined) user.gender = gender;
+        if (password !== undefined && password !== '') user.password = password; // Will be hashed by hook
+        if (instagramUrl !== undefined) user.instagramUrl = instagramUrl;
+        if (linkedinUrl !== undefined) user.linkedinUrl = linkedinUrl;
+        if (githubUrl !== undefined) user.githubUrl = githubUrl;
+
+        await user.save();
+
+        // Return user without password
+        const userResponse = user.toJSON();
+        delete userResponse.password;
+
+        response.status(200).json({
+            message: 'User updated successfully',
+            user: userResponse
+        });
+    } catch (e) {
+        response.status(409).json({ message: e.message });
+    }
+}
+
+const loginAsUser = async (request, response, next) => {
+    try {
+        const { userId } = request.body;
+
+        // Check if the current user is admin
+        if (!request.session.isAdmin) {
+            return response.status(403).json({ message: 'Only admins can use this feature' });
+        }
+
+        if (!userId) {
+            return response.status(400).json({ message: 'Missing userId' });
+        }
+
+        const { UserImage, Skill, Permission } = require('../models');
+        const { Op } = require('sequelize');
+        const transaction = await sequelize.transaction();
+
+        // Find the target user with all their data
+        const targetUser = await User.findByPk(userId, {
+            include: [
+                {
+                    model: Permission,
+                    attributes: ['id', 'name'],
+                },
+                {
+                    model: UserImage,
+                    attributes: ['url', 'typeId'],
+                    as: 'Images',
+                },
+                {
+                    model: Skill,
+                    attributes: ['id', 'name'],
+                    where: {
+                        status: {
+                            [Op.eq]: 1
+                        }
+                    },
+                    required: false,
+                    as: 'skills'
+                },
+                {
+                    model: User,
+                    as: 'connectionsA',
+                    attributes: ['id', 'firstName', 'lastName'],
+                    through: { attributes: [] },
+                    include: [{ model: UserImage, as: 'Images', attributes: ['url', 'typeId'] }],
+                    required: false,
+                },
+                {
+                    model: User,
+                    as: 'connectionsB',
+                    attributes: ['id', 'firstName', 'lastName'],
+                    through: { attributes: [] },
+                    include: [{ model: UserImage, as: 'Images', attributes: ['url', 'typeId'] }],
+                    required: false,
+                }
+            ],
+            transaction
+        });
+
+        if (!targetUser) {
+            await transaction.rollback();
+            return response.status(404).json({ message: 'User not found' });
+        }
+
+        await transaction.commit();
+
+        // Prepare user data similar to login
+        const permissions = targetUser.Permissions.map(permission => ({
+            id: permission.id,
+            name: permission.name
+        }));
+
+        const profileImg = targetUser.Images.find(img => img.typeId === 1);
+        const bannerImg = targetUser.Images.find(img => img.typeId === 2);
+        
+        const skills = targetUser.skills.map(skill => ({
+            id: skill.id,
+            name: skill.name
+        }));
+
+        const mapConn = (u) => {
+            const imgs = Array.isArray(u.Images) ? u.Images : [];
+            const prof = imgs.find(img => img.typeId === 1);
+            return {
+                id: u.id,
+                firstName: u.firstName,
+                lastName: u.lastName,
+                profilePicture: prof?.url || null,
+            };
+        };
+        const connsA = Array.isArray(targetUser.connectionsA) ? targetUser.connectionsA.map(mapConn) : [];
+        const connsB = Array.isArray(targetUser.connectionsB) ? targetUser.connectionsB.map(mapConn) : [];
+        const connectionsMap = new Map();
+        [...connsA, ...connsB].forEach(c => { if (!connectionsMap.has(c.id)) connectionsMap.set(c.id, c); });
+        const connections = Array.from(connectionsMap.values());
+
+        // Update session to the target user
+        request.session.isLoggedIn = true;
+        request.session.isAdmin = permissions.some(p => p.id === 99);
+        request.session.originalAdminId = request.session.user?.id; // Save original admin ID for reference
+        request.session.user = {
+            id: targetUser.id,
+            username: targetUser.username,
+            firstName: targetUser.firstName,
+            lastName: targetUser.lastName,
+            email: targetUser.email,
+            gender: targetUser.gender,
+            permissions,
+            profilePicture: profileImg?.url || null,
+            bannerPicture: bannerImg?.url || null,
+            skills,
+            connections
+        };
+
+        await new Promise((resolve, reject) => {
+            request.session.save(err => (err ? reject(err) : resolve()));
+        });
+
+        response.status(200).json({
+            message: 'Logged in as user successfully',
+            user: request.session.user
+        });
+    } catch (e) {
+        response.status(500).json({ message: e.message });
+    }
+}
+
 module.exports = {
     addPermissionToDB,
     addPermissionToUser,
@@ -166,5 +333,7 @@ module.exports = {
     fetchPendingRequests,
     handleSkillStatusUpdate,
     getAllUsers,
-    updateUserStatus
+    updateUserStatus,
+    updateUser,
+    loginAsUser
 }

@@ -61,3 +61,27 @@ export const updateUserStatus = createAsyncThunk(
       }
     }
   );
+
+export const updateUser = createAsyncThunk(
+    'admin/updateUser',
+    async (userData, thunkAPI) => {
+      try {
+        const response = await AdminAPI.updateUser(userData);
+        return response;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      }
+    }
+  );
+
+export const loginAsUser = createAsyncThunk(
+    'admin/loginAsUser',
+    async (userId, thunkAPI) => {
+      try {
+        const response = await AdminAPI.loginAsUser(userId);
+        return response;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      }
+    }
+  );
