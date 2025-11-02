@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { 
   selectAdminError,
   selectAdminLoading,
@@ -16,6 +16,7 @@ import AddSkillModal from './AddSkillModal/AddSkillModal.jsx';
 import styles from './SkillManagement.module.scss';
 
 const SkillManagement = () => {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('existing');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -46,9 +47,9 @@ const SkillManagement = () => {
 
 
   useEffect(() => {
-    fetchPendingSkillRequests();
+    dispatch(fetchPendingSkillRequests());
     fetchSkills(true);
-  }, []);
+  }, [dispatch]);
 
 
   const lastElementRef = useInfiniteScroll(loadMore, pagination.hasMore, isLoadingMore);
@@ -75,7 +76,7 @@ const SkillManagement = () => {
   };
 
   const handleRefreshPending = () => {
-    fetchPendingSkillRequests();
+    dispatch(fetchPendingSkillRequests());
   };
 
   return (

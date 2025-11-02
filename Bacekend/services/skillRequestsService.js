@@ -1,4 +1,4 @@
-const { SkillRequest, Skill } = require("../models")
+const { SkillRequest, Skill, User } = require("../models")
 
 const updateSkillRequestStatus = async(requestId , status) => {
     const request = await SkillRequest.findByPk(requestId);
@@ -43,7 +43,14 @@ const createSkillRequest = async(name , userId) => {
 }
 
 const getAllPendingRequests = async() => {
-    const allPendingRequest = await SkillRequest.findAll({where:{status:'pending'}});
+    const allPendingRequest = await SkillRequest.findAll({
+        where:{status:'pending'},
+        include: [{
+            model: User,
+            as: 'requester',
+            attributes: ['id', 'firstName', 'lastName']
+        }]
+    });
     return allPendingRequest;
 }
 

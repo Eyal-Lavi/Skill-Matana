@@ -8,6 +8,8 @@ import styles from './PendingSkillRequestsList.module.scss';
 
 function PendingSkillRequestsList() {
     const requests = useSelector(selectPendingSkillRequests);
+    console.log("requests");
+    console.log(requests);
     const loading = useSelector(selectAdminLoading);
     const error = useSelector(selectAdminError);
     const dispatch = useDispatch();
@@ -61,18 +63,22 @@ function PendingSkillRequestsList() {
                         <div className={styles.requestInfo}>
                             <div className={styles.userInfo}>
                                 <div className={styles.avatar}>
-                                    {request.name ? request.name.charAt(0).toUpperCase() : 'U'}
+                                    {request.name ? request.name.charAt(0).toUpperCase() : 'S'}
                                 </div>
                                 <div className={styles.details}>
-                                    <h3 className={styles.userName}>{request.name || 'Unknown User'}</h3>
+                                    <h3 className={styles.userName}>
+                                        {request.requester 
+                                            ? `${request.requester.firstName || ''} ${request.requester.lastName || ''}`.trim() || 'Unknown User'
+                                            : `User ID: ${request.requestedBy || 'Unknown'}`}
+                                    </h3>
                                     <p className={styles.requestId}>Request ID: {request.id}</p>
                                 </div>
                             </div>
                             
-                            {request.skillName && (
+                            {request.name && (
                                 <div className={styles.skillInfo}>
                                     <span className={styles.skillLabel}>Skill:</span>
-                                    <span className={styles.skillName}>{request.skillName}</span>
+                                    <span className={styles.skillName}>{request.name}</span>
                                 </div>
                             )}
                         </div>
