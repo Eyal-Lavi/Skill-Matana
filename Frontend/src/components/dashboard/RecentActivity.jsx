@@ -48,7 +48,7 @@ export default function RecentActivity() {
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('he-IL', {
+    return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -60,9 +60,9 @@ export default function RecentActivity() {
 
   return (
     <div className={style.recentActivity}>
-      <h2>פעילות אחרונה</h2>
+      <h2>Recent Activity</h2>
       {loading ? (
-        <div className={style.loading}>טוען...</div>
+        <div className={style.loading}>Loading...</div>
       ) : activeMeetings.length > 0 ? (
         <div className={style.activityList}>
           {activeMeetings.map((meeting) => {
@@ -75,8 +75,8 @@ export default function RecentActivity() {
               >
                 <ActivityItem
                   icon="🔴"
-                  title="פגישה פעילה"
-                  description={`עם ${partner?.firstName} ${partner?.lastName}`}
+                  title="Active Meeting"
+                  description={`with ${partner?.firstName} ${partner?.lastName}`}
                   time={`${formatTime(meeting.startTime)} - ${formatTime(meeting.endTime)}`}
                 />
               </div>
@@ -85,7 +85,7 @@ export default function RecentActivity() {
         </div>
       ) : (
         <div className={style.empty}>
-          <p>אין פעילות אחרונה</p>
+          <p>No recent activity</p>
         </div>
       )}
     </div>
