@@ -38,8 +38,8 @@
 }
 
 .searchInput {
-  width: 100%;
-  padding: 0.75rem 1rem;
+  width: 95%;
+  padding: 0.75rem 0.5rem;
   border: 1px solid $color-border;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -52,7 +52,7 @@
 }
 
 .filterContainer {
-  min-width: 150px;
+  min-width: calc(100% - 150px);
 }
 
 .statusSelect {
