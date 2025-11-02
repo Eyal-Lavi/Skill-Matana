@@ -1,73 +1,191 @@
 @use '../../styles/variables' as var;
 
 .search-bar {
-  flex :1;
+  flex: 1;
   display: flex;
-  gap: 0.75rem;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
   width: 100%;
-  max-width: 1200px;
-  margin: auto;
-  
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 
   @media (max-width: var.$breakpoint-mobile) {
-    flex: none;
+    width: 100%;
+    padding: 0;
+  }
+}
+
+.search-container {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  width: 100%;
+
+  @media (max-width: var.$breakpoint-mobile) {
     flex-direction: column;
-    gap: 0.5rem;
-    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+  }
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var.$color-surface;
+  border-radius: 16px;
+  border: 2px solid var.$color-border;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+  min-width: 0;
+
+  &:focus-within {
+    border-color: var.$color-primary;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    color: var.$color-text-secondary;
+    pointer-events: none;
+    z-index: 1;
+    transition: color 0.3s ease;
+  }
+
+  &:focus-within .search-icon {
+    color: var.$color-primary;
+  }
+
+  @media (max-width: var.$breakpoint-mobile) {
+    width: 100%;
+    flex: 1 1 100%;
   }
 }
 
 .search-input {
-  height: 2.5rem;
-  padding: 0 1rem;
+  flex: 1;
+  height: 3.5rem;
+  padding: 0 3rem 0 3rem;
   font-size: 1rem;
+  font-weight: 500;
   box-sizing: border-box;
-  border-radius: 20px;
-  border: 2px solid black;
+  border: none;
   outline: none;
-  width: 70%;
-  @media (max-width: var.$breakpoint-mobile) {
-    width: 100%;
+  background: transparent;
+  color: var.$color-text-primary;
+
+  &::placeholder {
+    color: var.$color-text-secondary;
+    opacity: 0.7;
+  }
+}
+
+.clear-btn {
+  position: absolute;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 50%;
+  color: var.$color-primary;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.2);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 
 .select-wrapper {
-  width: 20%;
-  min-width: 8rem;
-  height: 4rem;
+  position: relative;
+  flex: 0 0 auto;
+  width: 280px;
+  min-width: 200px;
   display: flex;
   align-items: center;
+  background: var.$color-surface;
+  border-radius: 16px;
+  border: 2px solid var.$color-border;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+  padding-left: 2.5rem;
+  height: 3.5rem;
+  box-sizing: border-box;
   
-
   @media (max-width: var.$breakpoint-mobile) {
     width: 100%;
+    min-width: unset;
+    flex: 1 1 100%;
   }
-  .css-b62m3t-container{
+
+  .filter-icon {
+    position: absolute;
+    left: 0.875rem;
+    color: var.$color-text-secondary;
+    pointer-events: none;
+    z-index: 1;
+    transition: color 0.3s ease;
+  }
+
+  &:hover .filter-icon,
+  &:focus-within .filter-icon {
+    color: var.$color-primary;
+  }
+
+  &:focus-within {
+    border-color: var.$color-primary;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+  }
+
+  .css-b62m3t-container {
     width: 100%;
   }
+
   .react-select__control {
-    min-height: 100% !important;
-    border-radius: 20px;
-    border: 2px solid black;
-    background-color: var.$color-surface;
+    min-height: 3.5rem !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
     font-size: 1rem;
-    box-shadow: none;
-    display: flex;
-    align-items: center;
+    box-shadow: none !important;
+    cursor: pointer;
+
+    &:hover {
+      border: none !important;
+    }
   }
 
   .react-select__value-container {
-    padding: 0 8px;
+    padding: 0 0.5rem 0 0 !important;
     height: 100%;
     display: flex;
     align-items: center;
+  }
+
+  .react-select__placeholder {
+    color: var.$color-text-secondary;
+    opacity: 0.7;
   }
 
   .react-select__indicators {
     height: 100%;
     display: flex;
     align-items: center;
+    padding-right: 0.5rem;
   }
 
   .react-select__indicator-separator {
@@ -76,31 +194,159 @@
 
   .react-select__menu {
     font-size: 0.95rem;
-    z-index: 10;
+    z-index: 100;
+    border-radius: 12px;
+    border: 1px solid var.$color-border;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+    margin-top: 0.5rem;
+  }
+
+  .react-select__option {
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    &--is-selected {
+      background: var.$color-primary;
+      color: white;
+    }
+
+    &--is-focused {
+      background: rgba(99, 102, 241, 0.15);
+    }
   }
 
   .react-select__single-value {
     color: var.$color-text-primary;
+    font-weight: 500;
   }
 }
 
 .search-btn {
-  width: 10%;
-  height: 2.5rem;
-  border-radius: 20px;
-  border: 2px solid black;
-  background-color: var.$color-background-btn;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 16px;
+  border: 2px solid var.$color-primary;
+  background: var.$gradient-primary;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+  align-self: stretch;
 
   @media (max-width: var.$breakpoint-mobile) {
     width: 100%;
+    height: 3.5rem;
+    align-self: stretch;
+  }
+
+  &:hover:not(:disabled) {
+    background: var.$gradient-primary-hover;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  &.searching {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var.$color-primary;
+  transition: all 0.2s ease;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: none;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 50%;
+    color: var.$color-primary;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.3);
+      transform: scale(1.1);
+    }
   }
 
   &:hover {
-    background-color: var.$color-background-btn-hover;
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
   }
 }
