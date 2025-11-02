@@ -18,9 +18,9 @@ export default function SkillCard({ id, title, description, onDelete }) {
         )}
       </div>
       <p>{description}</p>
-      <div className={style.skillBadge}>
+      {/* <div className={style.skillBadge}>
         <span>🎓 I can teach this</span>
-      </div>
+      </div> */}
     </div>
   );
 }
