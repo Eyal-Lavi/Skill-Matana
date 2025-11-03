@@ -97,10 +97,10 @@ const getAllUsers = async (request, response, next) => {
         const whereClause = {};
         if (search) {
             whereClause[Op.or] = [
-                { firstName: { [Op.iLike]: `%${search}%` } },
-                { lastName: { [Op.iLike]: `%${search}%` } },
-                { username: { [Op.iLike]: `%${search}%` } },
-                { email: { [Op.iLike]: `%${search}%` } }
+                { firstName: { [Op.like]: `%${search}%` } },
+                { lastName: { [Op.like]: `%${search}%` } },
+                { username: { [Op.like]: `%${search}%` } },
+                { email: { [Op.like]: `%${search}%` } }
             ];
         }
         if (status !== null && status !== undefined) {
