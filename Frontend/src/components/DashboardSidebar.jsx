@@ -9,6 +9,7 @@ import {
   faBell
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
+import { useNotifications } from "../contexts/NotificationsContext";
 
 const navItems = [
   { path: "/dashboard", icon: faHome, label: "Overview",end:true },
@@ -21,5 +22,11 @@ const navItems = [
 ];
 
 export default function DashboardSidebar() {
-  return <Sidebar items={navItems} variant="dashboard" />;
+  const { unreadCount } = useNotifications();
+
+  const badgeCounts = {
+    "/dashboard/notifications": unreadCount > 0 ? unreadCount : null
+  };
+
+  return <Sidebar items={navItems} variant="dashboard" badgeCounts={badgeCounts} />;
 }

@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "./Sidebar.module.scss";
 
-export default function Sidebar({ items, variant = "dashboard" }) {
+export default function Sidebar({ items, variant = "dashboard", badgeCounts = {} }) {
   return (
     <div className={`${style.sidebar} ${style[variant]}`}>
       <div className={style.sidebarContent}>
@@ -18,6 +18,9 @@ export default function Sidebar({ items, variant = "dashboard" }) {
             >
               <div className={style.iconContainer}>
                 <FontAwesomeIcon icon={item.icon} className={style.icon} />
+                {badgeCounts[item.path] != null && badgeCounts[item.path] > 0 && (
+                  <span className={style.badge}>{badgeCounts[item.path]}</span>
+                )}
               </div>
               <span className={style.label}>{item.label}</span>
             </NavLink>
