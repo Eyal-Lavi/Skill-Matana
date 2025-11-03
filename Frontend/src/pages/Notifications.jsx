@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import meetingsAPI from '../services/meetingsAPI';
 import notificationsAPI from '../services/notificationsAPI';
+import { useNotifications } from '../contexts/NotificationsContext';
 import styles from './Notifications.module.scss';
 
 export default function Notifications() {
   const user = useSelector((s) => s.auth?.user);
+  const { refreshUnreadCount } = useNotifications();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [upcomingMeetings, setUpcomingMeetings] = useState([]);
@@ -100,6 +102,8 @@ export default function Notifications() {
     try {
       await notificationsAPI.markAsRead(notificationId);
       await loadSystemNotifications();
+      // Refresh unread count immediately
+      refreshUnreadCount();
     } catch (err) {
       console.error('Error marking notification as read:', err);
     }
@@ -109,6 +113,8 @@ export default function Notifications() {
     try {
       await notificationsAPI.markAllAsRead();
       await loadSystemNotifications();
+      // Refresh unread count immediately
+      refreshUnreadCount();
     } catch (err) {
       console.error('Error marking all notifications as read:', err);
     }
@@ -121,6 +127,8 @@ export default function Notifications() {
     try {
       await notificationsAPI.delete(notificationId);
       await loadSystemNotifications();
+      // Refresh unread count immediately
+      refreshUnreadCount();
     } catch (err) {
       console.error('Error deleting notification:', err);
       alert(err.response?.data?.message || 'Error deleting notification');
