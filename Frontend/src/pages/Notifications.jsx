@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import meetingsAPI from '../services/meetingsAPI';
+import notificationsAPI from '../services/notificationsAPI';
 import styles from './Notifications.module.scss';
 
 export default function Notifications() {
@@ -11,6 +12,7 @@ export default function Notifications() {
   const [upcomingMeetings, setUpcomingMeetings] = useState([]);
   const [activeMeetings, setActiveMeetings] = useState([]);
   const [systemNotifications, setSystemNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [activeTab, setActiveTab] = useState('active');
   const navigate = useNavigate();
 
@@ -24,6 +26,7 @@ export default function Notifications() {
     const interval = setInterval(() => {
       if (user?.id) {
         loadMeetings();
+        loadSystemNotifications();
       }
     }, 60000);
     
@@ -64,9 +67,16 @@ export default function Notifications() {
     }
   };
 
-  const loadSystemNotifications = () => {
-  
-    setSystemNotifications([]);
+  const loadSystemNotifications = async () => {
+    try {
+      const response = await notificationsAPI.getAll();
+      setSystemNotifications(response?.data || []);
+      setUnreadCount(response?.unread || 0);
+    } catch (err) {
+      console.error('Error loading system notifications:', err);
+      setSystemNotifications([]);
+      setUnreadCount(0);
+    }
   };
 
   const handleCancelMeeting = async (meetingId) => {
@@ -84,6 +94,46 @@ export default function Notifications() {
 
   const handleJoinMeeting = (meetingId) => {
     navigate(`/meeting/${meetingId}`);
+  };
+
+  const handleMarkAsRead = async (notificationId) => {
+    try {
+      await notificationsAPI.markAsRead(notificationId);
+      await loadSystemNotifications();
+    } catch (err) {
+      console.error('Error marking notification as read:', err);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await notificationsAPI.markAllAsRead();
+      await loadSystemNotifications();
+    } catch (err) {
+      console.error('Error marking all notifications as read:', err);
+    }
+  };
+
+  const handleDeleteNotification = async (notificationId) => {
+    if (!window.confirm('Are you sure you want to delete this notification?')) {
+      return;
+    }
+    try {
+      await notificationsAPI.delete(notificationId);
+      await loadSystemNotifications();
+    } catch (err) {
+      console.error('Error deleting notification:', err);
+      alert(err.response?.data?.message || 'Error deleting notification');
+    }
+  };
+
+  const handleNotificationClick = (notification) => {
+    if (!notification.isRead) {
+      handleMarkAsRead(notification.id);
+    }
+    if (notification.link) {
+      navigate(notification.link);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -157,8 +207,8 @@ export default function Notifications() {
           onClick={() => setActiveTab('system')}
         >
           System Notifications
-          {systemNotifications.length > 0 && (
-            <span className={styles.badge}>{systemNotifications.length}</span>
+          {unreadCount > 0 && (
+            <span className={styles.badge}>{unreadCount}</span>
           )}
         </button>
       </div>
@@ -307,18 +357,64 @@ export default function Notifications() {
               <div className={styles.empty}>
                 <p>No new notifications</p>
                 <p className={styles.emptySubtext}>
-                  System notifications will appear here in the future
+                  System notifications will appear here
                 </p>
               </div>
             ) : (
-              <div className={styles.systemList}>
-                {systemNotifications.map((notification, index) => (
-                  <div key={index} className={styles.notificationCard}>
-                    <p>{notification.message}</p>
-                    <span className={styles.timestamp}>{notification.timestamp}</span>
-                  </div>
-                ))}
-              </div>
+              <>
+                <div className={styles.systemHeader}>
+                  <button
+                    className={styles.markAllReadButton}
+                    onClick={handleMarkAllAsRead}
+                  >
+                    Mark All as Read
+                  </button>
+                </div>
+                <div className={styles.systemList}>
+                  {systemNotifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className={`${styles.notificationCard} ${!notification.isRead ? styles.unread : ''}`}
+                      onClick={() => handleNotificationClick(notification)}
+                    >
+                      <div className={styles.notificationContent}>
+                        <h4 className={styles.notificationTitle}>{notification.title}</h4>
+                        <p className={styles.notificationMessage}>{notification.message}</p>
+                        {notification.type && (
+                          <span className={styles.notificationType}>{notification.type}</span>
+                        )}
+                        <span className={styles.timestamp}>
+                          {formatDate(notification.createdAt)}
+                        </span>
+                      </div>
+                      <div className={styles.notificationActions}>
+                        {!notification.isRead && (
+                          <button
+                            className={styles.markReadButton}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleMarkAsRead(notification.id);
+                            }}
+                            title="Mark as read"
+                          >
+                            ✓
+                          </button>
+                        )}
+                        <button
+                          className={styles.deleteButton}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteNotification(notification.id);
+                          }}
+                          title="Delete notification"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         )}

@@ -14,5 +14,9 @@ router.get('/users' , adminController.getAllUsers);
 router.put('/users/status' , adminController.updateUserStatus);
 router.put('/users' , adminController.updateUser);
 router.post('/users/login-as' , adminController.loginAsUser);
+router.post('/notifications' , adminController.createNotification);
+router.get('/notifications' , adminController.getAllNotifications);
+router.get('/notifications/stats' , adminController.getNotificationGroupedStats);
+router.get('/notifications/details' , adminController.getNotificationDetails);
 
 module.exports = router;

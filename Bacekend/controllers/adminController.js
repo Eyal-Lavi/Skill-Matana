@@ -326,6 +326,84 @@ const loginAsUser = async (request, response, next) => {
     }
 }
 
+const createNotification = async (request, response, next) => {
+    try {
+        const { userId, type, title, message, link, sendToAll } = request.body;
+
+        if (!type || !title || !message) {
+            return response.status(400).json({ message: 'Type, title, and message are required' });
+        }
+
+        const { createNotificationForUser, createNotificationForAllUsers } = require('../services/notificationsService');
+
+        let notifications;
+        if (sendToAll) {
+            notifications = await createNotificationForAllUsers(type, title, message, link || null);
+            return response.status(201).json({ 
+                message: 'Notifications created for all users', 
+                count: notifications.length 
+            });
+        } else {
+            if (!userId) {
+                return response.status(400).json({ message: 'UserId is required when sendToAll is false' });
+            }
+            const notification = await createNotificationForUser(userId, type, title, message, link || null);
+            return response.status(201).json({ 
+                message: 'Notification created successfully', 
+                notification 
+            });
+        }
+    } catch (e) {
+        response.status(500).json({ message: e.message });
+    }
+};
+
+const getAllNotifications = async (request, response, next) => {
+    try {
+        const { page = 1, limit = 20, search = '', type = null } = request.query;
+        const { getAllNotificationsForAdmin } = require('../services/notificationsService');
+        
+        const result = await getAllNotificationsForAdmin({
+            page,
+            limit,
+            search,
+            type: type || null,
+        });
+
+        response.status(200).json(result);
+    } catch (e) {
+        response.status(500).json({ message: e.message });
+    }
+};
+
+const getNotificationGroupedStats = async (request, response, next) => {
+    try {
+        const { getNotificationGroupedStats } = require('../services/notificationsService');
+        const stats = await getNotificationGroupedStats();
+        
+        response.status(200).json({ data: stats });
+    } catch (e) {
+        response.status(500).json({ message: e.message });
+    }
+};
+
+const getNotificationDetails = async (request, response, next) => {
+    try {
+        const { type, title, message, link } = request.query;
+        
+        if (!type || !title || !message) {
+            return response.status(400).json({ message: 'Type, title, and message are required' });
+        }
+
+        const { getNotificationDetails } = require('../services/notificationsService');
+        const details = await getNotificationDetails(type, title, message, link || null);
+        
+        response.status(200).json(details);
+    } catch (e) {
+        response.status(500).json({ message: e.message });
+    }
+};
+
 module.exports = {
     addPermissionToDB,
     addPermissionToUser,
@@ -335,5 +413,9 @@ module.exports = {
     getAllUsers,
     updateUserStatus,
     updateUser,
-    loginAsUser
+    loginAsUser,
+    createNotification,
+    getAllNotifications,
+    getNotificationGroupedStats,
+    getNotificationDetails
 }

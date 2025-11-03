@@ -14,7 +14,8 @@ module.exports = (models) => {
     Connection,
     Availability,
     Meeting,
-    MeetingAlert
+    MeetingAlert,
+    SystemNotification
   } = models;
 
   User.hasMany(UserImage, {
@@ -140,4 +141,7 @@ module.exports = (models) => {
 
   MeetingAlert.belongsTo(User, { foreignKey: 'watcherId', as: 'watcher' });
   MeetingAlert.belongsTo(User, { foreignKey: 'targetUserId', as: 'targetUser' });
+
+  SystemNotification.belongsTo(User, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+  User.hasMany(SystemNotification, { foreignKey: 'userId', as: 'notifications', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 };

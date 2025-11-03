@@ -14,6 +14,7 @@ const Connection = require('./connection.js');
 const Availability = require('./availability.js');
 const Meeting = require('./meeting.js');
 const MeetingAlert = require('./meetingAlert.js');
+const SystemNotification = require('./systemNotification.js');
 
 const models = {
     Permission,
@@ -31,6 +32,7 @@ const models = {
     Availability,
     Meeting,
     MeetingAlert,
+    SystemNotification,
 };
 
 require('./associations.js')(models);
@@ -51,4 +53,5 @@ module.exports ={
     Availability,
     Meeting,
     MeetingAlert,
+    SystemNotification,
 }

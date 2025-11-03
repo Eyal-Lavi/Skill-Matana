@@ -10,6 +10,7 @@ const searchRoutes = require('./search');
 
 const availabilityRouter = require('./availability');
 const meetingsRouter = require('./meetings');
+const notificationsRouter = require('./notifications');
 
 
 const { isAdmin , isLoggedIn } = require('../middlewares/authMiddleware');
@@ -21,6 +22,7 @@ router.use("/auth", authRoutes);
 
 router.use('/meetings', meetingsRouter);
 router.use('/availability', isLoggedIn, availabilityRouter);
+router.use('/notifications', isLoggedIn, notificationsRouter);
 router.use("/admin", isAdmin,  adminRoutes);  
 router.use("/meta-data", isLoggedIn,  metaDataRouter);  
 router.use('/search' ,isLoggedIn, searchRoutes);

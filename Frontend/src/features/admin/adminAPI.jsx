@@ -48,6 +48,33 @@ const AdminAPI = {
             { withCredentials: true }
         );
         return response.data;
+    },
+    createNotification: async(notificationData) => {
+        const response = await axios.post(`${API_BASE_URL}/notifications`, 
+            notificationData,
+            { withCredentials: true }
+        );
+        return response.data;
+    },
+    getAllNotifications: async(page = 1, limit = 20, search = '', type = null) => {
+        const response = await axios.get(`${API_BASE_URL}/notifications`, {
+            params: { page, limit, search, type },
+            withCredentials: true
+        });
+        return response.data;
+    },
+    getNotificationGroupedStats: async() => {
+        const response = await axios.get(`${API_BASE_URL}/notifications/stats`, {
+            withCredentials: true
+        });
+        return response.data;
+    },
+    getNotificationDetails: async(type, title, message, link = null) => {
+        const response = await axios.get(`${API_BASE_URL}/notifications/details`, {
+            params: { type, title, message, link },
+            withCredentials: true
+        });
+        return response.data;
     }
 }
 export default AdminAPI;

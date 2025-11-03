@@ -28,6 +28,7 @@ import MeetingRoom from "../pages/MeetingRoom";
 import MyAvailability from "../pages/MyAvailability";
 import Notifications from "../pages/Notifications";
 import UserManagement from "../components/UserManagement";
+import NotificationManagement from "../components/NotificationManagement";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -146,7 +147,7 @@ const router = createBrowserRouter([
           { index: true, element: <AdminPanel /> },
           { path: "users", element: <UserManagement /> },
           { path: "skills", element: <SkillManagement /> },
-          { path: "settings", element: <div>Settings</div> },
+          { path: "notifications", element: <NotificationManagement /> },
         ]
       },
     ],
