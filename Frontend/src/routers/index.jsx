@@ -29,6 +29,9 @@ import MyAvailability from "../pages/MyAvailability";
 import Notifications from "../pages/Notifications";
 import UserManagement from "../components/UserManagement";
 import NotificationManagement from "../components/NotificationManagement";
+import About from "../pages/About";
+import TermsPrivacy from "../pages/TermsPrivacy";
+import Contact from "../pages/Contact";
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -36,6 +39,9 @@ const router = createBrowserRouter([
     children: [
     
       { path: "/", element: <Home /> },
+      { path: "/about", element: <About /> },
+      { path: "/terms-privacy", element: <TermsPrivacy /> },
+      { path: "/contact", element: <Contact /> },
       {
         path: "auth",
         element: <Authentication />,
