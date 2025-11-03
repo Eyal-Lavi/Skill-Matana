@@ -156,6 +156,7 @@ export default function MyAvailability() {
           onClickDay={(date) => setSelectedDay(date)}
           value={selectedDay}
           minDate={new Date()}
+          locale="en-US"
         />
       </div>
 
