@@ -79,6 +79,14 @@ const authSlice = createSlice({
         state.user.skills.push(action.payload);
       }
     },
+    removeConnection(state, action) {
+        const userId = action.payload;
+        if (Array.isArray(state.user.connections)) {
+            state.user.connections = state.user.connections.filter(
+                (connection) => connection.id !== userId
+            );
+        }
+    },
   },
 });
 

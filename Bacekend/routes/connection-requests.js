@@ -16,4 +16,6 @@ router.patch('/:id', isLoggedIn, connectionRequestsController.updateRequestStatu
 
 router.delete('/:id', isLoggedIn, connectionRequestsController.deleteRequest);
 
+router.post('/connections/disconnect', isLoggedIn, connectionRequestsController.disconnectConnection);
+
 module.exports = router;

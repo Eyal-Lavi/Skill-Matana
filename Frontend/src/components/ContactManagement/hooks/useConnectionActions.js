@@ -92,5 +92,35 @@ export const useConnectionActions = (onRefresh = () => {}) => {
     [onRefresh]
   );
 
-  return { handleSendConnectionRequest, handleUpdateRequestStatus, handleCancelRequest };
+  const handleDisconnectConnection = useCallback(
+    async (targetUserId) => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/connection-requests/connections/disconnect`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ targetUserId }),
+          }
+        );
+
+        if (!response.ok) {
+          let serverMessage = "Failed to disconnect";
+          try {
+            const errorData = await response.json();
+            if (errorData?.message) serverMessage = errorData.message;
+          } catch (_) {}
+          throw new Error(serverMessage);
+        }
+
+        onRefresh();
+      } catch (err) {
+        throw new Error(err?.message || "Failed to disconnect");
+      }
+    },
+    [onRefresh]
+  );
+
+  return { handleSendConnectionRequest, handleUpdateRequestStatus, handleCancelRequest, handleDisconnectConnection };
 };

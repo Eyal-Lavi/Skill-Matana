@@ -1,81 +1,54 @@
 const { Op } = require('sequelize');
 const {User , Skill , UserImage } = require('../models');
 const searchUsersByNameAndSkillIds  = async(name , skillId, userIdRequester) => {
-    console.log(1);
     
-    const whereClause = {};
-    if(name){
-        whereClause[Op.or] = [
-            {firstName: {[Op.like]:`%${name}%`}},
-            {lastName: {[Op.like]:`%${name}%`}},
-            {username: {[Op.like]:`%${name}%`}},
-        ];
-    }
-    console.log(whereClause);
+    // בניית whereClause עבור User - תמיד נשלול את המשתמש המבקש
+    // אם יש שם, נשלב חיפוש לפי firstName, lastName או username
+    const whereClause = name ? {
+        [Op.and]: [
+            { id: { [Op.ne]: userIdRequester } },
+            {
+                [Op.or]: [
+                    {firstName: {[Op.like]:`%${name}%`}},
+                    {lastName: {[Op.like]:`%${name}%`}},
+                    {username: {[Op.like]:`%${name}%`}},
+                ]
+            }
+        ]
+    } : {
+        id: { [Op.ne]: userIdRequester }
+    };
 
-
-    if(!skillId || skillId.length === 0){
-        return await User.findAll({
-            where: whereClause,
-            attributes:{exclude:['password']},
-            include:[
-                {
-                    model:Skill,
-                    as:'skills',
-                    through:{attributes:[]}
-                },
-                {
-                    model:UserImage,
-                    as:'Images',
-                    where:{typeId:1},
-                    required:false
-                }
-            ]
-        });
-    }
-
-    const usersWithSkill = await User.findAll({
-      attributes: ['id'],
-      include: [{
+    // הגדרת include עבור Skill
+    const skillInclude = {
         model: Skill,
         as: 'skills',
-        where: {
-          id: {
-            [Op.in]: Array.isArray(skillId) ? skillId : [skillId]
-          }
-        },
-        attributes: [],
         through: { attributes: [] }
-      }]
-    });
-    
-    const userIds = usersWithSkill.map(user => user.id).filter(id=> id !== userIdRequester);
-    
-    if(userIds.length === 0) {
-      return [];
+    };
+
+    // אם יש skillId, נוסיף where clause למיין רק משתמשים עם הסקילים האלה
+    if(skillId && skillId.length > 0){
+        skillInclude.where = {
+            id: {
+                [Op.in]: Array.isArray(skillId) ? skillId : [skillId]
+            }
+        };
+        skillInclude.required = true; // INNER JOIN - רק משתמשים שיש להם את הסקילים
     }
-    
+
+    // שאילתה אחת שמשלבת הכל
     return await User.findAll({
-      where: {
-        ...whereClause,
-        id: {
-          [Op.in]: userIds
-        }
-      },
-      attributes: { exclude: ['password'] },
-      include: [
-        {
-          model: Skill,
-          as: 'skills',
-          through: { attributes: [] }
-        },
-        {
-          model: UserImage,
-          as: 'Images',
-          where: { typeId: 1 },
-          required: false
-        }
-      ]
+        where: whereClause,
+        attributes: { exclude: ['password'] },
+        include: [
+            skillInclude,
+            {
+                model: UserImage,
+                as: 'Images',
+                where: { typeId: 1 },
+                required: false
+            }
+        ]
     });
 
 }
