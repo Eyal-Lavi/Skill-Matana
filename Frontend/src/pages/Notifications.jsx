@@ -140,7 +140,7 @@ export default function Notifications() {
       handleMarkAsRead(notification.id);
     }
     if (notification.link) {
-      navigate(notification.link);
+      window.open(notification.link, '_blank');
     }
   };
 
