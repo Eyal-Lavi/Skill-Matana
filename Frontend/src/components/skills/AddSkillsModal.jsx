@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectSkills } from "../../features/auth/AuthSelectors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes, faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
 import MetaDataAPI from "../../features/metaData/MetaDataAPI";
 import styles from "./AddSkillsModal.module.scss";
+import { authActions } from "../../features/auth/AuthSlices";
 
 export default function AddSkillsModal({ isOpen, onClose }) {
+  const dispatch = useDispatch();
   const userSkills = useSelector(selectSkills);
   const [allSkills, setAllSkills] = useState([]);
   const [filteredSkills, setFilteredSkills] = useState([]);
@@ -70,10 +72,13 @@ export default function AddSkillsModal({ isOpen, onClose }) {
       }
 
       setSuccess(`Skill "${skillName}" added successfully!`);
-      setTimeout(() => {
-        onClose();
-        window.location.reload();
-      }, 1500);
+      dispatch(authActions.addSkill({id:skillId , name:skillName}));
+
+      setAllSkills(prev => prev.filter(skill => skill.id !== skillId));
+      setFilteredSkills(prev => prev.filter(skill => skill.id !== skillId));
+
+
+      setTimeout(() => { onClose(); }, 1500);
     } catch (error) {
       setError(error.message || "Error adding skill");
     } finally {

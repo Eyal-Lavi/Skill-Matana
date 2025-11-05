@@ -7,7 +7,7 @@ import style from "./DashboardSkills.module.scss";
 function DashboardSkills() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
+  return ( 
     <div className={style.skillsPage}>
       <div className={style.header}>
         <div>
