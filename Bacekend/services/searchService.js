@@ -10,7 +10,12 @@ const searchUsersByNameAndSkillIds  = async(name , skillId, userIdRequester) => 
             {lastName: {[Op.like]:`%${name}%`}},
             {username: {[Op.like]:`%${name}%`}},
         ];
+        whereClause[Op.and] = [
+            {id: {[Op.ne]: userIdRequester}}
+        ];
     }
+
+
     console.log(whereClause);
 
 
@@ -36,21 +41,26 @@ const searchUsersByNameAndSkillIds  = async(name , skillId, userIdRequester) => 
 
     const usersWithSkill = await User.findAll({
       attributes: ['id'],
+      where: {
+        id: {
+          [Op.ne]: userIdRequester
+        }
+      },
       include: [{
         model: Skill,
         as: 'skills',
         where: {
           id: {
             [Op.in]: Array.isArray(skillId) ? skillId : [skillId]
-          }
+          },
         },
         attributes: [],
         through: { attributes: [] }
       }]
     });
-    
-    const userIds = usersWithSkill.map(user => user.id).filter(id=> id !== userIdRequester);
-    
+
+    const userIds = usersWithSkill.map(user => user.id);
+
     if(userIds.length === 0) {
       return [];
     }
