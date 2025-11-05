@@ -56,7 +56,31 @@ const getConnectionsForUser = async (userId) => {
   return connections;
 };
 
+const deleteConnection = async (userId, targetUserId) => {
+  if (!userId || !targetUserId) {
+    throw new Error("User ID and Target User ID are required");
+  }
+
+  const a = Math.min(userId, targetUserId);
+  const b = Math.max(userId, targetUserId);
+
+  const connection = await Connection.findOne({
+    where: {
+      userA: a,
+      userB: b,
+    },
+  });
+
+  if (!connection) {
+    throw new Error("Connection not found");
+  }
+
+  await connection.destroy();
+  return { message: "Connection deleted successfully" };
+};
+
 module.exports = {
   approveContactRequest,
   getConnectionsForUser,
+  deleteConnection,
 };

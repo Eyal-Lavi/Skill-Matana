@@ -7,6 +7,7 @@ const {
   updateContactRequestStatus,
   deleteContactRequest,
 } = require("../services/contactRequestsService");
+const { deleteConnection } = require("../services/connectionsService");
 const sequelize = require("../utils/database");
 
 
@@ -89,6 +90,22 @@ const deleteRequest = async (request, response, next) => {
   }
 };
 
+const disconnectConnection = async (request, response, next) => {
+  try {
+    const userId = request.session.user.id;
+    const targetUserId = request.body.targetUserId;
+    
+    if (!targetUserId) {
+      return response.status(400).json({ message: "Target User ID is required" });
+    }
+
+    await deleteConnection(userId, targetUserId);
+    response.status(200).json({ message: "Connection disconnected successfully." });
+  } catch (error) {
+    next({ status: 404, message: "Error ->" + error.message });
+  }
+};
+
 module.exports = {
   sendConnectionRequest,
   getAllRequestsForUser,
@@ -96,4 +113,5 @@ module.exports = {
   getSentRequestsForUser,
   updateRequestStatus,
   deleteRequest,
+  disconnectConnection,
 };

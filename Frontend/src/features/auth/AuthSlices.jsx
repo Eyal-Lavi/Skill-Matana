@@ -71,6 +71,14 @@ const authSlice = createSlice({
             connections: []
         };
     },
+    removeConnection(state, action) {
+        const userId = action.payload;
+        if (Array.isArray(state.user.connections)) {
+            state.user.connections = state.user.connections.filter(
+                (connection) => connection.id !== userId
+            );
+        }
+    },
   },
 });
 
