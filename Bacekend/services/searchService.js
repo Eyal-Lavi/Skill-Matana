@@ -2,8 +2,7 @@ const { Op } = require('sequelize');
 const {User , Skill , UserImage } = require('../models');
 const searchUsersByNameAndSkillIds  = async(name , skillId, userIdRequester) => {
     
-    // בניית whereClause עבור User - תמיד נשלול את המשתמש המבקש
-    // אם יש שם, נשלב חיפוש לפי firstName, lastName או username
+
     const whereClause = name ? {
         [Op.and]: [
             { id: { [Op.ne]: userIdRequester } },
