@@ -19,5 +19,11 @@ router.delete('/alerts/:targetUserId', isLoggedIn, availabilityController.unsubs
 router.get('/alerts/:targetUserId/status', isLoggedIn, availabilityController.getAlertStatus);
 router.get('/alerts/my/subscriptions', isLoggedIn, availabilityController.getMySubscriptions);
 
+router.post('/recurring', isLoggedIn, availabilityController.addRecurringAvailability);
+router.get('/recurring/my', isLoggedIn, availabilityController.getMyRecurringAvailability);
+router.put('/recurring/:id', isLoggedIn, availabilityController.updateRecurringAvailability);
+router.delete('/recurring/:id', isLoggedIn, availabilityController.deleteRecurringAvailability);
+router.post('/recurring/generate', isLoggedIn, availabilityController.generateSlotsFromRecurring);
+
 module.exports = router;
 

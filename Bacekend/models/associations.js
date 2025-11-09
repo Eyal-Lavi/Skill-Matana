@@ -13,6 +13,7 @@ module.exports = (models) => {
     PasswordResetToken,
     Connection,
     Availability,
+    RecurringAvailability,
     Meeting,
     MeetingAlert,
     SystemNotification
@@ -131,6 +132,9 @@ module.exports = (models) => {
 
   Availability.belongsTo(User, { foreignKey: 'userId', as: 'owner' });
   User.hasMany(Availability, { foreignKey: 'userId', as: 'availabilities' });
+
+  RecurringAvailability.belongsTo(User, { foreignKey: 'userId', as: 'owner' });
+  User.hasMany(RecurringAvailability, { foreignKey: 'userId', as: 'recurringAvailabilities' });
 
 
   Meeting.belongsTo(User, { foreignKey: 'hostId', as: 'host' });

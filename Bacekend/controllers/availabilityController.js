@@ -76,6 +76,72 @@ const getMySubscriptions = async (req, res, next) => {
   }
 };
 
+const addRecurringAvailability = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const { dayOfWeek, startTime, endTime } = req.body;
+    const recurring = await availabilityService.addRecurringAvailability(userId, {
+      dayOfWeek: Number(dayOfWeek),
+      startTime,
+      endTime,
+    });
+    res.json({ recurring });
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getMyRecurringAvailability = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const recurring = await availabilityService.getMyRecurringAvailability(userId);
+    res.json({ recurring });
+  } catch (e) {
+    next(e);
+  }
+};
+
+const updateRecurringAvailability = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const { id } = req.params;
+    const updates = req.body;
+    const recurring = await availabilityService.updateRecurringAvailability(
+      userId,
+      Number(id),
+      updates
+    );
+    res.json({ recurring });
+  } catch (e) {
+    next(e);
+  }
+};
+
+const deleteRecurringAvailability = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const { id } = req.params;
+    const result = await availabilityService.deleteRecurringAvailability(userId, Number(id));
+    res.json(result);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const generateSlotsFromRecurring = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const { weeksAhead } = req.body;
+    const created = await availabilityService.generateSlotsFromRecurring(
+      userId,
+      weeksAhead || 4
+    );
+    res.json({ created, count: created.length });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addMySlots,
   listForUser,
@@ -84,5 +150,10 @@ module.exports = {
   unsubscribeAlert,
   getAlertStatus,
   getMySubscriptions,
+  addRecurringAvailability,
+  getMyRecurringAvailability,
+  updateRecurringAvailability,
+  deleteRecurringAvailability,
+  generateSlotsFromRecurring,
 };
 
