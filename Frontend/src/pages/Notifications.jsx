@@ -15,13 +15,16 @@ export default function Notifications() {
   const [activeMeetings, setActiveMeetings] = useState([]);
   const [systemNotifications, setSystemNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [activeTab, setActiveTab] = useState('active');
+  const [activeTab, setActiveTab] = useState('overview');
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [loadingSubscriptions, setLoadingSubscriptions] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user?.id) {
       loadMeetings();
       loadSystemNotifications();
+      loadSubscriptions();
     }
     
   
@@ -29,6 +32,7 @@ export default function Notifications() {
       if (user?.id) {
         loadMeetings();
         loadSystemNotifications();
+        loadSubscriptions();
       }
     }, 60000);
     
@@ -78,6 +82,39 @@ export default function Notifications() {
       console.error('Error loading system notifications:', err);
       setSystemNotifications([]);
       setUnreadCount(0);
+    }
+  };
+
+  const loadSubscriptions = async () => {
+    try {
+      setLoadingSubscriptions(true);
+      const res = await fetch('http://localhost:3000/availability/alerts/my/subscriptions', {
+        credentials: 'include',
+      });
+      const body = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setSubscriptions(body?.subscriptions || []);
+      }
+    } catch (err) {
+      console.error('Error loading subscriptions:', err);
+      setSubscriptions([]);
+    } finally {
+      setLoadingSubscriptions(false);
+    }
+  };
+
+  const handleUnsubscribe = async (targetUserId) => {
+    if (!window.confirm('האם אתה בטוח שברצונך לבטל את ההתראה?')) return;
+    try {
+      const res = await fetch(`http://localhost:3000/availability/alerts/${targetUserId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('ביטול ההתראה נכשל');
+      await loadSubscriptions();
+      alert('ההתראה בוטלה בהצלחה.');
+    } catch (err) {
+      alert(err.message || 'שגיאה בביטול ההתראה');
     }
   };
 
@@ -184,6 +221,20 @@ export default function Notifications() {
     });
   }, [upcomingMeetings]);
 
+  const upcomingMeetingsPreview = useMemo(() => {
+    return sortedMeetings.slice(0, 5);
+  }, [sortedMeetings]);
+
+  const unreadNotifications = useMemo(() => {
+    return systemNotifications.filter(n => !n.isRead).slice(0, 5);
+  }, [systemNotifications]);
+
+  const totalRelevantCount = useMemo(() => {
+    return activeMeetings.length + 
+           (upcomingMeetings.length > 0 ? 1 : 0) + 
+           unreadCount;
+  }, [activeMeetings.length, upcomingMeetings.length, unreadCount]);
+
   return (
     <div className={styles.notificationsContainer}>
       <div className={styles.header}>
@@ -192,6 +243,15 @@ export default function Notifications() {
       </div>
 
       <div className={styles.tabs}>
+        <button
+          className={`${styles.tab} ${activeTab === 'overview' ? styles.active : ''}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          Overview
+          {totalRelevantCount > 0 && (
+            <span className={styles.badge}>{totalRelevantCount}</span>
+          )}
+        </button>
         <button
           className={`${styles.tab} ${activeTab === 'active' ? styles.active : ''}`}
           onClick={() => setActiveTab('active')}
@@ -219,11 +279,180 @@ export default function Notifications() {
             <span className={styles.badge}>{unreadCount}</span>
           )}
         </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'alerts' ? styles.active : ''}`}
+          onClick={() => setActiveTab('alerts')}
+        >
+          Alert Subscriptions
+          {subscriptions.filter(s => s.active).length > 0 && (
+            <span className={styles.badge}>{subscriptions.filter(s => s.active).length}</span>
+          )}
+        </button>
       </div>
 
       <div className={styles.content}>
         {loading ? (
           <div className={styles.loading}>Loading...</div>
+        ) : activeTab === 'overview' ? (
+          <div className={styles.overviewSection}>
+            {activeMeetings.length > 0 && (
+              <div className={styles.overviewGroup}>
+                <h2 className={styles.overviewGroupTitle}>
+                  🔴 Active Now ({activeMeetings.length})
+                </h2>
+                <div className={styles.overviewList}>
+                  {activeMeetings.slice(0, 3).map((meeting) => {
+                    const partner = getMeetingPartner(meeting);
+                    return (
+                      <div
+                        key={meeting.id}
+                        className={`${styles.meetingCard} ${styles.activeNow} ${styles.compact}`}
+                      >
+                        <div className={styles.meetingHeader}>
+                          <h3>Meeting with {partner?.firstName} {partner?.lastName}</h3>
+                        </div>
+                        <div className={styles.meetingDetails}>
+                          <div className={styles.detailRow}>
+                            <span className={styles.label}>Time:</span>
+                            <span className={styles.value}>
+                              {formatTime(meeting.startTime)} - {formatTime(meeting.endTime)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.meetingActions}>
+                          <button
+                            className={styles.joinButton}
+                            onClick={() => handleJoinMeeting(meeting.id)}
+                          >
+                            Join Now
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {activeMeetings.length > 3 && (
+                    <button
+                      className={styles.viewAllButton}
+                      onClick={() => setActiveTab('active')}
+                    >
+                      View All Active Meetings ({activeMeetings.length})
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {upcomingMeetingsPreview.length > 0 && (
+              <div className={styles.overviewGroup}>
+                <h2 className={styles.overviewGroupTitle}>
+                  📅 Upcoming Meetings ({upcomingMeetings.length})
+                </h2>
+                <div className={styles.overviewList}>
+                  {upcomingMeetingsPreview.map((meeting) => {
+                    const partner = getMeetingPartner(meeting);
+                    const isSoon = isMeetingUpcomingSoon(meeting);
+                    return (
+                      <div
+                        key={meeting.id}
+                        className={`${styles.meetingCard} ${isSoon ? styles.soon : ''} ${styles.compact}`}
+                      >
+                        {isSoon && (
+                          <div className={styles.soonBadge}>Coming Soon</div>
+                        )}
+                        <div className={styles.meetingHeader}>
+                          <h3>Meeting with {partner?.firstName} {partner?.lastName}</h3>
+                        </div>
+                        <div className={styles.meetingDetails}>
+                          <div className={styles.detailRow}>
+                            <span className={styles.label}>Date:</span>
+                            <span className={styles.value}>{formatDate(meeting.startTime)}</span>
+                          </div>
+                          <div className={styles.detailRow}>
+                            <span className={styles.label}>Time:</span>
+                            <span className={styles.value}>
+                              {formatTime(meeting.startTime)} - {formatTime(meeting.endTime)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.meetingActions}>
+                          <button
+                            className={styles.joinButton}
+                            onClick={() => handleJoinMeeting(meeting.id)}
+                          >
+                            Join Meeting
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {upcomingMeetings.length > 5 && (
+                    <button
+                      className={styles.viewAllButton}
+                      onClick={() => setActiveTab('meetings')}
+                    >
+                      View All Upcoming Meetings ({upcomingMeetings.length})
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {unreadNotifications.length > 0 && (
+              <div className={styles.overviewGroup}>
+                <h2 className={styles.overviewGroupTitle}>
+                  🔔 Unread Notifications ({unreadCount})
+                </h2>
+                <div className={styles.overviewList}>
+                  {unreadNotifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className={`${styles.notificationCard} ${styles.unread} ${styles.compact}`}
+                      onClick={() => handleNotificationClick(notification)}
+                    >
+                      <div className={styles.notificationContent}>
+                        <h4 className={styles.notificationTitle}>{notification.title}</h4>
+                        <p className={styles.notificationMessage}>{notification.message}</p>
+                        <span className={styles.timestamp}>
+                          {formatDate(notification.createdAt)}
+                        </span>
+                      </div>
+                      <div className={styles.notificationActions}>
+                        <button
+                          className={styles.markReadButton}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleMarkAsRead(notification.id);
+                          }}
+                          title="Mark as read"
+                        >
+                          ✓
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {unreadCount > 5 && (
+                    <button
+                      className={styles.viewAllButton}
+                      onClick={() => setActiveTab('system')}
+                    >
+                      View All Notifications ({systemNotifications.length})
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeMeetings.length === 0 && 
+             upcomingMeetings.length === 0 && 
+             unreadCount === 0 && (
+              <div className={styles.empty}>
+                <p>No new notifications</p>
+                <p className={styles.emptySubtext}>
+                  All caught up! Check back later for updates.
+                </p>
+              </div>
+            )}
+          </div>
         ) : activeTab === 'active' ? (
           <div className={styles.meetingsSection}>
             {error && <div className={styles.error}>{error}</div>}
@@ -359,7 +588,7 @@ export default function Notifications() {
               </div>
             )}
           </div>
-        ) : (
+        ) : activeTab === 'system' ? (
           <div className={styles.systemSection}>
             {systemNotifications.length === 0 ? (
               <div className={styles.empty}>
@@ -423,6 +652,67 @@ export default function Notifications() {
                   ))}
                 </div>
               </>
+            )}
+          </div>
+        ) : (
+          <div className={styles.alertsSection}>
+            {loadingSubscriptions ? (
+              <div className={styles.loading}>Loading subscriptions...</div>
+            ) : subscriptions.length === 0 ? (
+              <div className={styles.empty}>
+                <p>You have no alert subscriptions</p>
+                <p className={styles.emptySubtext}>
+                  Manage your email alert subscriptions here. Subscribe to receive notifications when users add new availability slots.
+                </p>
+              </div>
+            ) : (
+              <div className={styles.subscriptionsList}>
+                {subscriptions.map((subscription) => {
+                  const targetUser = subscription.targetUser;
+                  const displayName = targetUser 
+                    ? `${targetUser.firstName || ''} ${targetUser.lastName || ''}`.trim() || targetUser.username || 'Unknown User'
+                    : 'Unknown User';
+                  
+                  return (
+                    <div
+                      key={subscription.id}
+                      className={`${styles.subscriptionCard} ${!subscription.active ? styles.inactive : ''}`}
+                    >
+                      <div className={styles.subscriptionContent}>
+                        <div className={styles.subscriptionHeader}>
+                          <h4 className={styles.subscriptionName}>{displayName}</h4>
+                          {targetUser?.username && (
+                            <span className={styles.username}>@{targetUser.username}</span>
+                          )}
+                        </div>
+                        <div className={styles.subscriptionDetails}>
+                          <div className={styles.detailRow}>
+                            <span className={styles.label}>Status:</span>
+                            <span className={`${styles.value} ${subscription.active ? styles.active : styles.inactive}`}>
+                              {subscription.active ? '✓ Active' : '✗ Inactive'}
+                            </span>
+                          </div>
+                          <div className={styles.detailRow}>
+                            <span className={styles.label}>Subscribed:</span>
+                            <span className={styles.value}>{formatDate(subscription.createdAt)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.subscriptionActions}>
+                        {subscription.active && (
+                          <button
+                            className={styles.unsubscribeButton}
+                            onClick={() => handleUnsubscribe(subscription.targetUserId)}
+                            title="Unsubscribe from email alerts"
+                          >
+                            Unsubscribe
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         )}

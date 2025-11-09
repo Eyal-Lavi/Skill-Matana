@@ -15,6 +15,9 @@ router.delete('/:id', isLoggedIn, availabilityController.removeMySlot);
 
 
 router.post('/alerts/:targetUserId', isLoggedIn, availabilityController.subscribeAlert);
+router.delete('/alerts/:targetUserId', isLoggedIn, availabilityController.unsubscribeAlert);
+router.get('/alerts/:targetUserId/status', isLoggedIn, availabilityController.getAlertStatus);
+router.get('/alerts/my/subscriptions', isLoggedIn, availabilityController.getMySubscriptions);
 
 module.exports = router;
 

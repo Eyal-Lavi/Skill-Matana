@@ -44,10 +44,45 @@ const subscribeAlert = async (req, res, next) => {
   }
 };
 
+const unsubscribeAlert = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const { targetUserId } = req.params;
+    const result = await availabilityService.unsubscribeAlert(Number(userId), Number(targetUserId));
+    res.json(result);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getAlertStatus = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const { targetUserId } = req.params;
+    const status = await availabilityService.getAlertStatus(Number(userId), Number(targetUserId));
+    res.json(status);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getMySubscriptions = async (req, res, next) => {
+  try {
+    const userId = req.session.user?.id;
+    const subscriptions = await availabilityService.getMySubscriptions(Number(userId));
+    res.json({ subscriptions });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addMySlots,
   listForUser,
   removeMySlot,
   subscribeAlert,
+  unsubscribeAlert,
+  getAlertStatus,
+  getMySubscriptions,
 };
 

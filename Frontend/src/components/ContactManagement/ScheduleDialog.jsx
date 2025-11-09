@@ -9,6 +9,8 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
   const [slots, setSlots] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [alertStatus, setAlertStatus] = useState({ subscribed: false, active: false });
+  const [checkingAlert, setCheckingAlert] = useState(false);
   const userId = targetUser?.id;
 
   useEffect(() => {
@@ -30,6 +32,21 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
     })();
   }, [isOpen, userId]);
 
+  useEffect(() => {
+    if (!isOpen || !userId) return;
+    (async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/availability/alerts/${userId}/status`, { credentials: 'include' });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok) {
+          setAlertStatus({ subscribed: body.subscribed || false, active: body.active || false });
+        }
+      } catch (e) {
+        console.error('Failed to check alert status:', e);
+      }
+    })();
+  }, [isOpen, userId]);
+
   const grouped = useMemo(() => {
     const byDay = {};
     for (const s of slots) {
@@ -43,16 +60,38 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
 
   const requestAlert = async () => {
     if (!userId) return;
+    setCheckingAlert(true);
     try {
       const res = await fetch(`http://localhost:3000/availability/alerts/${userId}`, {
         method: 'POST',
         credentials: 'include',
       });
       if (!res.ok) throw new Error('ההרשמה להתראות נכשלה');
+      setAlertStatus({ subscribed: true, active: true });
       alert('מעולה! נשלח לך מייל כשמשתמש זה יוסיף זמינות.');
-      onClose?.();
     } catch (e) {
       alert(e.message || 'שגיאה בהרשמה להתראות');
+    } finally {
+      setCheckingAlert(false);
+    }
+  };
+
+  const unsubscribeAlert = async () => {
+    if (!userId) return;
+    if (!window.confirm('האם אתה בטוח שברצונך לבטל את ההתראה?')) return;
+    setCheckingAlert(true);
+    try {
+      const res = await fetch(`http://localhost:3000/availability/alerts/${userId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('ביטול ההתראה נכשל');
+      setAlertStatus({ subscribed: false, active: false });
+      alert('ההתראה בוטלה בהצלחה. לא תקבל עוד מיילים על זמינות חדשה.');
+    } catch (e) {
+      alert(e.message || 'שגיאה בביטול ההתראה');
+    } finally {
+      setCheckingAlert(false);
     }
   };
 
@@ -91,7 +130,18 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
           <div className={styles.empty}>
             אין כרגע זמינות. תרצה לקבל התראה ברגע שמתפנה?
             <div style={{ marginTop: 12 }}>
-              <button className={styles.primaryBtn} onClick={requestAlert}>הפעל התראה למייל</button>
+              {alertStatus.active ? (
+                <div>
+                  <p style={{ marginBottom: 8, color: '#10b981', fontSize: 14 }}>✓ אתה מנוי להתראות</p>
+                  <button className={styles.secondaryBtn} onClick={unsubscribeAlert} disabled={checkingAlert}>
+                    {checkingAlert ? 'מבטל...' : 'בטל התראה'}
+                  </button>
+                </div>
+              ) : (
+                <button className={styles.primaryBtn} onClick={requestAlert} disabled={checkingAlert}>
+                  {checkingAlert ? 'מרשם...' : 'הפעל התראה למייל'}
+                </button>
+              )}
             </div>
           </div>
         ) : (
@@ -116,11 +166,26 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
         )}
       </div>
 
-      <div className={styles.footer}>
-        <button className={styles.secondaryBtn} onClick={onClose} disabled={submitting}>ביטול</button>
-        <button className={styles.primaryBtn} onClick={confirmSchedule} disabled={!selectedId || submitting}>
-          {submitting ? 'קובע…' : 'קבע פגישה'}
-        </button>
+      <div className={styles.footer} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+        <div>
+          {alertStatus.active && (
+            <button 
+              className={styles.secondaryBtn} 
+              onClick={unsubscribeAlert} 
+              disabled={checkingAlert || submitting}
+              style={{ fontSize: 12, padding: '6px 12px' }}
+              title="בטל התראה על זמינות חדשה"
+            >
+              {checkingAlert ? 'מבטל...' : 'בטל התראה'}
+            </button>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className={styles.secondaryBtn} onClick={onClose} disabled={submitting}>ביטול</button>
+          <button className={styles.primaryBtn} onClick={confirmSchedule} disabled={!selectedId || submitting}>
+            {submitting ? 'קובע…' : 'קבע פגישה'}
+          </button>
+        </div>
       </div>
     </ModalShell>
   );

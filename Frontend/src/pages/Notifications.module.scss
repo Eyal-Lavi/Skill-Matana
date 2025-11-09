@@ -72,6 +72,73 @@
     min-height: 400px;
   }
 
+  .overviewSection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .overviewGroup {
+      .overviewGroupTitle {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var.$color-text-primary;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var.$color-border;
+      }
+
+      .overviewList {
+        display: grid;
+        gap: 1rem;
+      }
+    }
+
+    .viewAllButton {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: var.$color-primary;
+      border: 2px solid var.$color-primary;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+      width: 100%;
+
+      &:hover {
+        background: var.$color-primary;
+        color: white;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .compact {
+      padding: 1rem;
+      
+      .meetingHeader h3 {
+        font-size: 1.1rem;
+      }
+
+      .meetingDetails {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .notificationTitle {
+        font-size: 1rem;
+      }
+
+      .notificationMessage {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
   .loading,
   .error,
   .empty {
@@ -417,6 +484,123 @@
     }
   }
 
+  .alertsSection {
+    .subscriptionsList {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .subscriptionCard {
+      background: var.$color-surface;
+      border: 2px solid var.$color-border;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      transition: all 0.2s;
+      position: relative;
+
+      &:hover {
+        background: #f9fafb;
+        transform: translateX(-4px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      &.inactive {
+        opacity: 0.6;
+        background: #f3f4f6;
+      }
+
+      .subscriptionContent {
+        flex: 1;
+        min-width: 0;
+
+        .subscriptionHeader {
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+
+          .subscriptionName {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var.$color-text-primary;
+            margin: 0;
+          }
+
+          .username {
+            color: var.$color-text-secondary;
+            font-size: 0.9rem;
+          }
+        }
+
+        .subscriptionDetails {
+          background: #f9fafb;
+          padding: 1rem;
+          border-radius: 8px;
+
+          .detailRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .label {
+              font-weight: 600;
+              color: var.$color-text-primary;
+            }
+
+            .value {
+              font-weight: 500;
+
+              &.active {
+                color: #10b981;
+              }
+
+              &.inactive {
+                color: var.$color-text-secondary;
+              }
+            }
+          }
+        }
+      }
+
+      .subscriptionActions {
+        margin-left: 1rem;
+        flex-shrink: 0;
+
+        .unsubscribeButton {
+          padding: 0.5rem 1rem;
+          background: transparent;
+          color: var.$color-error;
+          border: 2px solid var.$color-error;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          font-size: 0.9rem;
+
+          &:hover {
+            background: var.$color-error;
+            color: white;
+            transform: translateY(-1px);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+    }
+  }
+
   @media (max-width: var.$breakpoint-mobile) {
     padding: 1rem 0.5rem;
 
@@ -445,6 +629,20 @@
 
         .joinButton,
         .cancelButton {
+          width: 100%;
+        }
+      }
+    }
+
+    .subscriptionCard {
+      flex-direction: column;
+
+      .subscriptionActions {
+        margin-left: 0;
+        margin-top: 1rem;
+        width: 100%;
+
+        .unsubscribeButton {
           width: 100%;
         }
       }

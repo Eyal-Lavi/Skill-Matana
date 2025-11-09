@@ -195,10 +195,58 @@ async function subscribeAlert(watcherId, targetUserId) {
   return rec;
 }
 
+async function unsubscribeAlert(watcherId, targetUserId) {
+  if (!watcherId || !targetUserId) throw new Error('watcherId and targetUserId are required');
+  const alert = await MeetingAlert.findOne({
+    where: { watcherId, targetUserId },
+  });
+  if (!alert) throw new Error('Alert subscription not found');
+  alert.active = false;
+  await alert.save();
+  return { success: true, message: 'Unsubscribed successfully' };
+}
+
+async function getAlertStatus(watcherId, targetUserId) {
+  if (!watcherId || !targetUserId) return { subscribed: false, active: false };
+  const alert = await MeetingAlert.findOne({
+    where: { watcherId, targetUserId },
+  });
+  return {
+    subscribed: !!alert,
+    active: alert?.active || false,
+  };
+}
+
+async function getMySubscriptions(watcherId) {
+  if (!watcherId) throw new Error('watcherId is required');
+  const alerts = await MeetingAlert.findAll({
+    where: { watcherId },
+    include: [
+      {
+        model: User,
+        as: 'targetUser',
+        attributes: ['id', 'firstName', 'lastName', 'username', 'email'],
+      },
+    ],
+    order: [['createdAt', 'DESC']],
+  });
+  return alerts.map(alert => ({
+    id: alert.id,
+    targetUserId: alert.targetUserId,
+    active: alert.active,
+    createdAt: alert.createdAt,
+    updatedAt: alert.updatedAt,
+    targetUser: alert.targetUser,
+  }));
+}
+
 module.exports = {
   addSlots,
   listUserAvailability,
   removeSlot,
   subscribeAlert,
+  unsubscribeAlert,
+  getAlertStatus,
+  getMySubscriptions,
 };
 
