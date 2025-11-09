@@ -1,0 +1,163 @@
+@use "../../styles/variables" as *;
+
+.upcomingMeetings {
+  background: $color-surface;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba($color-primary, 0.1);
+  margin-bottom: 2rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: $color-text-primary;
+      margin: 0;
+    }
+
+    .viewAllButton {
+      background: transparent;
+      border: 1px solid rgba($color-primary, 0.3);
+      color: $color-primary;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba($color-primary, 0.1);
+        border-color: $color-primary;
+      }
+    }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: $color-text-secondary;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 2rem;
+    color: $color-text-secondary;
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    .emptySubtext {
+      font-size: 0.875rem;
+      color: $color-text-secondary;
+    }
+  }
+}
+
+.meetingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.meetingCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba($color-primary, 0.1);
+  background: rgba($color-primary, 0.02);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $color-primary;
+    background: rgba($color-primary, 0.05);
+    transform: translateX(4px);
+  }
+
+  .meetingIcon {
+    font-size: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: $gradient-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .meetingInfo {
+    flex: 1;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $color-text-primary;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .meetingTime {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+
+      .date {
+        color: $color-text-secondary;
+        font-weight: 500;
+      }
+
+      .time {
+        color: $color-text-secondary;
+      }
+    }
+  }
+
+  .meetingArrow {
+    font-size: 1.25rem;
+    color: $color-text-secondary;
+    transition: all 0.3s ease;
+  }
+
+  &:hover .meetingArrow {
+    color: $color-primary;
+    transform: translateX(4px);
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .upcomingMeetings {
+    padding: 1.5rem;
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .viewAllButton {
+        width: 100%;
+      }
+    }
+
+    .meetingCard {
+      padding: 0.75rem;
+
+      .meetingIcon {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
+

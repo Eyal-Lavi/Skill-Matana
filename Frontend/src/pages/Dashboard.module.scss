@@ -3,4 +3,31 @@
 .dashboard {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 2rem;
+
+  .dashboardContent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+
+    .leftColumn,
+    .rightColumn {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .dashboard {
+    padding: 1rem;
+
+    .dashboardContent {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+  }
 }

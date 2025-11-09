@@ -1,7 +1,10 @@
 import {
   DashboardHeader,
   StatsGrid,
-  RecentActivity
+  RecentActivity,
+  UpcomingMeetings,
+  QuickActions,
+  NotificationsPreview
 } from "../components/dashboard";
 import style from "./Dashboard.module.scss";
 
@@ -10,7 +13,16 @@ function Dashboard() {
     <div className={style.dashboard}>
       <DashboardHeader />
       <StatsGrid />
-      <RecentActivity />
+      <div className={style.dashboardContent}>
+        <div className={style.leftColumn}>
+          <UpcomingMeetings />
+          <NotificationsPreview />
+        </div>
+        <div className={style.rightColumn}>
+          <QuickActions />
+          <RecentActivity />
+        </div>
+      </div>
     </div>
   );
 }

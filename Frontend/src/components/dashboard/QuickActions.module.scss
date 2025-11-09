@@ -1,0 +1,175 @@
+@use "../../styles/variables" as *;
+
+.quickActions {
+  background: $color-surface;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba($color-primary, 0.1);
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin: 0 0 1.5rem 0;
+  }
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(102, 126, 234, 0.02) 100%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &[style*="--action-color: #667eea"] {
+    border-color: rgba(102, 126, 234, 0.2);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(102, 126, 234, 0.02) 100%);
+  }
+
+  &[style*="--action-color: #764ba2"] {
+    border-color: rgba(118, 75, 162, 0.2);
+    background: linear-gradient(135deg, rgba(118, 75, 162, 0.05) 0%, rgba(118, 75, 162, 0.02) 100%);
+  }
+
+  &[style*="--action-color: #f093fb"] {
+    border-color: rgba(240, 147, 251, 0.2);
+    background: linear-gradient(135deg, rgba(240, 147, 251, 0.05) 0%, rgba(240, 147, 251, 0.02) 100%);
+  }
+
+  &[style*="--action-color: #4facfe"] {
+    border-color: rgba(79, 172, 254, 0.2);
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.05) 0%, rgba(79, 172, 254, 0.02) 100%);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--action-color, #667eea);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    border-color: var(--action-color, #667eea);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+
+    &::before {
+      transform: scaleX(1);
+    }
+
+    .actionIcon {
+      transform: scale(1.1);
+    }
+
+    .actionArrow {
+      opacity: 1;
+      transform: translateX(4px);
+    }
+  }
+
+  .actionIcon {
+    font-size: 2rem;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--action-color, #667eea);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  .actionContent {
+    text-align: center;
+    flex: 1;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $color-text-primary;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      font-size: 0.875rem;
+      color: $color-text-secondary;
+      margin: 0;
+    }
+  }
+
+  .actionArrow {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.25rem;
+    color: var(--action-color, #667eea);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  &[style*="--action-color: #667eea"] .actionIcon {
+    background: linear-gradient(135deg, #667eea, rgba(102, 126, 234, 0.7));
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  &[style*="--action-color: #764ba2"] .actionIcon {
+    background: linear-gradient(135deg, #764ba2, rgba(118, 75, 162, 0.7));
+    box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
+  }
+
+  &[style*="--action-color: #f093fb"] .actionIcon {
+    background: linear-gradient(135deg, #f093fb, rgba(240, 147, 251, 0.7));
+    box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+  }
+
+  &[style*="--action-color: #4facfe"] .actionIcon {
+    background: linear-gradient(135deg, #4facfe, rgba(79, 172, 254, 0.7));
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .quickActions {
+    padding: 1.5rem;
+  }
+
+  .actionsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actionCard {
+    flex-direction: row;
+    text-align: left;
+
+    .actionContent {
+      text-align: left;
+    }
+
+    .actionArrow {
+      position: static;
+      opacity: 1;
+    }
+  }
+}
+
