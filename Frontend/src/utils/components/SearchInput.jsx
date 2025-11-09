@@ -7,6 +7,7 @@ import SearchAPI from '../../features/search/SearchAPI';
 import useDebounce from '../../hooks/useDebounce';
 import './SearchInput.scss';
 import { searchUsers } from '../../features/search/SearchThunks';
+import { searchActions } from '../../features/search/SearchSlice';
 
 export default function SearchInput() {
   const skills = useSelector(selectSkillsData);
@@ -35,8 +36,10 @@ export default function SearchInput() {
     
     if (hasSearchValue || hasSkillValue) {
       performSearch(hasSearchValue || '', hasSkillValue || '');
+    } else {
+      dispatch(searchActions.clearSearch());
     }
-  }, [debouncedSearchValue, debouncedSkillValue, performSearch]);
+  }, [debouncedSearchValue, debouncedSkillValue, performSearch, dispatch]);
 
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);

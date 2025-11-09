@@ -21,11 +21,6 @@ const searchUsers = async(request , response , next) =>{
        
 
         const users = await searchUsersByNameAndSkillIds(name , skillId,userIdRequester);
-        if(users.length === 0){
-           return response.status(404).json({ message: 'No users found matching the criteria.' });
-        }
-        console.log(users);
-        
         response.status(200).json(users);
 
     }catch(error){

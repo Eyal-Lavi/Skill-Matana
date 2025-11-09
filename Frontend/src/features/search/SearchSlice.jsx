@@ -17,7 +17,8 @@ const searchSlice = createSlice({
       state.users = [];
       state.error = null;
       state.loading = false;
-      state.hasFullFilled  = false;
+      state.hasSearched = false;
+      state.hasFullFilled = false;
     }
   },
   extraReducers: (builder) => {

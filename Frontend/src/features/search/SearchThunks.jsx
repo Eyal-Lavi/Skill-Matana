@@ -14,8 +14,15 @@ export const searchUsers = createAsyncThunk(
 
     try {
       const response = await SearchAPI.search(name, skillId);
-      return response;
+      return Array.isArray(response) ? response : [];
     } catch (error) {
+      if (error.response?.status === 404) {
+        const errorMessage = error.response?.data?.message || error.message;
+        if (errorMessage.includes('No users found') || 
+            errorMessage.includes('not found')) {
+          return [];
+        }
+      }
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
       );
