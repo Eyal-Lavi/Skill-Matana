@@ -38,7 +38,12 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
     
-      { path: "/", element: <Home /> },
+      { path: "/", 
+        element:
+        <GuestRoute>
+          <Home />
+        </GuestRoute>
+      },
       { path: "/about", element: <About /> },
       { path: "/terms-privacy", element: <TermsPrivacy /> },
       { path: "/contact", element: <Contact /> },

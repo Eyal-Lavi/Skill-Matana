@@ -6,7 +6,7 @@ const GuestRoute = ({ children }) => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

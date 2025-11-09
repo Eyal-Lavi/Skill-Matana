@@ -46,7 +46,9 @@ export default function Navbar() {
         </div>
 
         <div className={style.buttonsContainer}>
-          <StyledNavLink onClick={handleNavClick} to="/">Home</StyledNavLink>
+          {!isAuthenticated && (
+            <StyledNavLink onClick={handleNavClick} to="/">Home</StyledNavLink>
+          )}
           {
             isAuthenticated && 
             <>
@@ -74,7 +76,9 @@ export default function Navbar() {
 
         {dropDownStatus && (
   <div className={style.mobileMenu}>
-    <StyledNavLink onClick={handleNavClick} to="/">Home</StyledNavLink>
+    {!isAuthenticated && (
+      <StyledNavLink onClick={handleNavClick} to="/">Home</StyledNavLink>
+    )}
     {isAuthenticated && (
       <>
         {/* <StyledNavLink onClick={handleNavClick} to="/search">Search</StyledNavLink> */}

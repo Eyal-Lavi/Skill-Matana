@@ -7,7 +7,7 @@ const AdminRoute = ({ children }) => {
   const isAdmin = useSelector(selectIsAdmin);
   
   if (!isAuthenticated || !isAdmin) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;
