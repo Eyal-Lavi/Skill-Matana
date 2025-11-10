@@ -9,7 +9,7 @@ export default function QuickActions() {
       icon: "➕",
       title: "Add Availability",
       description: "Set your available times",
-      onClick: () => navigate("/dashboard/my-availability"),
+      onClick: () => navigate("/dashboard/availability"),
       color: "#667eea"
     },
     {

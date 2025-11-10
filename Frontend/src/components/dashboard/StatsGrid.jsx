@@ -78,7 +78,7 @@ export default function StatsGrid() {
     { icon: "👥", title: "Connections", value: connections.length, label: "Active connections", onClick: () => navigate("/dashboard/contact-requests") },
     { icon: "📅", title: "Upcoming Meetings", value: loading ? "..." : upcomingMeetingsCount, label: "Next 7 days", onClick: () => navigate("/dashboard/notifications") },
     { icon: "⏳", title: "Pending Requests", value: loading ? "..." : pendingRequestsCount, label: "Awaiting response", onClick: () => navigate("/dashboard/contact-requests") },
-    { icon: "🕐", title: "Availability Slots", value: loading ? "..." : availabilitySlotsCount, label: "Available slots", onClick: () => navigate("/dashboard/my-availability") },
+    { icon: "🕐", title: "Availability Slots", value: loading ? "..." : availabilitySlotsCount, label: "Available slots", onClick: () => navigate("/dashboard/availability") },
     { icon: "🔔", title: "Notifications", value: loading ? "..." : unreadCount, label: "Unread notifications", onClick: () => navigate("/dashboard/notifications") },
   ];
 
