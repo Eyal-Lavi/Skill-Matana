@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { selectUser } from "../features/auth/AuthSelectors";
-import { authActions } from '../features/auth/AuthSlices'
+import { selectUser } from "../../features/auth/AuthSelectors";
+import { authActions } from '../../features/auth/AuthSlices'
 import styles from "./Profile.module.scss";
-import { ProfileHeader, ProfileView, ProfileEditForm } from "../components/profile";
-import authAPI from "../features/auth/AuthAPI";
+import { ProfileHeader, ProfileView, ProfileEditForm } from "../../components/profile";
+import authAPI from "../../features/auth/AuthAPI";
 
 function Profile() {
   const dispatch = useDispatch();

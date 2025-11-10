@@ -5,7 +5,7 @@ import {
   UpcomingMeetings,
   QuickActions,
   NotificationsPreview
-} from "../components/dashboard";
+} from "../../components/dashboard";
 import style from "./Dashboard.module.scss";
 
 function Dashboard() {

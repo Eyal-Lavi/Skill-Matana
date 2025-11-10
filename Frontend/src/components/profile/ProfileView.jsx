@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../pages/Profile.module.scss";
+import styles from "../../pages/user/Profile.module.scss";
 import { User as UserIcon, Mail, UserCircle2 } from "lucide-react";
 
 export default function ProfileView({ user, onEdit }) {

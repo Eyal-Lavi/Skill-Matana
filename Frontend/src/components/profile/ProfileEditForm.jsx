@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import Input from "../../utils/components/Input";
 import Select from "../../utils/components/Select";
-import styles from "../../pages/Profile.module.scss";
+import styles from "../../pages/user/Profile.module.scss";
 
 export default function ProfileEditForm({
   register,

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./Home.module.scss";
 import { useSelector } from "react-redux";
-import { selectIsAuthenticated } from "../features/auth/authSelectors";
+import { selectIsAuthenticated } from "../../features/auth/authSelectors";
 
 export default function Home() {
   const isAuthenticated = useSelector(selectIsAuthenticated);

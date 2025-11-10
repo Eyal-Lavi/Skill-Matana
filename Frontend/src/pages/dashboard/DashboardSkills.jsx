@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { EnhancedSkillsGrid, AddSkillsModal, EnhancedAddSkillRequest } from "../components/skills";
+import { EnhancedSkillsGrid, AddSkillsModal, EnhancedAddSkillRequest } from "../../components/skills";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import style from "./DashboardSkills.module.scss";

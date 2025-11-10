@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import meetingsAPI from '../services/meetingsAPI';
-import notificationsAPI from '../services/notificationsAPI';
-import { useNotifications } from '../contexts/NotificationsContext';
+import meetingsAPI from '../../services/meetingsAPI';
+import notificationsAPI from '../../services/notificationsAPI';
+import { useNotifications } from '../../contexts/NotificationsContext';
 import styles from './Notifications.module.scss';
 
 export default function Notifications() {

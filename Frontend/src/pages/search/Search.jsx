@@ -3,16 +3,16 @@ import { Github, Linkedin, Search as SearchIcon, Users, AlertCircle, Sparkles } 
 import { useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import SearchInput from "../utils/components/SearchInput";
-import ProfileCard from "../components/ProfileCard/ProfileCard";
-import NewContactModal from "../components/NewContactModal/NewContactModal";
+import SearchInput from "../../utils/components/SearchInput";
+import ProfileCard from "../../components/ProfileCard/ProfileCard";
+import NewContactModal from "../../components/NewContactModal/NewContactModal";
 
-import { selectSearch } from "../features/search/SearchSelectors";
+import { selectSearch } from "../../features/search/SearchSelectors";
 
-import { useConnectionActions } from "../components/ContactManagement/hooks/useConnectionActions";
-import { useContactRequestsData } from "../components/ContactManagement/hooks/useContactRequestsData";
-import { selectConnections} from "../features/auth/AuthSelectors";
-import { authActions } from "../features/auth/AuthSlices";
+import { useConnectionActions } from "../../components/ContactManagement/hooks/useConnectionActions";
+import { useContactRequestsData } from "../../components/ContactManagement/hooks/useContactRequestsData";
+import { selectConnections} from "../../features/auth/AuthSelectors";
+import { authActions } from "../../features/auth/AuthSlices";
 
 function Search() {
   const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./HomeSecond.module.scss";
 import { useSelector } from "react-redux";
-import { selectIsAuthenticated } from "../features/auth/authSelectors";
+import { selectIsAuthenticated } from "../../features/auth/authSelectors";
 import HeroBackground from "./HomeBackground";
 import { Cpu, ShieldCheck, Layers, Zap, Eye } from "lucide-react";
 

@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import InfoPanel from "../features/auth/InfoPanel";
+import InfoPanel from "../../features/auth/InfoPanel";
 import styles from "./Authentication.module.scss";
 
 const Authentication = () => {
