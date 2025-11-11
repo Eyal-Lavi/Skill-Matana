@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import meetingsAPI from "../../services/meetingsAPI";
 import notificationsAPI from "../../services/notificationsAPI";
 import { useNotifications } from "../../contexts/NotificationsContext";
+import { API_BASE_URL } from "../../config/env";
 
 export default function StatsGrid() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function StatsGrid() {
       setUpcomingMeetingsCount(upcoming.length);
 
       // Load pending requests count
-      const base = import.meta.env.VITE_API_URL;
+      const base = API_BASE_URL;
       const [recRes, sentRes] = await Promise.all([
         fetch(`${base}/connection-requests/received`, { credentials: 'include' }),
         fetch(`${base}/connection-requests/sent`, { credentials: 'include' }),
