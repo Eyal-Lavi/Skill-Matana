@@ -1,0 +1,100 @@
+sequenceDiagram
+    participant User as משתמש<br/>(Requester)
+    participant Frontend as Frontend
+    participant API as Backend API
+    participant MeetingService as Meeting Service
+    participant AvailabilityService as Availability Service
+    participant DB as MySQL
+    participant EmailService as Email Service
+    participant SMTP as SMTP Server
+    participant Zego as Zego Cloud
+
+    Note over User,Zego: תהליך קביעת פגישה (Schedule Meeting)
+    User->>Frontend: בחירת סלוט זמינות<br/>של משתמש אחר
+    Frontend->>API: POST /meetings/schedule<br/>{targetUserId, availabilityId}
+    API->>API: Check session<br/>(isLoggedIn middleware)
+    API->>MeetingService: scheduleMeeting()<br/>(with transaction)
+    
+    MeetingService->>MeetingService: areConnected()<br/>Check connection
+    MeetingService->>DB: SELECT connection<br/>WHERE userA, userB
+    DB-->>MeetingService: Connection exists
+    
+    MeetingService->>DB: SELECT availability<br/>WHERE id AND not booked
+    DB-->>MeetingService: Availability slot
+    
+    alt Slot valid and available
+        MeetingService->>DB: INSERT meeting<br/>(hostId, guestId, startTime, endTime)
+        DB-->>MeetingService: Created meeting
+        MeetingService->>MeetingService: Update roomId = meeting.id
+        MeetingService->>DB: UPDATE meeting SET roomId
+        MeetingService->>DB: UPDATE availability<br/>SET isBooked = true
+        MeetingService->>DB: SELECT host, guest users
+        DB-->>MeetingService: User data
+        MeetingService->>EmailService: sendEmail()<br/>Meeting scheduled (host)
+        MeetingService->>EmailService: sendEmail()<br/>Meeting scheduled (guest)
+        EmailService->>SMTP: Send emails
+        SMTP-->>EmailService: Emails sent
+        MeetingService->>DB: COMMIT transaction
+        MeetingService-->>API: Meeting created
+        API-->>Frontend: 201 Created<br/>{meeting}
+        Frontend-->>User: Success message<br/>Meeting scheduled
+    else Not connected or slot invalid
+        MeetingService->>DB: ROLLBACK transaction
+        MeetingService-->>API: Error
+        API-->>Frontend: 400 Bad Request
+        Frontend-->>User: Error message
+    end
+
+    Note over User,Zego: תהליך הצטרפות לפגישה (Join Meeting)
+    User->>Frontend: Click "Join Meeting"
+    Frontend->>API: GET /meetings/:meetingId/join-token
+    API->>API: Check session<br/>isLoggedIn middleware
+    API->>API: Check meeting participant<br/>isMeetingParticipant middleware
+    API->>DB: SELECT meeting<br/>WHERE id AND user is participant
+    DB-->>API: Meeting data
+    API->>API: generateToken04()<br/>(Zego token generation)
+    API->>Zego: Generate token<br/>(appId, userId, secret, ttl)
+    Zego-->>API: Token
+    API-->>Frontend: 200 OK<br/>{appId, token, roomId, userId, userName}
+    Frontend->>Frontend: Initialize Zego UI Kit<br/>(@zegocloud/zego-uikit-prebuilt)
+    Frontend-->>User: Video conference room
+
+    Note over User,Zego: תהליך ביטול פגישה (Cancel Meeting)
+    User->>Frontend: Click "Cancel Meeting"
+    Frontend->>API: PATCH /meetings/:id/cancel
+    API->>API: Check session<br/>isLoggedIn middleware
+    API->>MeetingService: cancelMeeting()<br/>(with transaction)
+    MeetingService->>DB: SELECT meeting<br/>WHERE id
+    DB-->>MeetingService: Meeting
+    MeetingService->>MeetingService: Verify user is participant
+    alt User is participant
+        MeetingService->>DB: UPDATE meeting<br/>SET status = 'canceled'
+        MeetingService->>DB: SELECT availability<br/>WHERE availabilityId
+        DB-->>MeetingService: Availability
+        MeetingService->>DB: UPDATE availability<br/>SET isBooked = false
+        MeetingService->>DB: COMMIT transaction
+        MeetingService-->>API: Meeting canceled
+        API-->>Frontend: 200 OK<br/>{meeting}
+        Frontend-->>User: Success message
+    else User not authorized
+        MeetingService->>DB: ROLLBACK transaction
+        MeetingService-->>API: Error
+        API-->>Frontend: 403 Forbidden
+        Frontend-->>User: Error message
+    end
+
+    Note over User,Zego: תהליך תזכורת פגישה (Meeting Reminder)
+    Note over API,SMTP: Background job runs every hour
+    API->>MeetingService: sendDailyReminders()<br/>(scheduled job)
+    MeetingService->>DB: SELECT meetings<br/>WHERE status='scheduled'<br/>AND startTime today<br/>AND reminderSent=false
+    DB-->>MeetingService: Meetings list
+    loop For each meeting
+        MeetingService->>DB: SELECT host, guest users
+        DB-->>MeetingService: User data
+        MeetingService->>EmailService: sendEmail()<br/>Meeting reminder (host)
+        MeetingService->>EmailService: sendEmail()<br/>Meeting reminder (guest)
+        EmailService->>SMTP: Send reminder emails
+        SMTP-->>EmailService: Emails sent
+        MeetingService->>DB: UPDATE meeting<br/>SET reminderSent = true
+    end
+

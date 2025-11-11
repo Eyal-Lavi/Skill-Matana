@@ -1,0 +1,75 @@
+graph TB
+    subgraph "Client Layer"
+        Browser[דפדפן]
+        React[React App<br/>Vite + Redux]
+    end
+
+    subgraph "Frontend (Frontend/)"
+        Pages[Pages<br/>Dashboard, Profile, Search]
+        Components[Components<br/>Dashboard, Skills, Contacts]
+        Services[API Services<br/>Axios/Fetch]
+        State[Redux Store<br/>Auth, Admin, MetaData]
+    end
+
+    subgraph "Backend API (Bacekend/)"
+        Express[Express Server<br/>Port 3000]
+        Routes[Routes<br/>Auth, Skills, Meetings, etc.]
+        Controllers[Controllers<br/>Business Logic]
+        Middleware[Middleware<br/>Auth, Rate Limiting]
+    end
+
+    subgraph "Services Layer"
+        AuthService[Auth Service<br/>Login, Register, Password Reset]
+        MeetingService[Meeting Service<br/>Schedule, Cancel, List]
+        AvailabilityService[Availability Service<br/>Slots, Recurring]
+        EmailService[Email Service<br/>Nodemailer]
+        UploadService[Upload Service<br/>Cloudinary]
+    end
+
+    subgraph "Data Layer"
+        Sequelize[Sequelize ORM]
+        MySQL[(MySQL Database<br/>Users, Skills, Meetings, etc.)]
+        SessionStore[Session Store<br/>Sequelize Session]
+    end
+
+    subgraph "External Services"
+        Cloudinary[Cloudinary<br/>Image Storage]
+        Zego[Zego Cloud<br/>Video Conferencing]
+        SMTP[SMTP Server<br/>Email Delivery]
+    end
+
+    Browser --> React
+    React --> Pages
+    Pages --> Components
+    Components --> Services
+    Services --> State
+    Services --> Express
+
+    Express --> Middleware
+    Middleware --> Routes
+    Routes --> Controllers
+    Controllers --> AuthService
+    Controllers --> MeetingService
+    Controllers --> AvailabilityService
+    Controllers --> EmailService
+    Controllers --> UploadService
+
+    AuthService --> Sequelize
+    MeetingService --> Sequelize
+    AvailabilityService --> Sequelize
+    Sequelize --> MySQL
+    Express --> SessionStore
+    SessionStore --> MySQL
+
+    EmailService --> SMTP
+    UploadService --> Cloudinary
+    MeetingService --> Zego
+
+    style Browser fill:#e1f5ff
+    style React fill:#e1f5ff
+    style Express fill:#fff4e1
+    style MySQL fill:#ffe1e1
+    style Cloudinary fill:#e1ffe1
+    style Zego fill:#e1ffe1
+    style SMTP fill:#e1ffe1
+

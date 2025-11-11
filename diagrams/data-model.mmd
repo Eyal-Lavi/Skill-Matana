@@ -1,0 +1,166 @@
+erDiagram
+    User ||--o{ UserImage : has
+    User ||--o{ UserPermission : has
+    User ||--o{ SkillRequest : requests
+    User ||--o{ ContactRequest : sends
+    User ||--o{ ContactRequest : receives
+    User ||--o{ PasswordResetToken : has
+    User ||--o{ Connection : "userA"
+    User ||--o{ Connection : "userB"
+    User ||--o{ Availability : owns
+    User ||--o{ RecurringAvailability : owns
+    User ||--o{ Meeting : "host"
+    User ||--o{ Meeting : "guest"
+    User ||--o{ MeetingAlert : "watcher"
+    User ||--o{ MeetingAlert : "target"
+    User ||--o{ SystemNotification : receives
+    User }o--|| Status : has
+    User }o--o{ Skill : "has skills"
+    User }o--o{ Permission : "has permissions"
+
+    Skill ||--o{ SkillUser : "in"
+    Skill ||--o{ SkillRequest : "requested"
+
+    Permission ||--o{ UserPermission : "in"
+
+    ImageType ||--o{ UserImage : "type"
+
+    Availability ||--o| Meeting : "booked for"
+
+    User {
+        int id PK
+        string username UK
+        string email
+        string password
+        string firstName
+        string lastName
+        string gender
+        int status FK
+        string instagramUrl
+        string linkedinUrl
+        string githubUrl
+    }
+
+    Status {
+        int id PK
+        string name
+    }
+
+    Skill {
+        int id PK
+        string name
+        int status
+    }
+
+    SkillUser {
+        int userId FK
+        int skillId FK
+    }
+
+    Permission {
+        int id PK
+        string name
+    }
+
+    UserPermission {
+        int userId FK
+        int permissionId FK
+    }
+
+    UserImage {
+        int id PK
+        int userId FK
+        string url
+        int typeId FK
+    }
+
+    ImageType {
+        int id PK
+        string name
+    }
+
+    SkillRequest {
+        int id PK
+        int requestedBy FK
+        int skillId FK
+        string status
+        datetime createdAt
+    }
+
+    ContactRequest {
+        int id PK
+        int requestedBy FK
+        int requestedTo FK
+        string status
+        datetime createdAt
+    }
+
+    Connection {
+        int id PK
+        int userA FK
+        int userB FK
+        datetime createdAt
+    }
+
+    PasswordResetToken {
+        int id PK
+        int userId FK
+        string token UK
+        datetime expiresAt
+        boolean used
+    }
+
+    Availability {
+        int id PK
+        int userId FK
+        datetime startTime
+        datetime endTime
+        boolean isBooked
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    RecurringAvailability {
+        int id PK
+        int userId FK
+        int dayOfWeek
+        time startTime
+        time endTime
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Meeting {
+        int id PK
+        int hostId FK
+        int guestId FK
+        int availabilityId FK
+        string roomId
+        datetime startTime
+        datetime endTime
+        string status
+        boolean reminderSent
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    MeetingAlert {
+        int id PK
+        int watcherId FK
+        int targetUserId FK
+        boolean active
+        datetime createdAt
+    }
+
+    SystemNotification {
+        int id PK
+        int userId FK
+        string title
+        string message
+        string type
+        string link
+        boolean isRead
+        datetime createdAt
+        datetime updatedAt
+    }
+
