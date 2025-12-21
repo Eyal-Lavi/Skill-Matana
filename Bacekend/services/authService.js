@@ -1,10 +1,150 @@
 const { Op } = require('sequelize');
-const { User, PasswordResetToken, Skill, Connection } = require('../models');
+const { User, PasswordResetToken, Skill, Connection, PendingRegistration } = require('../models');
 const { Permission } = require('../models');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const { UserImage } = require('../models');
 const { sendEmail } = require('./emailService');
+
+// Generate 6-digit verification code
+const generateVerificationCode = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Create or update pending registration
+const createPendingRegistration = async (userData, transaction = null) => {
+    const code = generateVerificationCode();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    // Delete any existing pending registration for this email
+    await PendingRegistration.destroy({
+        where: { email: userData.email },
+        transaction
+    });
+
+    const pending = await PendingRegistration.create({
+        email: userData.email,
+        username: userData.username,
+        password: userData.password, // Will be hashed by the hook
+        firstName: userData.firstname,
+        lastName: userData.lastname,
+        gender: userData.gender,
+        verificationCode: code,
+        expiresAt,
+        verified: false
+    }, { transaction });
+
+    return { pending, code };
+};
+
+// Verify the code and return the pending registration
+const verifyRegistrationCode = async (email, code, transaction = null) => {
+    const pending = await PendingRegistration.findOne({
+        where: {
+            email,
+            verificationCode: code,
+            verified: false,
+            expiresAt: { [Op.gt]: new Date() }
+        },
+        transaction
+    });
+
+    return pending;
+};
+
+// Send verification email with code
+const sendVerificationEmail = async (email, code, firstName) => {
+    const subject = 'Verify Your Email - Skill Matana ✨';
+    const html = `
+      <!DOCTYPE html>
+      <html dir="ltr" lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f23;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); padding: 40px 20px;">
+          <tr>
+            <td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background: linear-gradient(145deg, rgba(30, 30, 60, 0.9) 0%, rgba(20, 20, 45, 0.95) 100%); border-radius: 24px; overflow: hidden; box-shadow: 0 25px 80px rgba(99, 102, 241, 0.3), 0 0 0 1px rgba(99, 102, 241, 0.2);">
+                
+                <!-- Header -->
+                <tr>
+                  <td style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%); padding: 50px 30px; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">✨</div>
+                    <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+                      Verify Your Email
+                    </h1>
+                    <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.8); font-size: 14px;">
+                      One step away from joining Skill Matana
+                    </p>
+                  </td>
+                </tr>
+                
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 50px 40px;">
+                    <p style="margin: 0 0 25px 0; color: #e2e8f0; font-size: 18px; line-height: 1.6;">
+                      Hi <strong style="color: #a5b4fc;">${firstName || 'there'}</strong>,
+                    </p>
+                    <p style="margin: 0 0 35px 0; color: #94a3b8; font-size: 16px; line-height: 1.7;">
+                      Enter this verification code to complete your registration:
+                    </p>
+                    
+                    <!-- Code Box -->
+                    <div style="text-align: center; margin: 40px 0;">
+                      <div style="display: inline-block; background: linear-gradient(145deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%); border: 2px solid rgba(99, 102, 241, 0.4); border-radius: 16px; padding: 30px 50px; box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);">
+                        <p style="margin: 0 0 10px 0; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">
+                          Verification Code
+                        </p>
+                        <p style="margin: 0; font-size: 42px; font-weight: 700; letter-spacing: 12px; background: linear-gradient(135deg, #6366F1 0%, #EC4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                          ${code}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <!-- Timer Warning -->
+                    <div style="text-align: center; margin: 30px 0;">
+                      <div style="display: inline-flex; align-items: center; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px 24px;">
+                        <span style="color: #fbbf24; font-size: 16px; margin-right: 8px;">⏱️</span>
+                        <span style="color: #fbbf24; font-size: 14px; font-weight: 500;">This code expires in 10 minutes</span>
+                      </div>
+                    </div>
+                    
+                    <p style="margin: 40px 0 0 0; color: #64748b; font-size: 14px; text-align: center; line-height: 1.6;">
+                      If you didn't request this code, you can safely ignore this email.
+                    </p>
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="background: rgba(15, 15, 35, 0.5); padding: 30px; text-align: center; border-top: 1px solid rgba(99, 102, 241, 0.2);">
+                    <p style="margin: 0; color: #64748b; font-size: 13px;">
+                      © Skill Matana - Collaborative Learning Platform
+                    </p>
+                  </td>
+                </tr>
+                
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
+
+    return await sendEmail(email, subject, html);
+};
+
+// Clean up expired pending registrations
+const cleanupExpiredPendingRegistrations = async () => {
+    await PendingRegistration.destroy({
+        where: {
+            expiresAt: { [Op.lt]: new Date() }
+        }
+    });
+};
 
 const validateUserFields = (user) => {
     const required = ['username', 'email', 'password', 'firstname', 'lastname', 'gender'];
@@ -362,5 +502,10 @@ module.exports = {
     createToken,
     checkIfActiveTokenExist,
     sendEmailWithLinkReset,
-    resetUserPassword
+    resetUserPassword,
+    generateVerificationCode,
+    createPendingRegistration,
+    verifyRegistrationCode,
+    sendVerificationEmail,
+    cleanupExpiredPendingRegistrations
 };

@@ -16,6 +16,7 @@ const RecurringAvailability = require('./recurringAvailability.js');
 const Meeting = require('./meeting.js');
 const MeetingAlert = require('./meetingAlert.js');
 const SystemNotification = require('./systemNotification.js');
+const PendingRegistration = require('./pendingRegistration.js');
 
 const models = {
     Permission,
@@ -35,11 +36,12 @@ const models = {
     Meeting,
     MeetingAlert,
     SystemNotification,
+    PendingRegistration,
 };
 
 require('./associations.js')(models);
 
-module.exports ={
+module.exports = {
     Permission,
     Skill,
     SkillUser,
@@ -57,4 +59,5 @@ module.exports ={
     Meeting,
     MeetingAlert,
     SystemNotification,
+    PendingRegistration,
 }

@@ -11,7 +11,10 @@ const {
         checkIfActiveTokenExist,
         createToken,
         sendEmailWithLinkReset,
-        resetUserPassword
+        resetUserPassword,
+        createPendingRegistration,
+        verifyRegistrationCode,
+        sendVerificationEmail
      } = require('../services/authService');
 const UserImage = require('../models/userImage');
 const { User } = require('../models');
@@ -339,9 +342,235 @@ const resetPassword = async(request , response , next) => {
     const result = await resetUserPassword(token , newPassword);
     response.status(200).json({message:'Password update successfuly'});
   }catch(error){
-    response.status(500).json({message:e.message});
+    response.status(500).json({message:error.message});
   }
 }
+
+// Send verification code for registration
+const sendVerificationCode = async (request, response, next) => {
+  const transaction = await sequelize.sequelize.transaction();
+
+  try {
+    const user = request.body;
+
+    // Validate required fields
+    const missingField = validateUserFields(user);
+    if (missingField) {
+      await transaction.rollback();
+      return response.status(400).json({
+        errors: [{
+          type: "field",
+          field: missingField.toLowerCase(),
+          message: `${missingField} is required`
+        }]
+      });
+    }
+
+    // Check if username or email already exists
+    const userByUsername = await findUserByUsernameOrEmail(user.username, transaction);
+    const userByEmail = await findUserByUsernameOrEmail(user.email, transaction);
+
+    const errors = [];
+
+    if (userByUsername) {
+      errors.push({
+        type: "field",
+        field: "username",
+        message: "Username already exists"
+      });
+    }
+
+    if (userByEmail) {
+      errors.push({
+        type: "field",
+        field: "email",
+        message: "Email already exists"
+      });
+    }
+
+    if (errors.length > 0) {
+      await transaction.rollback();
+      return response.status(400).json({ errors });
+    }
+
+    // Create pending registration with verification code
+    const { pending, code } = await createPendingRegistration(user, transaction);
+
+    // Send verification email
+    await sendVerificationEmail(user.email, code, user.firstname);
+
+    await transaction.commit();
+    
+    return response.status(200).json({ 
+      message: "Verification code sent to your email",
+      email: user.email
+    });
+
+  } catch (e) {
+    console.error("Send verification error:", e);
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+    return response.status(500).json({
+      errors: [{
+        type: "global",
+        field: "general",
+        message: "Failed to send verification code"
+      }]
+    });
+  }
+};
+
+// Verify code and complete registration
+const verifyCodeAndRegister = async (request, response, next) => {
+  const transaction = await sequelize.sequelize.transaction();
+
+  try {
+    const { email, code } = request.body;
+
+    if (!email || !code) {
+      await transaction.rollback();
+      return response.status(400).json({
+        errors: [{
+          type: "global",
+          field: "general",
+          message: "Email and verification code are required"
+        }]
+      });
+    }
+
+    // Verify the code
+    const pending = await verifyRegistrationCode(email, code, transaction);
+
+    if (!pending) {
+      await transaction.rollback();
+      return response.status(400).json({
+        errors: [{
+          type: "field",
+          field: "code",
+          message: "Invalid or expired verification code"
+        }]
+      });
+    }
+
+    // Check again if user exists (in case registered through another flow)
+    const existingUser = await findUserByUsernameOrEmail(pending.email, transaction);
+    if (existingUser) {
+      await transaction.rollback();
+      return response.status(400).json({
+        errors: [{
+          type: "global",
+          field: "general",
+          message: "This email is already registered"
+        }]
+      });
+    }
+
+    // Create the actual user (password is already hashed in pending)
+    await User.create({
+      username: pending.username,
+      email: pending.email,
+      password: pending.password, // Already hashed
+      firstName: pending.firstName,
+      lastName: pending.lastName,
+      gender: pending.gender
+    }, { 
+      transaction,
+      hooks: false // Skip the password hashing hook since it's already hashed
+    });
+
+    // Get the newly created user
+    const newUser = await findUserByUsernameOrEmail(pending.username, transaction);
+    if (!newUser) {
+      await transaction.rollback();
+      return response.status(500).json({
+        errors: [{
+          type: "global",
+          field: "general",
+          message: "User not found after creation"
+        }]
+      });
+    }
+
+    // Add default permission
+    await addUserPermission(newUser.id, 1, transaction);
+
+    // Mark pending registration as verified and delete it
+    await pending.destroy({ transaction });
+
+    await transaction.commit();
+    return response.status(201).json({ 
+      message: "Registration completed successfully",
+      info: "Register confirmed" 
+    });
+
+  } catch (e) {
+    console.error("Verify code error:", e);
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+    return response.status(500).json({
+      errors: [{
+        type: "global",
+        field: "general",
+        message: "Failed to complete registration"
+      }]
+    });
+  }
+};
+
+// Resend verification code
+const resendVerificationCode = async (request, response, next) => {
+  const transaction = await sequelize.sequelize.transaction();
+
+  try {
+    const { email, username, password, firstname, lastname, gender } = request.body;
+
+    if (!email) {
+      await transaction.rollback();
+      return response.status(400).json({
+        errors: [{
+          type: "field",
+          field: "email",
+          message: "Email is required"
+        }]
+      });
+    }
+
+    // Create new pending registration (will delete old one)
+    const { pending, code } = await createPendingRegistration({
+      email,
+      username,
+      password,
+      firstname,
+      lastname,
+      gender
+    }, transaction);
+
+    // Send verification email
+    await sendVerificationEmail(email, code, firstname);
+
+    await transaction.commit();
+    
+    return response.status(200).json({ 
+      message: "New verification code sent to your email"
+    });
+
+  } catch (e) {
+    console.error("Resend verification error:", e);
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+    return response.status(500).json({
+      errors: [{
+        type: "global",
+        field: "general",
+        message: "Failed to resend verification code"
+      }]
+    });
+  }
+};
+
 module.exports = {
     register,
     login,
@@ -350,5 +579,8 @@ module.exports = {
     getSession,
     sendPasswordResetLink,
     chekPasswordResetLink,
-    resetPassword
+    resetPassword,
+    sendVerificationCode,
+    verifyCodeAndRegister,
+    resendVerificationCode
 }

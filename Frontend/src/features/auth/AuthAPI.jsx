@@ -88,6 +88,45 @@ const authAPI = {
       console.error(error.response?.data?.message || error.message);
       throw error;
     }
+  },
+
+  // Send verification code for registration
+  sendVerificationCode: async (userData) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/send-verification`, userData, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Send verification error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
+  // Verify code and complete registration
+  verifyCode: async (email, code) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/verify-code`, { email, code }, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Verify code error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
+  // Resend verification code
+  resendVerificationCode: async (userData) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/resend-verification`, userData, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Resend verification error:', error.response?.data || error.message);
+      throw error;
+    }
   }
 
 };

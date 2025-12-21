@@ -19,4 +19,9 @@ router.post('/forgot-password' , authController.sendPasswordResetLink);
 router.post('/check-link' , authController.chekPasswordResetLink);
 router.post('/reset-password', validatePassword , authController.resetPassword);
 
+// Email verification routes
+router.post('/send-verification', validateRegister, handleValidationErrors, authController.sendVerificationCode);
+router.post('/verify-code', authController.verifyCodeAndRegister);
+router.post('/resend-verification', authController.resendVerificationCode);
+
 module.exports = router;
