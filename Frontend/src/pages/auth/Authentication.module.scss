@@ -1,24 +1,15 @@
-
 @use '../../styles/variables' as var;
 
 .loginContainer,
 .registerContainer {
   display: flex;
-  height: auto;
+  min-height: 100vh;
   width: 100%;
-  min-height: 800px;
+  background: var.$color-background;
 
   @media (max-width: var.$breakpoint-mobile) {
     flex-direction: column;
     min-height: auto;
-  }
-}
-
-.infoPanelWrapper {
-  flex: 1;
-
-  @media (max-width: var.$breakpoint-mobile) {
-    display: none;
   }
 }
 
@@ -38,3 +29,45 @@
   }
 }
 
+// Form side wrapper
+.formWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+
+  // Subtle background pattern for form side
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  // Floating decorative dots
+  &::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 2px, transparent 2px);
+    background-size: 20px 20px;
+    top: 10%;
+    right: 5%;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  @media (max-width: var.$breakpoint-mobile) {
+    padding: 1.5rem 1rem;
+    min-height: 100vh;
+  }
+}

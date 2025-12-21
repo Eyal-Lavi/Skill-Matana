@@ -5,41 +5,69 @@ import styles from "./Authentication.module.scss";
 
 const Authentication = () => {
   const location = useLocation();
-
   const isLoginPage = location.pathname === "/auth/login";
 
-  const variants = {
+  const containerVariants = {
     initial: {
-      x: isLoginPage ? 50 : -50,
       opacity: 0,
     },
     animate: {
-      x: 0,
       opacity: 1,
+      transition: {
+        duration: 0.3,
+        staggerChildren: 0.1,
+      },
     },
     exit: {
-      x: isLoginPage ? -50 : 50,
       opacity: 0,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
+
+  const formVariants = {
+    initial: {
+      opacity: 0,
+      y: 20,
+      scale: 0.98,
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -20,
+      scale: 0.98,
+      transition: {
+        duration: 0.3,
+      },
     },
   };
 
   return (
-    <AnimatePresence mode="popLayout">
+    <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        variants={variants}
+        variants={containerVariants}
         initial="initial"
         animate="animate"
         exit="exit"
-        transition={{ duration: 0.5 }}
       >
-        <div
-          className={
-            isLoginPage ? styles.loginContainer : styles.registerContainer
-          }
-        >
+        <div className={isLoginPage ? styles.loginContainer : styles.registerContainer}>
           <InfoPanel />
-          <Outlet />
+          <motion.div 
+            className={styles.formWrapper}
+            variants={formVariants}
+          >
+            <Outlet />
+          </motion.div>
         </div>
       </motion.div>
     </AnimatePresence>
