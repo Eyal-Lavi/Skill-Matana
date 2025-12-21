@@ -1,0 +1,194 @@
+// ==========================================
+// GLOBAL ACCESSIBILITY STYLES
+// These styles are applied when accessibility
+// options are enabled via the widget
+// ==========================================
+
+// ===== HIGH CONTRAST MODE =====
+body.a11y-high-contrast {
+  filter: contrast(1.4);
+  
+  // Enhance text visibility
+  * {
+    text-shadow: none !important;
+  }
+
+  // Make backgrounds more solid
+  [class*="gradient"] {
+    background: #000 !important;
+  }
+
+  // Enhance borders
+  button, input, select, textarea, a {
+    border: 2px solid currentColor !important;
+  }
+
+  // Better link visibility
+  a {
+    color: #00f !important;
+    text-decoration: underline !important;
+  }
+}
+
+// ===== INVERTED COLORS =====
+body.a11y-inverted {
+  filter: invert(1) hue-rotate(180deg);
+
+  // Keep images normal
+  img, video, svg, iframe, canvas, [style*="background-image"] {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+// ===== GRAYSCALE MODE =====
+body.a11y-grayscale {
+  filter: grayscale(1);
+}
+
+// ===== HIGHLIGHT LINKS =====
+body.a11y-highlight-links {
+  a, button[type="button"], button[type="submit"], [role="link"], [role="button"] {
+    outline: 3px solid #fbbf24 !important;
+    outline-offset: 2px;
+    background-color: rgba(251, 191, 36, 0.2) !important;
+    
+    &:hover {
+      background-color: rgba(251, 191, 36, 0.4) !important;
+    }
+  }
+}
+
+// ===== READABLE FONT =====
+body.a11y-readable-font {
+  * {
+    font-family: 'Arial', 'Helvetica Neue', sans-serif !important;
+    letter-spacing: 0.02em;
+  }
+
+  // Ensure minimum font size
+  p, span, li, td, th, label, input, textarea, select {
+    font-size: max(1rem, inherit) !important;
+  }
+}
+
+// ===== BIG CURSOR =====
+body.a11y-big-cursor {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='1' d='M4 4l7.07 17 2.51-7.39L21 11.07z'/%3E%3C/svg%3E") 0 0, auto !important;
+
+  a, button, [role="button"], [role="link"], input[type="submit"], input[type="button"] {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='1' d='M4 4l7.07 17 2.51-7.39L21 11.07z'/%3E%3C/svg%3E") 0 0, pointer !important;
+  }
+}
+
+// ===== STOP ANIMATIONS =====
+body.a11y-stop-animations {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ===== TEXT SPACING =====
+body.a11y-text-spacing {
+  * {
+    line-height: 1.8 !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
+  }
+
+  p, li, dd, dt {
+    margin-bottom: 1.5em !important;
+  }
+}
+
+// ===== HIGHLIGHT FOCUS =====
+body.a11y-highlight-focus {
+  *:focus {
+    outline: 4px solid #f59e0b !important;
+    outline-offset: 4px !important;
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.3) !important;
+  }
+
+  *:focus:not(:focus-visible) {
+    outline: 4px solid #f59e0b !important;
+  }
+}
+
+// ===== LARGE FOCUS INDICATOR =====
+body.a11y-large-focus {
+  *:focus {
+    outline: 6px solid #3b82f6 !important;
+    outline-offset: 6px !important;
+    box-shadow: 
+      0 0 0 8px rgba(59, 130, 246, 0.3),
+      0 0 20px rgba(59, 130, 246, 0.4) !important;
+  }
+
+  // Pulsing animation for focused elements
+  @keyframes focus-pulse {
+    0%, 100% {
+      box-shadow: 
+        0 0 0 8px rgba(59, 130, 246, 0.3),
+        0 0 20px rgba(59, 130, 246, 0.4);
+    }
+    50% {
+      box-shadow: 
+        0 0 0 12px rgba(59, 130, 246, 0.2),
+        0 0 30px rgba(59, 130, 246, 0.3);
+    }
+  }
+
+  *:focus-visible {
+    animation: focus-pulse 1.5s ease-in-out infinite !important;
+  }
+}
+
+// ===== KEYBOARD NAVIGATION IMPROVEMENTS =====
+// Skip link for keyboard users
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-weight: 600;
+  z-index: 10000;
+  transition: top 0.3s ease;
+  text-decoration: none;
+
+  &:focus {
+    top: 0;
+  }
+}
+
+// ===== REDUCED MOTION PREFERENCE =====
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ===== HIGH CONTRAST PREFERENCE =====
+@media (prefers-contrast: high) {
+  body {
+    filter: contrast(1.2);
+  }
+}
+
+// ===== PRINT STYLES FOR ACCESSIBILITY =====
+@media print {
+  body.a11y-high-contrast,
+  body.a11y-inverted,
+  body.a11y-grayscale {
+    filter: none;
+  }
+}
+

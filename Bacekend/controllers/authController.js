@@ -352,7 +352,7 @@ const sendVerificationCode = async (request, response, next) => {
 
   try {
     const user = request.body;
-
+    console.log(user);
     // Validate required fields
     const missingField = validateUserFields(user);
     if (missingField) {
@@ -365,6 +365,8 @@ const sendVerificationCode = async (request, response, next) => {
         }]
       });
     }
+
+    console.log(user);
 
     // Check if username or email already exists
     const userByUsername = await findUserByUsernameOrEmail(user.username, transaction);

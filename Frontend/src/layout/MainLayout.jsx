@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { authActions } from "../features/auth/AuthSlices";
 import MetaDataAPI from "../features/metaData/metaDataAPI";
 import { metaDataActions } from "../features/metaData/MetaDataSlices";
+import AccessibilityWidget from "../components/AccessibilityWidget/AccessibilityWidget";
 
 const MainLayout = () => {
   const [loading, setLoading] = useState(true);
@@ -73,6 +74,7 @@ const MainLayout = () => {
         <Outlet />
       </main>
       <Footer />
+      <AccessibilityWidget />
     </div>
   );
 };

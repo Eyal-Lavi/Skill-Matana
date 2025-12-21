@@ -18,24 +18,21 @@ const searchUsersByNameAndSkillIds  = async(name , skillId, userIdRequester) => 
         id: { [Op.ne]: userIdRequester }
     };
 
-    // הגדרת include עבור Skill
     const skillInclude = {
         model: Skill,
         as: 'skills',
         through: { attributes: [] }
     };
 
-    // אם יש skillId, נוסיף where clause למיין רק משתמשים עם הסקילים האלה
     if(skillId && skillId.length > 0){
         skillInclude.where = {
             id: {
                 [Op.in]: Array.isArray(skillId) ? skillId : [skillId]
             }
         };
-        skillInclude.required = true; // INNER JOIN - רק משתמשים שיש להם את הסקילים
+        skillInclude.required = true;
     }
 
-    // שאילתה אחת שמשלבת הכל
     return await User.findAll({
         where: whereClause,
         attributes: { exclude: ['password'] },
