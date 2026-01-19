@@ -21,7 +21,7 @@ function Profile() {
       firstname: user.firstName,
       lastname: user.lastName,
       email: user.email,
-      gender: user.gender,
+      gender: user.gender?.toLowerCase() || '',
     },
   });
 
@@ -70,7 +70,7 @@ function Profile() {
       firstname: user.firstName,
       lastname: user.lastName,
       email: user.email,
-      gender: user.gender,
+      gender: user.gender?.toLowerCase() || '',
     });
     setIsEditing(true);
   };

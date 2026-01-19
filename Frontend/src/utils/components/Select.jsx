@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import style from "./Input.module.scss";
 
-const Select = forwardRef(({ label, name, options = [], required = false,error = null, ...rest }, ref) => {
+const Select = forwardRef(({ label, name, options = [], required = false, error = null, placeholder = "Select", ...rest }, ref) => {
   return (
     <div className={style.inputWrapper}>
       {label && <label htmlFor={name} className={style.label}>{label}</label>}
@@ -9,12 +9,11 @@ const Select = forwardRef(({ label, name, options = [], required = false,error =
         id={name}
         name={name}
         ref={ref}
-        defaultValue=""
         required={required}
         className={`${style.input} ${error ? style.inputError : ''}`}
         {...rest}
       >
-        <option value="" disabled>Select</option>
+        <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

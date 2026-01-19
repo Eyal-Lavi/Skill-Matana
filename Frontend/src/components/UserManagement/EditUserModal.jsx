@@ -25,7 +25,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
-        gender: user.gender || '',
+        gender: user.gender?.toLowerCase() || '',
         password: '',
         instagramUrl: user.instagramUrl || '',
         linkedinUrl: user.linkedinUrl || '',
