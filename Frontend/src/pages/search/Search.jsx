@@ -1,6 +1,6 @@
 import "./Search.scss";
 import { Github, Linkedin, Search as SearchIcon, Users, AlertCircle, Sparkles } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import SearchInput from "../../utils/components/SearchInput";
@@ -26,7 +26,39 @@ function Search() {
   const existingConnections = useSelector(selectConnections);
 
   const { sent, refresh: refreshRequests } = useContactRequestsData();
-  const { handleSendConnectionRequest, handleDisconnectConnection, handleCancelRequest } = useConnectionActions(refreshRequests); 
+  const { handleSendConnectionRequest, handleDisconnectConnection, handleCancelRequest, refreshConnections } = useConnectionActions(refreshRequests);
+
+  // Refresh connections and requests when page becomes visible or on interval
+  useEffect(() => {
+    const refreshData = () => {
+      refreshConnections();
+      refreshRequests();
+    };
+
+    // Refresh when tab becomes visible
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        refreshData();
+      }
+    };
+
+    // Refresh when window gains focus
+    const handleFocus = () => {
+      refreshData();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    // Also refresh every 30 seconds while on this page
+    const intervalId = setInterval(refreshData, 30000);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+      clearInterval(intervalId);
+    };
+  }, [refreshConnections, refreshRequests]); 
 
   const openModalForUser = useCallback((userIdTarget, userNameTarget) => {
     setSelectedUserId(userIdTarget);

@@ -132,5 +132,32 @@ export const useConnectionActions = (onRefresh = () => {}) => {
     [onRefresh]
   );
 
-  return { handleSendConnectionRequest, handleUpdateRequestStatus, handleCancelRequest, handleDisconnectConnection };
+  const refreshConnections = useCallback(
+    async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/connection-requests/connections`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          console.error("Failed to refresh connections");
+          return;
+        }
+
+        const data = await response.json();
+        if (data.data) {
+          dispatch(authActions.setConnections(data.data));
+        }
+      } catch (err) {
+        console.error("Failed to refresh connections:", err);
+      }
+    },
+    [dispatch]
+  );
+
+  return { handleSendConnectionRequest, handleUpdateRequestStatus, handleCancelRequest, handleDisconnectConnection, refreshConnections };
 };

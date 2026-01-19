@@ -7,7 +7,7 @@ const {
   updateContactRequestStatus,
   deleteContactRequest,
 } = require("../services/contactRequestsService");
-const { deleteConnection } = require("../services/connectionsService");
+const { deleteConnection, getConnectionsWithDetailsForUser } = require("../services/connectionsService");
 const sequelize = require("../utils/database");
 
 
@@ -111,6 +111,16 @@ const disconnectConnection = async (request, response, next) => {
   }
 };
 
+const getConnections = async (request, response, next) => {
+  try {
+    const userId = request.session.user.id;
+    const connections = await getConnectionsWithDetailsForUser(userId);
+    response.status(200).json({ data: connections });
+  } catch (error) {
+    next({ status: 500, message: "Error ->" + error.message });
+  }
+};
+
 module.exports = {
   sendConnectionRequest,
   getAllRequestsForUser,
@@ -119,4 +129,5 @@ module.exports = {
   updateRequestStatus,
   deleteRequest,
   disconnectConnection,
+  getConnections,
 };

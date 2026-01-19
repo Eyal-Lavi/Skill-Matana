@@ -96,6 +96,9 @@ const authSlice = createSlice({
             state.user.connections.push(action.payload);
         }
     },
+    setConnections(state, action) {
+        state.user.connections = Array.isArray(action.payload) ? action.payload : [];
+    },
   },
 });
 

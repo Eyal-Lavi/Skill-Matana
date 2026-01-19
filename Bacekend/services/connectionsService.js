@@ -1,4 +1,5 @@
-const { sequelize, ContactRequest, Connection } = require('../models');
+const { sequelize, ContactRequest, Connection, User, UserImage } = require('../models');
+const { Op } = require('sequelize');
 
 const approveContactRequest = async (requestId, approverId) => {
   if (!requestId) {
@@ -56,6 +57,56 @@ const getConnectionsForUser = async (userId) => {
   return connections;
 };
 
+const getConnectionsWithDetailsForUser = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  // Find all connections where user is either userA or userB
+  const connections = await Connection.findAll({
+    where: {
+      [Op.or]: [
+        { userA: userId },
+        { userB: userId }
+      ]
+    }
+  });
+
+  // Get the other user's ID for each connection
+  const otherUserIds = connections.map(conn => 
+    conn.userA === userId ? conn.userB : conn.userA
+  );
+
+  if (otherUserIds.length === 0) {
+    return [];
+  }
+
+  // Fetch user details for all connected users
+  const users = await User.findAll({
+    where: {
+      id: { [Op.in]: otherUserIds }
+    },
+    attributes: ['id', 'firstName', 'lastName'],
+    include: [{
+      model: UserImage,
+      as: 'Images',
+      attributes: ['url', 'typeId'],
+      required: false
+    }]
+  });
+
+  // Map to the format expected by frontend
+  return users.map(user => {
+    const profileImg = user.Images?.find(img => img.typeId === 1);
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: profileImg?.url || null
+    };
+  });
+};
+
 const deleteConnection = async (userId, targetUserId) => {
   if (!userId || !targetUserId) {
     throw new Error("User ID and Target User ID are required");
@@ -82,5 +133,6 @@ const deleteConnection = async (userId, targetUserId) => {
 module.exports = {
   approveContactRequest,
   getConnectionsForUser,
+  getConnectionsWithDetailsForUser,
   deleteConnection,
 };
