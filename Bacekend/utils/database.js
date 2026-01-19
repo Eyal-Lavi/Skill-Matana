@@ -2,12 +2,15 @@ const {Sequelize} = require('sequelize');
 const configSettings = require('../config/config');
 const ENV = process.env.NODE_ENV || 'development';
 
-const credetials = configSettings[ENV];
+const credentials = configSettings[ENV];
 
-const sequelize = new Sequelize(credetials.database , credetials.username , credetials.password , {
-    host:credetials.host,
-    dialect: credetials.dialect,
-    timezone:credetials.timezone
+const sequelize = new Sequelize(credentials.database, credentials.username, credentials.password, {
+    host: credentials.host,
+    port: credentials.port,
+    dialect: credentials.dialect,
+    timezone: credentials.timezone,
+    dialectOptions: credentials.dialectOptions,
+    logging: false
 });
 
 const getModelAttributes = (model) => {
