@@ -8,13 +8,13 @@
 }
 
 .mainContent {
-  margin-left: 8rem;
+  margin-left: 6rem;
   padding: 2rem;
   min-height: 100vh;
   transition: margin-left 0.3s ease, padding-bottom 0.3s ease;
 
   @media (max-width: 1024px) {
-    margin-left: 6rem;
+    margin-left: 5rem;
   }
 
   @media (max-width: $breakpoint-mobile) {

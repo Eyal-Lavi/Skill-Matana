@@ -72,8 +72,13 @@ const updateRequestStatus = async (request, response, next) => {
   try {
     const requestId = request.params.id;
     const { status } = request.body;
-    const updated = await updateContactRequestStatus(requestId, status);
-    response.json({ message: "Request updated successfully.", data: updated });
+    const currentUserId = request.session.user.id;
+    const { request: updatedRequest, newConnection } = await updateContactRequestStatus(requestId, status, currentUserId);
+    response.json({ 
+      message: "Request updated successfully.", 
+      data: updatedRequest,
+      newConnection: newConnection 
+    });
   } catch (error) {
     next({ status: 404, message: "Error ->" + error });
   }

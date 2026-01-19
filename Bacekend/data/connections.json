@@ -1,0 +1,13 @@
+[
+  { "user_a": 2, "user_b": 4 },
+  { "user_a": 2, "user_b": 11 },
+  { "user_a": 3, "user_b": 5 },
+  { "user_a": 4, "user_b": 5 },
+  { "user_a": 4, "user_b": 10 },
+  { "user_a": 6, "user_b": 9 },
+  { "user_a": 7, "user_b": 8 },
+  { "user_a": 8, "user_b": 12 },
+  { "user_a": 10, "user_b": 4 },
+  { "user_a": 11, "user_b": 2 }
+]
+

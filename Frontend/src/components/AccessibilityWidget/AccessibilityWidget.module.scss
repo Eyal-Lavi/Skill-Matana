@@ -49,6 +49,18 @@
     opacity: 0;
     animation: pulse-ring 2s ease-out infinite;
   }
+
+  // Mobile positioning - above phone bottom menu
+  @media (max-width: 768px) {
+    bottom: 80px;
+  }
+
+  @media (max-width: 400px) {
+    bottom: 90px;
+    left: 15px;
+    width: 50px;
+    height: 50px;
+  }
 }
 
 @keyframes pulse-ring {
@@ -67,12 +79,12 @@
   position: fixed;
   left: 20px;
   bottom: 90px;
-  width: 340px;
+  width: 280px;
   max-height: calc(100vh - 120px);
   background: white;
-  border-radius: 1.5rem;
+  border-radius: 1rem;
   box-shadow: 
-    0 25px 60px rgba(0, 0, 0, 0.15),
+    0 20px 50px rgba(0, 0, 0, 0.12),
     0 0 0 1px rgba(0, 0, 0, 0.05);
   z-index: 9999;
   transform: translateY(20px) scale(0.95);
@@ -90,11 +102,25 @@
     visibility: visible;
   }
 
+  // Mobile - slide in from left side
+  @media (max-width: 768px) {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    max-height: 100vh;
+    border-radius: 0 1rem 1rem 0;
+    transform: translateX(-100%);
+    opacity: 1;
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
   @media (max-width: 400px) {
-    left: 10px;
-    right: 10px;
-    width: auto;
-    bottom: 80px;
+    width: 85vw;
+    max-width: 300px;
   }
 }
 
@@ -103,7 +129,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1.5rem;
+  padding: 0.875rem 1rem;
   background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
   color: white;
 }
@@ -111,8 +137,8 @@
 .title {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1.25rem;
+  gap: 0.5rem;
+  font-size: 1rem;
   font-weight: 700;
   margin: 0;
 }
@@ -120,14 +146,19 @@
 .closeButton {
   background: rgba(255, 255, 255, 0.2);
   border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  border-radius: 0.375rem;
+  padding: 0.375rem;
   cursor: pointer;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.3);
@@ -141,27 +172,27 @@
 
 // ===== CONTENT =====
 .content {
-  padding: 1rem 1.5rem 1.5rem;
+  padding: 0.75rem 1rem 1rem;
   overflow-y: auto;
   flex: 1;
 }
 
 // ===== SECTIONS =====
 .section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 
   &:last-of-type {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 }
 
 .sectionTitle {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 // ===== FONT SIZE CONTROLS =====
@@ -170,25 +201,25 @@
   align-items: center;
   justify-content: space-between;
   background: #f1f5f9;
-  border-radius: 1rem;
-  padding: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.375rem;
 }
 
 .fontButton {
-  width: 48px;
-  height: 48px;
-  border-radius: 0.75rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 0.5rem;
   border: none;
   background: white;
   color: #1e293b;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 
   &:hover:not(:disabled) {
     background: #2563eb;
@@ -208,10 +239,10 @@
 }
 
 .fontSizeValue {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #334155;
-  min-width: 60px;
+  min-width: 50px;
   text-align: center;
 }
 
@@ -219,31 +250,31 @@
 .optionsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .optionButton {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 0.75rem;
+  gap: 0.35rem;
+  padding: 0.625rem 0.5rem;
   background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  border-radius: 1rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
     background: #f1f5f9;
     border-color: #cbd5e1;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   &.active {
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%);
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 
     .optionIcon {
       background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
@@ -258,9 +289,9 @@
 }
 
 .optionIcon {
-  width: 44px;
-  height: 44px;
-  border-radius: 0.75rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.5rem;
   background: #e2e8f0;
   color: #475569;
   display: flex;
@@ -269,21 +300,21 @@
   transition: all 0.2s;
 
   svg {
-    width: 22px;
-    height: 22px;
+    width: 16px;
+    height: 16px;
   }
 }
 
 .optionLabel {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #334155;
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .optionStatus {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: #2563eb;
   font-weight: 500;
 }
@@ -294,17 +325,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem;
+  gap: 0.375rem;
+  padding: 0.625rem;
   background: #fee2e2;
-  border: 2px solid #fecaca;
-  border-radius: 0.875rem;
+  border: 1.5px solid #fecaca;
+  border-radius: 0.625rem;
   color: #dc2626;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  margin-top: 0.5rem;
+  margin-top: 0.375rem;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 
   &:hover {
     background: #fecaca;
@@ -319,7 +355,7 @@
 
 // ===== FOOTER =====
 .footer {
-  padding: 1rem 1.5rem;
+  padding: 0.625rem 1rem;
   background: #f8fafc;
   border-top: 1px solid #e2e8f0;
   text-align: center;
@@ -327,7 +363,7 @@
 
 .statementLink {
   color: #2563eb;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
 

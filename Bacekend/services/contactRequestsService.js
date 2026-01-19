@@ -1,4 +1,4 @@
-const { ContactRequest, User, Connection } = require("../models");
+const { ContactRequest, User, Connection, UserImage } = require("../models");
 const { Op } = require("sequelize");
 
 const getAll = async (options = {}) => {
@@ -153,7 +153,7 @@ const addContactRequest = async (
   };
 };
 
-const updateContactRequestStatus = async (requestId, status) => {
+const updateContactRequestStatus = async (requestId, status, currentUserId = null) => {
   if (!requestId) {
     throw new Error("Contact Request ID is required");
   }
@@ -172,6 +172,7 @@ const updateContactRequestStatus = async (requestId, status) => {
   request.status = status;
   await request.save();
 
+  let newConnection = null;
  
   if (status === 'approved') {
     const a = Math.min(request.requestedBy, request.requestedTo);
@@ -180,9 +181,34 @@ const updateContactRequestStatus = async (requestId, status) => {
       where: { userA: a, userB: b },
       defaults: { userA: a, userB: b },
     });
+
+    // Get the other user's data for the frontend
+    const otherUserId = currentUserId === request.requestedBy 
+      ? request.requestedTo 
+      : request.requestedBy;
+    
+    const otherUser = await User.findByPk(otherUserId, {
+      attributes: ['id', 'firstName', 'lastName'],
+      include: [{
+        model: UserImage,
+        as: 'Images',
+        attributes: ['url', 'typeId'],
+        required: false
+      }]
+    });
+
+    if (otherUser) {
+      const profileImg = otherUser.Images?.find(img => img.typeId === 1);
+      newConnection = {
+        id: otherUser.id,
+        firstName: otherUser.firstName,
+        lastName: otherUser.lastName,
+        profilePicture: profileImg?.url || null
+      };
+    }
   }
 
-  return request;
+  return { request, newConnection };
 };
 
 const deleteContactRequest = async (requestId, userId) => {

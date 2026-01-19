@@ -87,6 +87,15 @@ const authSlice = createSlice({
             );
         }
     },
+    addConnection(state, action) {
+        if (!Array.isArray(state.user.connections)) {
+            state.user.connections = [];
+        }
+        const exists = state.user.connections.some(c => c.id === action.payload.id);
+        if (!exists) {
+            state.user.connections.push(action.payload);
+        }
+    },
   },
 });
 

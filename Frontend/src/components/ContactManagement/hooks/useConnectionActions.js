@@ -1,7 +1,10 @@
 
 import { useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../../features/auth/AuthSlices";
 
 export const useConnectionActions = (onRefresh = () => {}) => {
+  const dispatch = useDispatch();
   const handleSendConnectionRequest = useCallback(
     async (selectedUserId, message) => {
       try {
@@ -56,12 +59,19 @@ export const useConnectionActions = (onRefresh = () => {}) => {
           throw new Error(serverMessage);
         }
 
+        const data = await response.json();
+        
+        // If approved and we have new connection data, add it to Redux
+        if (status === 'approved' && data.newConnection) {
+          dispatch(authActions.addConnection(data.newConnection));
+        }
+
         onRefresh();
       } catch (err) {
         throw new Error(err?.message || "Failed to update request");
       }
     },
-    [onRefresh]
+    [onRefresh, dispatch]
   );
 
   const handleCancelRequest = useCallback(
