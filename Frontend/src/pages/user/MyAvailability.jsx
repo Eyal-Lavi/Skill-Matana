@@ -4,11 +4,15 @@ import "flatpickr/dist/flatpickr.min.css";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useSelector } from "react-redux";
+import { useToast } from "../../contexts/ToastContext";
+import { useConfirm } from "../../contexts/ConfirmContext";
 import styles from "./MyAvailability.module.scss";
 
 export default function MyAvailability() {
   const user = useSelector((s) => s.auth?.user);
   const userId = user?.id;
+  const toast = useToast();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -160,7 +164,7 @@ export default function MyAvailability() {
       if (!res.ok) throw new Error(body?.error || "Delete failed");
       await loadAvailability();
     } catch (e) {
-      alert(e.message || "Delete error");
+      toast.error(e.message || "Delete error");
     }
   };
 
@@ -208,7 +212,14 @@ export default function MyAvailability() {
 
   const deleteRecurringAvailability = async (id) => {
     if (!id) return;
-    if (!window.confirm('Are you sure you want to delete this recurring availability?')) return;
+    const ok = await confirm({
+      title: "Delete recurring availability?",
+      message: "Are you sure you want to delete this recurring availability?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!ok) return;
     try {
       const res = await fetch(`http://localhost:3000/availability/recurring/${id}`, {
         method: 'DELETE',
@@ -218,7 +229,7 @@ export default function MyAvailability() {
       if (!res.ok) throw new Error(body?.error || 'Delete failed');
       await loadRecurringAvailability();
     } catch (e) {
-      alert(e.message || 'Delete error');
+      toast.error(e.message || 'Delete error');
     }
   };
 
@@ -235,7 +246,7 @@ export default function MyAvailability() {
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body?.error || 'Failed to generate slots');
       await loadAvailability();
-      alert(`Successfully generated ${body?.count || 0} slots from recurring availability!`);
+      toast.success(`Successfully generated ${body?.count || 0} slots from recurring availability!`);
     } catch (e) {
       setError(e.message || 'Error');
     } finally {

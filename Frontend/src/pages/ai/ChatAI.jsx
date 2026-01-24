@@ -24,7 +24,7 @@ function ChatAI() {
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { from: 'bot', text: '❌ שגיאה בתקשורת עם השרת' },
+        { from: 'bot', text: '❌ Error communicating with the server' },
       ]);
     }
   };
@@ -35,7 +35,7 @@ function ChatAI() {
       <div className="chat-box">
         {messages.map((msg, idx) => (
           <div key={idx} className={`msg ${msg.from}`}>
-            <strong>{msg.from === 'user' ? '👤 אתה' : '🤖 מודל'}:</strong> {msg.text}
+            <strong>{msg.from === 'user' ? '👤 You' : '🤖 Model'}:</strong> {msg.text}
           </div>
         ))}
       </div>
@@ -45,9 +45,9 @@ function ChatAI() {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendQuestion()}
-          placeholder="מה תרצה לשאול?"
+          placeholder="What would you like to ask?"
         />
-        <button onClick={sendQuestion}>שלח</button>
+        <button onClick={sendQuestion}>Send</button>
       </div>
     </div>
   );

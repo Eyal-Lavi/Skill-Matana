@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import SearchInput from "../../utils/components/SearchInput";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import NewContactModal from "../../components/NewContactModal/NewContactModal";
+import { useToast } from "../../contexts/ToastContext";
 
 import { selectSearch } from "../../features/search/SearchSelectors";
 
@@ -16,6 +17,7 @@ import { authActions } from "../../features/auth/AuthSlices";
 
 function Search() {
   const dispatch = useDispatch();
+  const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedUserName, setSelectedUserName] = useState(null);
@@ -91,10 +93,10 @@ function Search() {
         dispatch(authActions.removeConnection(userId));
       } catch (error) {
         console.error("Failed to disconnect:", error);
-        alert(error.message || "Failed to disconnect");
+        toast.error(error.message || "Failed to disconnect");
       }
     },
-    [handleDisconnectConnection, dispatch]
+    [handleDisconnectConnection, dispatch, toast]
   );
 
   const isConnected = useCallback((userId) => {
@@ -119,10 +121,10 @@ function Search() {
         refreshRequests();
       } catch (error) {
         console.error("Failed to cancel request:", error);
-        alert(error.message || "Failed to cancel request");
+        toast.error(error.message || "Failed to cancel request");
       }
     },
-    [getPendingRequestId, handleCancelRequest, refreshRequests]
+    [getPendingRequestId, handleCancelRequest, refreshRequests, toast]
   );
 
   return (
@@ -207,12 +209,15 @@ function Search() {
                       actionButton={connected ? {
                         text: "Disconnect",
                         onClick: () => handleDisconnect(user.id),
+                        variant: "danger",
                       } : hasPending ? {
                         text: "Cancel Request",
                         onClick: () => handleCancelPendingRequest(user.id),
+                        variant: "warning",
                       } : {
                         text: "Contact Me",
                         onClick: () => openModalForUser(user.id, `${user.firstName} ${user.lastName}`),
+                        variant: "primary",
                       }}
                     />
                   </div>

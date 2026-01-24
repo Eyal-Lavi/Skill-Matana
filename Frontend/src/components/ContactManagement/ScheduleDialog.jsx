@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ModalShell from '../../utils/components/Modal/ModalShell';
 import { ModalHeader } from '../../utils/components/Modal/ModalHeader';
+import { useToast } from '../../contexts/ToastContext';
 import styles from './ScheduleDialog.module.scss';
 
 export default function ScheduleDialog({ isOpen, onClose, targetUser, onScheduled }) {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [slots, setSlots] = useState([]);
@@ -12,6 +14,7 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
   const [alertStatus, setAlertStatus] = useState({ subscribed: false, active: false });
   const [checkingAlert, setCheckingAlert] = useState(false);
   const userId = targetUser?.id;
+  const canSchedule = !loading && !error && slots.length > 0;
 
   useEffect(() => {
     if (!isOpen || !userId) return;
@@ -22,7 +25,7 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
       try {
         const res = await fetch(`http://localhost:3000/availability/${userId}`, { credentials: 'include' });
         const body = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(body?.error || 'טעינת זמינות נכשלה');
+        if (!res.ok) throw new Error(body?.error || 'Failed to load availability');
         setSlots(Array.isArray(body?.availability) ? body.availability : []);
       } catch (e) {
         setError(e.message || 'Error');
@@ -66,11 +69,11 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
         method: 'POST',
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('ההרשמה להתראות נכשלה');
+      if (!res.ok) throw new Error('Failed to subscribe to alerts');
       setAlertStatus({ subscribed: true, active: true });
-      alert('מעולה! נשלח לך מייל כשמשתמש זה יוסיף זמינות.');
+      toast.success("Great! We'll email you when this user adds availability.");
     } catch (e) {
-      alert(e.message || 'שגיאה בהרשמה להתראות');
+      toast.error(e.message || 'Error subscribing to alerts');
     } finally {
       setCheckingAlert(false);
     }
@@ -78,18 +81,17 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
 
   const unsubscribeAlert = async () => {
     if (!userId) return;
-    if (!window.confirm('האם אתה בטוח שברצונך לבטל את ההתראה?')) return;
     setCheckingAlert(true);
     try {
       const res = await fetch(`http://localhost:3000/availability/alerts/${userId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('ביטול ההתראה נכשל');
+      if (!res.ok) throw new Error('Failed to unsubscribe from the alert');
       setAlertStatus({ subscribed: false, active: false });
-      alert('ההתראה בוטלה בהצלחה. לא תקבל עוד מיילים על זמינות חדשה.');
+      toast.success('Alert unsubscribed successfully. You will no longer receive emails about new availability.');
     } catch (e) {
-      alert(e.message || 'שגיאה בביטול ההתראה');
+      toast.error(e.message || 'Error unsubscribing from the alert');
     } finally {
       setCheckingAlert(false);
     }
@@ -107,7 +109,7 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
         body: JSON.stringify({ targetUserId: userId, availabilityId: selectedId }),
       });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body?.error || 'קביעת הפגישה נכשלה');
+      if (!res.ok) throw new Error(body?.error || 'Failed to schedule the meeting');
       onScheduled?.(body?.meeting);
       onClose?.();
     } catch (e) {
@@ -119,27 +121,27 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
 
   return (
     <ModalShell isOpen={isOpen} onClose={onClose} overlayClass={styles.overlay} modalClass={styles.modal}>
-      <ModalHeader titleId="scheduleTitle" title={`בחר זמן פנוי — ${targetUser?.firstName || targetUser?.username || ''}`} onClose={onClose} headerClass={styles.header} closeButtonClass={styles.closeBtn} />
+      <ModalHeader titleId="scheduleTitle" title={`Choose an available time — ${targetUser?.firstName || targetUser?.username || ''}`} onClose={onClose} headerClass={styles.header} closeButtonClass={styles.closeBtn} />
 
       <div className={styles.content}>
         {loading ? (
-          <div>טוען זמינות…</div>
+          <div>Loading availability…</div>
         ) : error ? (
           <div style={{ color: 'crimson' }}>{error}</div>
         ) : slots.length === 0 ? (
           <div className={styles.empty}>
-            אין כרגע זמינות. תרצה לקבל התראה ברגע שמתפנה?
+            No availability right now. Would you like to get notified when a slot opens up?
             <div style={{ marginTop: 12 }}>
               {alertStatus.active ? (
                 <div>
-                  <p style={{ marginBottom: 8, color: '#10b981', fontSize: 14 }}>✓ אתה מנוי להתראות</p>
+                  <p style={{ marginBottom: 8, color: '#10b981', fontSize: 14 }}>✓ You are subscribed to alerts</p>
                   <button className={styles.secondaryBtn} onClick={unsubscribeAlert} disabled={checkingAlert}>
-                    {checkingAlert ? 'מבטל...' : 'בטל התראה'}
+                    {checkingAlert ? 'Unsubscribing...' : 'Unsubscribe'}
                   </button>
                 </div>
               ) : (
                 <button className={styles.primaryBtn} onClick={requestAlert} disabled={checkingAlert}>
-                  {checkingAlert ? 'מרשם...' : 'הפעל התראה למייל'}
+                  {checkingAlert ? 'Subscribing...' : 'Enable email alert'}
                 </button>
               )}
             </div>
@@ -174,17 +176,19 @@ export default function ScheduleDialog({ isOpen, onClose, targetUser, onSchedule
               onClick={unsubscribeAlert} 
               disabled={checkingAlert || submitting}
               style={{ fontSize: 12, padding: '6px 12px' }}
-              title="בטל התראה על זמינות חדשה"
+              title="Unsubscribe from new availability alerts"
             >
-              {checkingAlert ? 'מבטל...' : 'בטל התראה'}
+              {checkingAlert ? 'Unsubscribing...' : 'Unsubscribe'}
             </button>
           )}
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className={styles.secondaryBtn} onClick={onClose} disabled={submitting}>ביטול</button>
-          <button className={styles.primaryBtn} onClick={confirmSchedule} disabled={!selectedId || submitting}>
-            {submitting ? 'קובע…' : 'קבע פגישה'}
-          </button>
+          <button className={styles.secondaryBtn} onClick={onClose} disabled={submitting}>Cancel</button>
+          {canSchedule && (
+            <button className={styles.primaryBtn} onClick={confirmSchedule} disabled={!selectedId || submitting}>
+              {submitting ? 'Scheduling…' : 'Schedule meeting'}
+            </button>
+          )}
         </div>
       </div>
     </ModalShell>

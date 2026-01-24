@@ -4,12 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import meetingsAPI from '../../services/meetingsAPI';
 import notificationsAPI from '../../services/notificationsAPI';
 import { useNotifications } from '../../contexts/NotificationsContext';
+import { useToast } from '../../contexts/ToastContext';
+import { useConfirm } from '../../contexts/ConfirmContext';
 import styles from './Notifications.module.scss';
 
 export default function Notifications() {
   const user = useSelector((s) => s.auth?.user);
   const { refreshUnreadCount } = useNotifications();
+  const toast = useToast();
+  const confirm = useConfirm();
   const [loading, setLoading] = useState(true);
+  const [markAllLoading, setMarkAllLoading] = useState(false);
   const [error, setError] = useState('');
   const [upcomingMeetings, setUpcomingMeetings] = useState([]);
   const [activeMeetings, setActiveMeetings] = useState([]);
@@ -104,30 +109,44 @@ export default function Notifications() {
   };
 
   const handleUnsubscribe = async (targetUserId) => {
-    if (!window.confirm('האם אתה בטוח שברצונך לבטל את ההתראה?')) return;
+    const ok = await confirm({
+      title: "Unsubscribe?",
+      message:
+        "Are you sure you want to unsubscribe from this email alert? You won't receive notifications about new availability.",
+      confirmText: "Unsubscribe",
+      cancelText: "Keep subscription",
+      danger: true,
+    });
+    if (!ok) return;
+
     try {
       const res = await fetch(`http://localhost:3000/availability/alerts/${targetUserId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('ביטול ההתראה נכשל');
+      if (!res.ok) throw new Error('Failed to unsubscribe from the alert');
       await loadSubscriptions();
-      alert('ההתראה בוטלה בהצלחה.');
+      toast.success('Alert unsubscribed successfully.');
     } catch (err) {
-      alert(err.message || 'שגיאה בביטול ההתראה');
+      toast.error(err.message || 'Error unsubscribing from the alert');
     }
   };
 
   const handleCancelMeeting = async (meetingId) => {
-    if (!window.confirm('Are you sure you want to cancel the meeting?')) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Cancel meeting?",
+      message: "Are you sure you want to cancel the meeting?",
+      confirmText: "Cancel meeting",
+      cancelText: "Keep meeting",
+      danger: true,
+    });
+    if (!ok) return;
 
     try {
       await meetingsAPI.cancelMeeting(meetingId);
       await loadMeetings();
     } catch (err) {
-      alert(err.message || 'Error canceling meeting');
+      toast.error(err.message || 'Error canceling meeting');
     }
   };
 
@@ -143,24 +162,60 @@ export default function Notifications() {
       refreshUnreadCount();
     } catch (err) {
       console.error('Error marking notification as read:', err);
+      const status = err?.response?.status;
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Failed to mark notification as read';
+      toast.error(msg);
+      if (status === 401) {
+        toast.info('Your session has expired. Please log in again.');
+        navigate('/auth/login');
+      }
     }
   };
 
   const handleMarkAllAsRead = async () => {
+    if (markAllLoading) return;
+    if (unreadCount <= 0) {
+      toast.info('No unread notifications.');
+      return;
+    }
     try {
+      setMarkAllLoading(true);
       await notificationsAPI.markAllAsRead();
       await loadSystemNotifications();
       // Refresh unread count immediately
       refreshUnreadCount();
+      toast.success('All notifications marked as read.');
     } catch (err) {
       console.error('Error marking all notifications as read:', err);
+      const status = err?.response?.status;
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        'Failed to mark all notifications as read';
+      toast.error(msg);
+      if (status === 401) {
+        toast.info('Your session has expired. Please log in again.');
+        navigate('/auth/login');
+      }
+    } finally {
+      setMarkAllLoading(false);
     }
   };
 
   const handleDeleteNotification = async (notificationId) => {
-    if (!window.confirm('Are you sure you want to delete this notification?')) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Delete notification?",
+      message: "Are you sure you want to delete this notification?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await notificationsAPI.delete(notificationId);
       await loadSystemNotifications();
@@ -168,7 +223,7 @@ export default function Notifications() {
       refreshUnreadCount();
     } catch (err) {
       console.error('Error deleting notification:', err);
-      alert(err.response?.data?.message || 'Error deleting notification');
+      toast.error(err.response?.data?.message || 'Error deleting notification');
     }
   };
 
@@ -603,8 +658,10 @@ export default function Notifications() {
                   <button
                     className={styles.markAllReadButton}
                     onClick={handleMarkAllAsRead}
+                    disabled={markAllLoading || unreadCount <= 0}
+                    aria-busy={markAllLoading}
                   >
-                    Mark All as Read
+                    {markAllLoading ? 'Marking…' : 'Mark All as Read'}
                   </button>
                 </div>
                 <div className={styles.systemList}>

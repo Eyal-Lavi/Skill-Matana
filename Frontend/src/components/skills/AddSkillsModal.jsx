@@ -19,9 +19,21 @@ export default function AddSkillsModal({ isOpen, onClose }) {
 
   useEffect(() => {
     if (isOpen) {
+      // Reset transient UI state when (re)opening.
+      setSearchTerm("");
+      setError("");
+      setSuccess("");
       loadAvailableSkills();
     }
   }, [isOpen]);
+
+  const handleClose = () => {
+    // Prevent showing stale messages on next open.
+    setError("");
+    setSuccess("");
+    setSearchTerm("");
+    onClose();
+  };
 
   const loadAvailableSkills = async () => {
     setLoading(true);
@@ -76,9 +88,6 @@ export default function AddSkillsModal({ isOpen, onClose }) {
 
       setAllSkills(prev => prev.filter(skill => skill.id !== skillId));
       setFilteredSkills(prev => prev.filter(skill => skill.id !== skillId));
-
-
-      setTimeout(() => { onClose(); }, 1500);
     } catch (error) {
       setError(error.message || "Error adding skill");
     } finally {
@@ -86,14 +95,16 @@ export default function AddSkillsModal({ isOpen, onClose }) {
     }
   };
 
-  if (!isOpen) return null;
+  // Keep the component mounted even when closed so the last success message
+  // is preserved when reopening the modal.
+  if (!isOpen) return <div style={{ display: "none" }} aria-hidden="true" />;
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={handleClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2>Add Skills</h2>
-          <button className={styles.closeButton} onClick={onClose}>
+          <button className={styles.closeButton} onClick={handleClose}>
             <FontAwesomeIcon icon={faTimes} />
           </button>
         </div>

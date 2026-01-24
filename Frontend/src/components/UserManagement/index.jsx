@@ -13,10 +13,12 @@ import authAPI from '../../features/auth/AuthAPI';
 import styles from './UserManagement.module.scss';
 import useDebounce from '../../hooks/useDebounce';
 import EditUserModal from './EditUserModal';
+import { useToast } from '../../contexts/ToastContext';
 
 const UserManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const toast = useToast();
   const users = useSelector(selectUsers);
   const loading = useSelector(selectUsersLoading);
   const error = useSelector(selectUsersError);
@@ -81,19 +83,17 @@ const UserManagement = () => {
   };
 
   const handleSaveUser = async (userData) => {
-    try {
-      await dispatch(updateUser(userData)).unwrap();
-      // Refresh users list
-      await dispatch(fetchUsers({
+    await dispatch(updateUser(userData)).unwrap();
+    // Refresh users list
+    await dispatch(
+      fetchUsers({
         page: currentPage,
         limit: 10,
         search: debouncedSearch,
-        status: statusFilter || null
-      })).unwrap();
-      handleEditModalClose();
-    } catch (err) {
-      throw err;
-    }
+        status: statusFilter || null,
+      })
+    ).unwrap();
+    handleEditModalClose();
   };
 
   const handleLoginAsUser = async (userId) => {
@@ -113,7 +113,7 @@ const UserManagement = () => {
       }
     } catch (err) {
       console.error('Failed to login as user:', err);
-      alert(err || 'Failed to login as user');
+      toast.error(err || 'Failed to login as user');
     }
   };
 

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import AdminAPI from '../../features/admin/adminAPI';
 import NotificationDetailsModal from './NotificationDetailsModal';
 import styles from './NotificationManagement.module.scss';
+import { useToast } from '../../contexts/ToastContext';
 
 const ViewNotificationsSection = () => {
+  const toast = useToast();
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -42,7 +44,7 @@ const ViewNotificationsSection = () => {
       setNotificationDetails(details);
     } catch (err) {
       console.error('Failed to load notification details:', err);
-      alert(err.response?.data?.message || 'Failed to load notification details');
+      toast.error(err.response?.data?.message || 'Failed to load notification details');
     } finally {
       setDetailsLoading(false);
     }

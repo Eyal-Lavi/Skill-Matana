@@ -2,18 +2,18 @@ import React, { useMemo, useState } from 'react';
 import ProfileCard from '../ProfileCard/ProfileCard';
 import styles from './ContactManagement.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ScheduleDialog from './ScheduleDialog';
+import { useConnectionActions } from './hooks/useConnectionActions';
+import { authActions } from '../../features/auth/AuthSlices';
+import { useToast } from '../../contexts/ToastContext';
 
 const ConnectionsGrid = ({ connections }) => {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth?.user);
-
-  const currentUserId = currentUser?.id || 'dev-user';
-  const currentUserName = useMemo(() => {
-    const full = `${currentUser?.firstName || ''} ${currentUser?.lastName || ''}`.trim();
-    return full || currentUser?.username || 'Dev User';
-  }, [currentUser]);
+  const dispatch = useDispatch();
+  const { handleDisconnectConnection } = useConnectionActions();
+  const toast = useToast();
 
 
   const handleJoinMetting = async (other) => {
@@ -28,7 +28,7 @@ const ConnectionsGrid = ({ connections }) => {
 
       if (!roomId) throw new Error('No roomId returned from server');
 
-      navigate(`/meeting/${meeting.id}`);
+      navigate(`/meeting/${roomId}`);
     } catch (e) {
       console.error(e);
     }
@@ -45,7 +45,17 @@ const ConnectionsGrid = ({ connections }) => {
 
   const onScheduled = (meeting) => {
     if (meeting?.roomId) {
-      alert('נקבע שיעור ונשלח מייל לשני הצדדים.');
+      toast.success('Meeting scheduled. An email was sent to both parties.');
+    }
+  };
+
+  const handleDisconnect = async (otherUserId) => {
+    try {
+      await handleDisconnectConnection(otherUserId);
+      dispatch(authActions.removeConnection(otherUserId));
+    } catch (e) {
+      console.error(e);
+      toast.error(e?.message || "We couldn't disconnect this connection.");
     }
   };
 
@@ -62,7 +72,10 @@ const ConnectionsGrid = ({ connections }) => {
             bio={''}
             socialLinks={[]}
             actionButton={c.roomId ? { text: 'Join metting', onClick: () => handleJoinMetting(c) } : null}
-            extraActions={[{ text: 'Schedule', onClick: () => openSchedule(c) }]}
+            extraActions={[
+              { text: 'Schedule', onClick: () => openSchedule(c) },
+              { text: 'Disconnect', onClick: () => handleDisconnect(c.id), variant: 'danger' },
+            ]}
           />
         ))}
       </div>

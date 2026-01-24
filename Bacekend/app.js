@@ -13,6 +13,7 @@ const { startReminderScheduler } = require('./services/meetingReminderService');
 const SequelizeStore = require('express-session-sequelize')(session.Store);
 const xss = require('xss-clean');
 const helmet = require('helmet');
+const { runDbMaintenance } = require('./utils/dbMaintenance');
 app.use(cookieParser());
 app.use(xss());
 app.use(helmet());
@@ -60,6 +61,9 @@ app.use((err, req, res, next) => {
 app.listen(PORT, async () => {
   console.log('server started');
   try {
+    // Ensure DB connection is healthy and fix common Postgres sequence desyncs (e.g. users.id).
+    await sequelize.authenticate();
+    await runDbMaintenance(sequelize);
     startReminderScheduler();
   } catch (e) {
     console.error('Failed to start reminder scheduler', e.message);

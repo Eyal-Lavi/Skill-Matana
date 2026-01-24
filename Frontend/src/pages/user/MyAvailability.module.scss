@@ -7,7 +7,7 @@
   font-family: "Arial", sans-serif;
   overflow-x: hidden;
   box-sizing: border-box;
-  text-align: center; // מרכז את רוב התוכן
+  text-align: center; // centers most of the content
 
   * {
     box-sizing: border-box;
@@ -26,7 +26,7 @@
     p {
       color: var.$color-text-secondary;
       font-size: 1.1rem;
-      text-align: center; // מרכז גם את הפסקה
+      text-align: center; // centers the paragraph too
       margin: 0 auto;
       max-width: 600px;
     }
@@ -34,7 +34,7 @@
 
   .calendarSection {
     display: flex;
-    justify-content: center; // מרכז את הלוח
+    justify-content: center; // centers the calendar
     align-items: center;
     max-width: 400px;
     margin: 0 auto 2.5rem auto;
@@ -175,7 +175,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      align-items: center; // מרכז את כל הקלפים
+      align-items: center; // centers all cards
     }
 
     .slotCard {

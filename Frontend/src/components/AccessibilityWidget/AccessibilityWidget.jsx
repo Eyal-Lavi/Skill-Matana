@@ -121,9 +121,9 @@ const AccessibilityWidget = () => {
 
   const getContrastLabel = () => {
     switch (settings.contrast) {
-      case 'high': return 'ניגודיות גבוהה';
-      case 'inverted': return 'צבעים הפוכים';
-      default: return 'רגיל';
+      case 'high': return 'High contrast';
+      case 'inverted': return 'Inverted colors';
+      default: return 'Normal';
     }
   };
 
@@ -133,7 +133,7 @@ const AccessibilityWidget = () => {
       <button
         className={styles.toggleButton}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="פתח תפריט נגישות"
+        aria-label="Open accessibility menu"
         aria-expanded={isOpen}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -156,12 +156,12 @@ const AccessibilityWidget = () => {
               <path d="M8 14l4 4 4-4" />
               <path d="M8 12h8" />
             </svg>
-            נגישות
+            Accessibility
           </h2>
           <button 
             className={styles.closeButton} 
             onClick={() => setIsOpen(false)}
-            aria-label="סגור תפריט נגישות"
+            aria-label="Close accessibility menu"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
               <path d="M18 6L6 18M6 6l12 12" />
@@ -172,33 +172,33 @@ const AccessibilityWidget = () => {
         <div className={styles.content}>
           {/* Font Size Controls */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>גודל טקסט</h3>
+            <h3 className={styles.sectionTitle}>Text size</h3>
             <div className={styles.fontSizeControls}>
               <button
                 className={styles.fontButton}
                 onClick={decreaseFontSize}
                 disabled={settings.fontSize <= -3}
-                aria-label="הקטן טקסט"
+                aria-label="Decrease text size"
               >
-                א-
+                A-
               </button>
               <span className={styles.fontSizeValue}>
-                {settings.fontSize === 0 ? 'רגיל' : `${settings.fontSize > 0 ? '+' : ''}${settings.fontSize * 10}%`}
+                {settings.fontSize === 0 ? 'Normal' : `${settings.fontSize > 0 ? '+' : ''}${settings.fontSize * 10}%`}
               </span>
               <button
                 className={styles.fontButton}
                 onClick={increaseFontSize}
                 disabled={settings.fontSize >= 5}
-                aria-label="הגדל טקסט"
+                aria-label="Increase text size"
               >
-                א+
+                A+
               </button>
             </div>
           </div>
 
           {/* Toggle Options */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>תצוגה</h3>
+            <h3 className={styles.sectionTitle}>Display</h3>
             <div className={styles.optionsGrid}>
               <button
                 className={`${styles.optionButton} ${settings.contrast !== 'normal' ? styles.active : ''}`}
@@ -212,7 +212,7 @@ const AccessibilityWidget = () => {
                     <path d="M12 2a10 10 0 0 1 0 20" fill="currentColor" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>ניגודיות</span>
+                <span className={styles.optionLabel}>Contrast</span>
                 <span className={styles.optionStatus}>{getContrastLabel()}</span>
               </button>
 
@@ -228,7 +228,7 @@ const AccessibilityWidget = () => {
                     <path d="M12 3v18" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>גווני אפור</span>
+                <span className={styles.optionLabel}>Grayscale</span>
               </button>
 
               <button
@@ -242,7 +242,7 @@ const AccessibilityWidget = () => {
                     <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>הדגש קישורים</span>
+                <span className={styles.optionLabel}>Highlight links</span>
               </button>
 
               <button
@@ -257,14 +257,14 @@ const AccessibilityWidget = () => {
                     <line x1="12" y1="4" x2="12" y2="20" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>גופן קריא</span>
+                <span className={styles.optionLabel}>Readable font</span>
               </button>
             </div>
           </div>
 
           {/* Navigation Aids */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>עזרי ניווט</h3>
+            <h3 className={styles.sectionTitle}>Navigation aids</h3>
             <div className={styles.optionsGrid}>
               <button
                 className={`${styles.optionButton} ${settings.bigCursor ? styles.active : ''}`}
@@ -276,7 +276,7 @@ const AccessibilityWidget = () => {
                     <path d="M4 4l7.07 17 2.51-7.39L21 11.07z" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>סמן גדול</span>
+                <span className={styles.optionLabel}>Large cursor</span>
               </button>
 
               <button
@@ -289,7 +289,7 @@ const AccessibilityWidget = () => {
                     <rect x="3" y="10" width="18" height="4" rx="1" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>סרגל קריאה</span>
+                <span className={styles.optionLabel}>Reading guide</span>
               </button>
 
               <button
@@ -303,7 +303,7 @@ const AccessibilityWidget = () => {
                     <rect x="7" y="7" width="10" height="10" rx="1" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>הדגש פוקוס</span>
+                <span className={styles.optionLabel}>Highlight focus</span>
               </button>
 
               <button
@@ -317,14 +317,14 @@ const AccessibilityWidget = () => {
                     <circle cx="12" cy="12" r="8" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>פוקוס גדול</span>
+                <span className={styles.optionLabel}>Large focus</span>
               </button>
             </div>
           </div>
 
           {/* Content Adjustments */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>תוכן</h3>
+            <h3 className={styles.sectionTitle}>Content</h3>
             <div className={styles.optionsGrid}>
               <button
                 className={`${styles.optionButton} ${settings.stopAnimations ? styles.active : ''}`}
@@ -337,7 +337,7 @@ const AccessibilityWidget = () => {
                     <rect x="14" y="4" width="4" height="16" rx="1" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>עצור אנימציות</span>
+                <span className={styles.optionLabel}>Stop animations</span>
               </button>
 
               <button
@@ -350,7 +350,7 @@ const AccessibilityWidget = () => {
                     <path d="M21 10H3M21 6H3M21 14H3M21 18H3" />
                   </svg>
                 </span>
-                <span className={styles.optionLabel}>ריווח טקסט</span>
+                <span className={styles.optionLabel}>Text spacing</span>
               </button>
             </div>
           </div>
@@ -361,14 +361,14 @@ const AccessibilityWidget = () => {
               <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
               <path d="M3 3v5h5" />
             </svg>
-            איפוס הגדרות
+            Reset settings
           </button>
         </div>
 
         {/* Accessibility statement link */}
         <div className={styles.footer}>
           <a href="/terms-privacy" className={styles.statementLink}>
-            הצהרת נגישות
+            Accessibility statement
           </a>
         </div>
       </div>

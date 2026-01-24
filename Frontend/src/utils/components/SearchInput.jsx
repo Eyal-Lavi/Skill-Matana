@@ -79,7 +79,7 @@ export default function SearchInput() {
             ref={inputRef}
             type="text"
             className="search-input"
-            placeholder="Search by name..."
+            placeholder="Search by name or bio..."
             value={searchValue}
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}

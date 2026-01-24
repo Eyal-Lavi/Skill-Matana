@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const { Availability, RecurringAvailability, MeetingAlert, User } = require('../models');
 const { sendEmail } = require('./emailService');
+const { createNotificationForUser } = require('./notificationsService');
 
 const normalizeSlots = (slots) => {
   if (!Array.isArray(slots)) return [];
@@ -65,6 +66,12 @@ async function addSlots(userId, rawSlots) {
     const alerts = await MeetingAlert.findAll({ where: { targetUserId: userId, active: true } });
     if (alerts.length) {
       const owner = await User.findByPk(userId);
+      const ownerName = owner?.firstName || owner?.username || 'A user';
+      const slotCount = created.length;
+      const inAppTitle = 'New availability slots';
+      const inAppMessage = `${ownerName} added ${slotCount} new available time slot${slotCount === 1 ? '' : 's'}.`;
+      const inAppLink = '/dashboard/contact-requests';
+
       for (const alert of alerts) {
         const watcher = await User.findByPk(alert.watcherId);
         if (!watcher?.email) continue;
@@ -146,6 +153,13 @@ async function addSlots(userId, rawSlots) {
         
         await sendEmail(watcher.email, 'Alert: New Available Time Slots 🎓', html);
       }
+
+      // Create in-app notifications (independent of email availability)
+      await Promise.allSettled(
+        alerts.map((alert) =>
+          createNotificationForUser(alert.watcherId, 'info', inAppTitle, inAppMessage, inAppLink)
+        )
+      );
     }
   } catch (e) {
     console.error('Failed to send availability alerts:', e.message);
@@ -394,6 +408,12 @@ async function generateSlotsFromRecurring(userId, weeksAhead = 4) {
     const alerts = await MeetingAlert.findAll({ where: { targetUserId: userId, active: true } });
     if (alerts.length && created.length) {
       const owner = await User.findByPk(userId);
+      const ownerName = owner?.firstName || owner?.username || 'A user';
+      const slotCount = created.length;
+      const inAppTitle = 'New availability slots';
+      const inAppMessage = `${ownerName} added ${slotCount} new available time slot${slotCount === 1 ? '' : 's'}.`;
+      const inAppLink = '/dashboard/contact-requests';
+
       for (const alert of alerts) {
         const watcher = await User.findByPk(alert.watcherId);
         if (!watcher?.email) continue;
@@ -489,6 +509,13 @@ async function generateSlotsFromRecurring(userId, weeksAhead = 4) {
         
         await sendEmail(watcher.email, 'Alert: New Available Time Slots 🎓', html);
       }
+
+      // Create in-app notifications (independent of email availability)
+      await Promise.allSettled(
+        alerts.map((alert) =>
+          createNotificationForUser(alert.watcherId, 'info', inAppTitle, inAppMessage, inAppLink)
+        )
+      );
     }
   } catch (e) {
     console.error('Failed to send availability alerts:', e.message);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Twitter,
   Github,
@@ -18,7 +18,7 @@ export default function ProfileCard({
     { id: "1000", name: "No skills" },
     { id: "1000", name: "No skills" },
   ],
-  bio = "Building beautiful and intuitive digital experiences. Passionate about design systems and web animation.",
+  bio: _bio = "Building beautiful and intuitive digital experiences. Passionate about design systems and web animation.",
   socialLinks = [
     { id: "github", icon: Github, label: "GitHub", href: "#" },
     { id: "instagram", icon: Instagram, label: "Instagram", href: "#" },
@@ -27,25 +27,48 @@ export default function ProfileCard({
   ],
   actionButton = {
     text: "Contact Me",
-    onClick: () => alert("Contact Me clicked!"),
+    onClick: () => {},
   },
   extraActions = [],
 }) {
   const [hoveredItem, setHoveredItem] = useState(null);
+
+  const safeName = useMemo(() => (typeof name === "string" ? name.trim() : ""), [name]);
+  const avatarInitial = useMemo(() => {
+    const ch = safeName?.[0] || "?";
+    return ch.toUpperCase();
+  }, [safeName]);
+
+  const fallbackAvatarSrc = useMemo(() => {
+    const text = encodeURIComponent(avatarInitial);
+    return `https://placehold.co/96x96/6366f1/white?text=${text}`;
+  }, [avatarInitial]);
+
+  const resolvedAvatarSrc = useMemo(() => {
+    const url = typeof avatarUrl === "string" ? avatarUrl.trim() : "";
+    return url ? url : fallbackAvatarSrc;
+  }, [avatarUrl, fallbackAvatarSrc]);
+
+  const [imgSrc, setImgSrc] = useState(resolvedAvatarSrc);
+
+  useEffect(() => {
+    setImgSrc(resolvedAvatarSrc);
+  }, [resolvedAvatarSrc]);
 
   return (
     <div className="profile-card-container">
       <div className="profile-card">
         <div className="avatar-container">
           <img
-            src={avatarUrl}
-            alt={`${name}'s Avatar`}
+            src={imgSrc}
+            alt=""
+            aria-label={`${safeName || "User"} avatar`}
             className="avatar"
             onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = `https://placehold.co/96x96/6366f1/white?text=${name.charAt(
-                0
-              )}`;
+              // Prevent showing alt text / broken image when src is missing or invalid.
+              // Fall back to a deterministic placeholder based on the user's initial.
+              e.currentTarget.onerror = null;
+              setImgSrc(fallbackAvatarSrc);
             }}
           />
         </div>
@@ -81,7 +104,7 @@ export default function ProfileCard({
                   e.preventDefault();
                   act.onClick();
                 }}
-                className="action-button"
+                className={`action-button${act?.variant ? ` action-button--${act.variant}` : ""}`}
                 style={{ padding: '8px 12px' }}
               >
                 <span>{act.text}</span>
@@ -120,7 +143,7 @@ const ActionButton = ({ action }) => (
       e.preventDefault();
       action.onClick();
     }}
-    className="action-button"
+    className={`action-button${action?.variant ? ` action-button--${action.variant}` : ""}`}
   >
     <span>{action.text}</span>
     <ArrowUpRight size={16} className="arrow-icon" />

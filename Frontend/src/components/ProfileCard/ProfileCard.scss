@@ -122,12 +122,22 @@
   font-weight: 600;
   font-size: 1rem;
   backdrop-filter: blur(4px);
-  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, background-color 0.2s ease-out, box-shadow 0.2s ease-out;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   cursor: pointer;
+}
+
+.action-button--warning {
+  background-color: #f59e0b; // orange
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+}
+
+.action-button--danger {
+  background-color: #ef4444; // red
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
 }
 
 .action-button:hover {
