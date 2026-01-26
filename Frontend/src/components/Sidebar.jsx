@@ -9,6 +9,13 @@ export default function Sidebar({ items, variant = "dashboard", badgeCounts = {}
 
   useEffect(() => {
     const handleScroll = () => {
+      // Don't apply offset on mobile - sidebar should stay at bottom
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      if (isMobile) {
+        setBottomOffset(0);
+        return;
+      }
+
       const footer = document.querySelector('footer');
       if (!footer || !sidebarRef.current) return;
 
@@ -31,9 +38,13 @@ export default function Sidebar({ items, variant = "dashboard", badgeCounts = {}
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     handleScroll(); // Check initial state
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   return (
