@@ -1,5 +1,5 @@
 const { createSkillRequest } = require('../services/skillRequestsService');
-const { getAll, addSkillToUser, getAllForUser } = require('../services/skillsService');
+const { getAll, addSkillToUser, getAllForUser, removeSkillFromUser } = require('../services/skillsService');
 const sequelize = require('../utils/database');
 
 const getAllSkills = async (request, response,next) => {
@@ -75,6 +75,24 @@ const addSkill = async (request, response,next) => {
     }
 }
 
+const removeSkill = async (request, response, next) => {
+    try {
+        const userId = request.session.user.id;
+        const skillId = request.body.skillId;
+        
+        if (!userId || !skillId) {
+            return response.status(400).json({ message: "User ID and Skill ID are required" });
+        }
+
+        await removeSkillFromUser(userId, skillId);
+        
+        response.json({ message: "Skill removed successfully" });
+        response.end();
+    } catch (error) {
+        next({status:404,message:'Error ->' + error.message});
+    }
+}
+
 const requestSkill = async(request, response,next) => {
     try{
         const { name } = request.body;
@@ -95,5 +113,6 @@ module.exports = {
     getAllSkills,
     getSkillsForUser,
     addSkill,
+    removeSkill,
     requestSkill
 }

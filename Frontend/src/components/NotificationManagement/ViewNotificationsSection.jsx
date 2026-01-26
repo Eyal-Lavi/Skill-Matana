@@ -3,15 +3,18 @@ import AdminAPI from '../../features/admin/adminAPI';
 import NotificationDetailsModal from './NotificationDetailsModal';
 import styles from './NotificationManagement.module.scss';
 import { useToast } from '../../contexts/ToastContext';
+import { useConfirm } from '../../contexts/ConfirmContext';
 
 const ViewNotificationsSection = () => {
   const toast = useToast();
+  const confirm = useConfirm();
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [notificationDetails, setNotificationDetails] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     loadStats();
@@ -53,6 +56,35 @@ const ViewNotificationsSection = () => {
   const handleCloseModal = () => {
     setSelectedNotification(null);
     setNotificationDetails(null);
+  };
+
+  const handleDeleteNotification = async (notification) => {
+    const ok = await confirm({
+      title: "Delete System Notifications?",
+      message: `Are you sure you want to delete all instances of this notification? This will delete ${notification.totalCount} notification(s) sent to all users. This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      danger: true,
+    });
+    
+    if (!ok) return;
+
+    try {
+      setDeletingId(`${notification.type}-${notification.title}`);
+      await AdminAPI.deleteSystemNotifications(
+        notification.type,
+        notification.title,
+        notification.message,
+        notification.link || null
+      );
+      toast.success(`Successfully deleted ${notification.totalCount} notification(s)`);
+      await loadStats();
+    } catch (err) {
+      console.error('Failed to delete notifications:', err);
+      toast.error(err.response?.data?.message || 'Failed to delete notifications');
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -111,12 +143,22 @@ const ViewNotificationsSection = () => {
                   <h3>{stat.title}</h3>
                   <span className={styles.statType}>{stat.type}</span>
                 </div>
-                <button
-                  onClick={() => handleViewDetails(stat)}
-                  className={styles.viewDetailsButton}
-                >
-                  View Details
-                </button>
+                <div className={styles.statActions}>
+                  <button
+                    onClick={() => handleViewDetails(stat)}
+                    className={styles.viewDetailsButton}
+                  >
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => handleDeleteNotification(stat)}
+                    className={styles.deleteButton}
+                    disabled={deletingId === `${stat.type}-${stat.title}`}
+                    title="Delete all instances of this notification"
+                  >
+                    {deletingId === `${stat.type}-${stat.title}` ? 'Deleting...' : '🗑️ Delete'}
+                  </button>
+                </div>
               </div>
 
               <div className={styles.statMessage}>

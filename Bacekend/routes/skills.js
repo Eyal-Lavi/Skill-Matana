@@ -7,6 +7,7 @@ router.get('/all',isLoggedIn, skillController.getAllSkills);
 router.get('/',isLoggedIn, skillController.getSkillsForUser);
 router.post('/new',isLoggedIn, skillController.addSkill);
 router.post('/add-user-skill',isLoggedIn, skillController.addSkill);
+router.delete('/remove-user-skill',isLoggedIn, skillController.removeSkill);
 router.post('/skill-requests' , isLoggedIn , skillController.requestSkill);
 
 module.exports = router;

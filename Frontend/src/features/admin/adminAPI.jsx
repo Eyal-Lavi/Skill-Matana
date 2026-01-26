@@ -75,6 +75,19 @@ const AdminAPI = {
             withCredentials: true
         });
         return response.data;
+    },
+    deleteSystemNotifications: async(type, title, message, link = null) => {
+        const response = await axios.delete(`${API_BASE_URL}/notifications`, {
+            data: { type, title, message, link },
+            withCredentials: true
+        });
+        return response.data;
+    },
+    getOverviewStats: async() => {
+        const response = await axios.get(`${API_BASE_URL}/overview`, {
+            withCredentials: true
+        });
+        return response.data;
     }
 }
 export default AdminAPI;

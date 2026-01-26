@@ -79,6 +79,14 @@ const authSlice = createSlice({
         state.user.skills.push(action.payload);
       }
     },
+    removeSkill(state, action) {
+      const skillId = action.payload;
+      if (Array.isArray(state.user.skills)) {
+        state.user.skills = state.user.skills.filter(
+          (skill) => skill.id !== skillId
+        );
+      }
+    },
     removeConnection(state, action) {
         const userId = action.payload;
         if (Array.isArray(state.user.connections)) {

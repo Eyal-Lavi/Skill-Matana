@@ -323,6 +323,12 @@
   text-transform: uppercase;
 }
 
+.statActions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 .viewDetailsButton {
   padding: 0.5rem 1rem;
   background: var.$color-primary;
@@ -336,6 +342,33 @@
 
   &:hover {
     background: var.$color-background-btn-hover;
+  }
+}
+
+.deleteButton {
+  padding: 0.5rem 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 

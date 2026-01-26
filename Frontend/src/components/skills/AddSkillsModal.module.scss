@@ -24,6 +24,7 @@
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;
+  min-height: 0; // Allows flex children to shrink below content size
 }
 
 .modalHeader {
@@ -75,7 +76,7 @@
   }
 
   .searchInput {
-    width: 100%;
+    width: 90%;
     padding: 1rem 3rem 1rem 1rem;
     border: 2px solid $color-border;
     border-radius: 12px;
@@ -110,7 +111,10 @@
 .skillsList {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1rem 2rem;
+  min-height: 0; // Allows flex item to shrink
+  max-height: 100%; // Constrains to parent
 }
 
 .loading,

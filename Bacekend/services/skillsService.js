@@ -114,6 +114,39 @@ const addSkillToDB = async (skillName) => {
     };
 };
 
+const removeSkillFromUser = async (userId, skillId) => {
+    if (!userId) {
+        throw new Error("User ID is required");
+    }
+
+    if (!skillId) {
+        throw new Error("Skill ID is required");
+    }
+
+    const userSkill = await SkillUser.findOne({
+        where: { 
+            skillId: skillId,
+            userId: userId
+        }
+    });
+
+    if (!userSkill) {
+        throw new Error("This skill is not associated with this user");
+    }
+    
+    await SkillUser.destroy({
+        where: { 
+            skillId: skillId,
+            userId: userId
+        }
+    });
+
+    return {
+        message: "Skill removed successfully",
+        status: 200
+    };
+};
+
 const updateSkillStatus = async (skillId, status) => {
     if (!skillId) {
         throw new Error("Skill ID is required");
@@ -140,5 +173,6 @@ module.exports = {
     getAllForUser,
     addSkillToUser,
     addSkillToDB,
+    removeSkillFromUser,
     updateSkillStatus
 };

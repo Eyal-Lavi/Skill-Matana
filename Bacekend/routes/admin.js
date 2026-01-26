@@ -18,5 +18,7 @@ router.post('/notifications' , adminController.createNotification);
 router.get('/notifications' , adminController.getAllNotifications);
 router.get('/notifications/stats' , adminController.getNotificationGroupedStats);
 router.get('/notifications/details' , adminController.getNotificationDetails);
+router.delete('/notifications' , adminController.deleteSystemNotifications);
+router.get('/overview' , adminController.getOverviewStats);
 
 module.exports = router;

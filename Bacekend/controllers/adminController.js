@@ -404,6 +404,80 @@ const getNotificationDetails = async (request, response, next) => {
     }
 };
 
+const deleteSystemNotifications = async (request, response, next) => {
+    try {
+        const { type, title, message, link } = request.body;
+        
+        if (!type || !title || !message) {
+            return response.status(400).json({ message: 'Type, title, and message are required' });
+        }
+
+        const { deleteSystemNotifications } = require('../services/notificationsService');
+        const deletedCount = await deleteSystemNotifications(type, title, message, link || null);
+        
+        response.status(200).json({ 
+            message: 'System notifications deleted successfully',
+            deletedCount 
+        });
+    } catch (e) {
+        response.status(500).json({ message: e.message });
+    }
+};
+
+const getOverviewStats = async (request, response, next) => {
+    try {
+        const { Op } = require('sequelize');
+        const Skill = require('../models/skill');
+        const SkillRequest = require('../models/skillRequests');
+        const { SystemNotification } = require('../models');
+
+        // Get user statistics - count directly for accuracy
+        // Using Promise.all for parallel execution for better performance
+        // Status: 1 = active, 0 = inactive (as per updateUserStatus validation)
+        const [totalUsers, activeUsers, inactiveUsers] = await Promise.all([
+            User.count(),
+            User.count({ where: { status: 1 } }),
+            User.count({ where: { status: 0 } })
+        ]);
+
+        // Get skill statistics - count directly for accuracy
+        // Status: 1 = active, 0 = inactive (as per handleSkillStatusUpdate validation)
+        const [totalSkills, activeSkills, inactiveSkills] = await Promise.all([
+            Skill.count(),
+            Skill.count({ where: { status: 1 } }),
+            Skill.count({ where: { status: 0 } })
+        ]);
+
+        // Get pending skill requests
+        const pendingSkillRequests = await SkillRequest.count({ 
+            where: { status: 'pending' } 
+        });
+
+        // Get notification statistics - count directly for efficiency
+        const totalNotifications = await SystemNotification.count();
+
+        response.status(200).json({
+            users: {
+                total: totalUsers,
+                active: activeUsers,
+                inactive: inactiveUsers
+            },
+            skills: {
+                total: totalSkills,
+                active: activeSkills,
+                inactive: inactiveSkills
+            },
+            pendingSkillRequests,
+            notifications: {
+                total: totalNotifications
+            }
+        });
+    } catch (e) {
+        console.error('Error in getOverviewStats:', e);
+        response.status(500).json({ message: e.message });
+    }
+};
+
 module.exports = {
     addPermissionToDB,
     addPermissionToUser,
@@ -417,5 +491,7 @@ module.exports = {
     createNotification,
     getAllNotifications,
     getNotificationGroupedStats,
-    getNotificationDetails
+    getNotificationDetails,
+    deleteSystemNotifications,
+    getOverviewStats
 }

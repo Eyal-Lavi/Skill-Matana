@@ -234,6 +234,7 @@ const getNotificationGroupedStats = async () => {
       [sequelize.fn("MAX", sequelize.col("createdAt")), "lastSent"],
     ],
     group: ["type", "title", "message", "link"],
+    having: sequelize.literal("COUNT(id) > 1"), // Only system notifications (sent to multiple users)
     order: [[sequelize.fn("MAX", sequelize.col("createdAt")), "DESC"]],
     raw: true,
   });
@@ -295,6 +296,30 @@ const getNotificationDetails = async (type, title, message, link = null) => {
   };
 };
 
+const deleteSystemNotifications = async (type, title, message, link = null) => {
+  if (!type || !title || !message) {
+    throw new Error("Type, title, and message are required");
+  }
+
+  const whereClause = {
+    type,
+    title,
+    message,
+  };
+
+  if (link !== null) {
+    whereClause.link = link;
+  } else {
+    whereClause.link = { [Op.is]: null };
+  }
+
+  const deletedCount = await SystemNotification.destroy({
+    where: whereClause,
+  });
+
+  return deletedCount;
+};
+
 module.exports = {
   createNotification,
   getAllNotificationsForUser,
@@ -307,5 +332,6 @@ module.exports = {
   getAllNotificationsForAdmin,
   getNotificationGroupedStats,
   getNotificationDetails,
+  deleteSystemNotifications,
 };
 
